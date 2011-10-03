@@ -11,9 +11,11 @@ import com.liviu.apps.iasianunta.utils.Utils;
 
 
 public class Ad {
+	
 	// Constants
 	private final String TAG = "Ad";
-		
+	public static final String SOURCE_ANDROID = "android";
+	
 	// Data
 	private int mId;
 	private int mCategoryId;

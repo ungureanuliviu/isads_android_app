@@ -23,27 +23,11 @@
 			android:layout_toRightOf="@id/ic_home"			
 			android:textColor = "#ffffff"
 			android:textSize="18sp"
-			android:text = "Iasianunta"
+			android:text = "Adauga anunt"
 			android:textStyle="bold"
 			android:layout_marginLeft="5dp"			
 			android:layout_centerVertical="true"
-			android:layout_marginTop="2dp"/>		
-		<com.liviu.apps.iasianunta.ui.LEditText 
-			android:id = "@+id/edtx_what"
-			android:layout_width="150dp"
-			android:layout_height="27dp"
-			android:textColor="#575757"
-			android:hint="Cauta anunturi"			
-			android:text = ""
-			android:imeOptions="actionSearch"
-			android:textSize="12dp"
-			android:layout_centerVertical="true"				
-			android:paddingLeft="5dp"			
-			android:singleLine="true"
-			android:layout_marginRight="4dp"
-			android:layout_alignParentRight="true"
-			android:drawableRight="@drawable/ic_edtx_x"
-			android:background="@drawable/edtx_background"/>				
+			android:layout_marginTop="2dp"/>							
 	</RelativeLayout>
 	<RelativeLayout 
 		android:id = "@+id/layout_top_bar"
@@ -92,8 +76,7 @@
 			<ScrollView 
 				android:layout_width="fill_parent"
 				android:layout_height="fill_parent"
-				android:fillViewport="true"				
-				android:scrollbars="none">		
+				android:fillViewport="true">		
 				<RelativeLayout 
 					android:id = "@+id/ad_inputs_holder"
 					android:layout_width="fill_parent"					
@@ -133,7 +116,7 @@
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"														
 							android:textSize="12sp"						   
-							android:text = "Title"			
+							android:text = "Titlu"			
 							android:textColor="#676767"
 							android:layout_below = "@id/line12"					
 							android:layout_marginLeft="10dp"
@@ -144,7 +127,7 @@
 							android:layout_height="35dp"
 							android:textColor="#575757"
 							android:hint="titlu"			
-							android:text = ""						
+							android:text = "acesta este un titlu"						
 							android:textSize="12dp"
 							android:layout_below="@id/txt_ad_title"			
 							android:paddingLeft="5dp"			
@@ -170,7 +153,8 @@
 							android:layout_height="35dp"
 							android:textColor="#575757"
 							android:hint="telefon"			
-							android:text = ""											
+							android:text = "1234567"			
+							android:inputType="phone"								
 							android:textSize="12dp"
 							android:layout_below="@id/txt_ad_phone"
 							android:paddingLeft="5dp"										
@@ -195,7 +179,7 @@
 							android:layout_height="70dp"
 							android:textColor="#575757"
 							android:hint="Continut"			
-							android:text = ""											
+							android:text = "an here we have the ad's content. is should have min 20 characters."											
 							android:textSize="12dp"
 							android:layout_below="@id/txt_ad_content"
 							android:paddingLeft="5dp"										
@@ -236,31 +220,42 @@
 							android:layout_marginTop="1dp"
 							android:layout_marginLeft="3dp"
 							android:layout_marginRight="5dp"
-							android:layout_marginBottom="10dp"/>	
+							android:layout_marginBottom="5dp"/>	
 						<Gallery 
 							android:id = "@+id/gallery_ad_images"
+							android:scrollbars="horizontal"							
 							android:layout_width="fill_parent"
-							android:layout_height="wrap_content"
+							android:layout_height="60dp"
 							android:layout_below="@id/line22"
-							android:layout_marginLeft="10dp"
+							android:layout_marginLeft="10dp"							
 							android:gravity="left"
-							android:spacing="3dp"																			
-							android:layout_marginRight="10dp"
-							android:layout_marginTop="5dp"
+							android:spacing="3dp"																
+							android:layout_marginRight="10dp"							
 							android:layout_toLeftOf="@+id/but_add_image"/>
+						<com.liviu.apps.iasianunta.ui.LTextView
+							android:id = "@+id/txt_no_images"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:layout_alignParentLeft = "true"			
+							android:textColor = "#999999"
+							android:textSize="10sp"
+							android:text = "Nu ati selectat nici o imagine."			
+							android:layout_marginLeft="5dp"		
+							android:layout_marginTop="20dp"					
+							android:layout_below="@id/line22"/>							
 						<Button 
 							android:id = "@id/but_add_image"
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
 							android:textColor="#575757"
-							android:text="Adauga\nimagine"
+							android:text="Adauga imagine"
 							android:layout_below="@id/line22"					
 							android:layout_alignParentRight="true"
 							android:textSize="12sp"
 							android:paddingLeft="5dp"													
 							android:paddingRight="5dp"							
 							android:layout_marginRight="5dp"
-							android:layout_marginTop="5dp"
+							android:layout_marginTop="10dp"							
 							android:background="@drawable/default_button_background"/>  		
 						<com.liviu.apps.iasianunta.ui.LTextView
 							android:id = "@+id/txt_others"
@@ -271,7 +266,7 @@
 							android:textSize="13sp"
 							android:text = "Alte"			
 							android:layout_marginLeft="5dp"		
-							android:layout_marginTop="5dp"					
+							android:layout_marginTop="15dp"					
 							android:layout_below = "@id/but_add_image"/>			
 						<View
 							android:id = "@+id/line31"
@@ -280,7 +275,7 @@
 							android:background="@color/double_line_color"  
 							android:layout_below="@id/but_add_image"
 							android:layout_toRightOf="@id/txt_others"
-							android:layout_marginTop="12dp"
+							android:layout_marginTop="22dp"
 							android:layout_marginLeft="3dp"
 							android:layout_marginRight="5dp"/>
 						<View
@@ -309,8 +304,9 @@
 							android:layout_width="fill_parent"
 							android:layout_height="35dp"
 							android:textColor="#575757"
+							android:inputType="textEmailAddress"
 							android:hint="Email"			
-							android:text = ""											
+							android:text = "smartliviu@gmail.com"											
 							android:textSize="12dp"
 							android:layout_below="@id/txt_ad_email"
 							android:paddingLeft="5dp"										
@@ -324,7 +320,7 @@
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"														
 							android:textSize="12sp"						
-							android:text = "Email"																
+							android:text = "Adresa"																
 							android:textColor="#676767"
 							android:layout_below = "@id/edtx_ad_email"
 							android:layout_marginTop="10dp"
@@ -334,8 +330,8 @@
 							android:layout_width="fill_parent"
 							android:layout_height="35dp"
 							android:textColor="#575757"
-							android:hint="Address"			
-							android:text = ""											
+							android:hint="adresa"			
+							android:text = "Iasi"											
 							android:textSize="12dp"
 							android:layout_below="@id/txt_ad_address"
 							android:paddingLeft="5dp"										
@@ -343,8 +339,7 @@
 							android:layout_marginLeft="10dp"	
 							android:layout_marginTop="5dp"	
 							android:drawableRight="@drawable/ic_edtx_x"
-							android:background="@drawable/edtx_background_green"
-							android:layout_marginBottom="10dp"/>																																						
+							android:background="@drawable/edtx_background_green"/>																																						
 					</RelativeLayout>
 				</ScrollView>		
 		<!-- second row -->											
@@ -352,12 +347,13 @@
 	<RelativeLayout 
 		android:id = "@id/layout_bottom"
 		android:layout_width="fill_parent"
-		android:layout_height="45dp"
+		android:layout_height="50dp"
 		android:background="@drawable/bg_bottom_gray8"
+		android:layout_marginTop="10dp"
 		android:layout_alignParentBottom="true">		
 		<Button 
-			android:id = "@+id/popup_but_add_ad"
-			android:layout_width="100dp"
+			android:id = "@+id/but_add_ad"
+			android:layout_width="130dp"
 			android:layout_height="35dp"
 			android:textColor="#575757"
 			android:text="Adauga"					
@@ -365,11 +361,11 @@
 			android:paddingLeft="5dp"
 			android:paddingRight="5dp"
 			android:layout_marginRight="9dp"
-			android:layout_marginTop="2dp"
+			android:layout_marginTop="6dp"
 			android:background="@drawable/default_button_background"/>  
 		<Button 
-			android:id = "@+id/popup_but_save"
-			android:layout_width="100dp"
+			android:id = "@+id/but_save"
+			android:layout_width="130dp"
 			android:layout_height="35dp"
 			android:textColor="#575757"
 			android:text="Salveaza"					
@@ -377,7 +373,7 @@
 			android:paddingLeft="5dp"
 			android:paddingRight="5dp"
 			android:layout_marginLeft="9dp"
-			android:layout_marginTop="2dp"
+			android:layout_marginTop="6dp"
 			android:background="@drawable/default_button_background"/>  		  
 	</RelativeLayout>					
 </RelativeLayout>

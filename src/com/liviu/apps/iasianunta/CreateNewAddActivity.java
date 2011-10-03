@@ -17,29 +17,32 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.Gallery;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.liviu.apps.iasianunta.adapters.NewAdImagesAdapter;
 import com.liviu.apps.iasianunta.apis.API;
 import com.liviu.apps.iasianunta.data.Ad;
 import com.liviu.apps.iasianunta.data.AdImage;
+import com.liviu.apps.iasianunta.data.User;
+import com.liviu.apps.iasianunta.interfaces.IAdNotifier;
 import com.liviu.apps.iasianunta.interfaces.IUploadNotifier;
 import com.liviu.apps.iasianunta.managers.ActivityIdProvider;
+import com.liviu.apps.iasianunta.managers.AdsManager;
 import com.liviu.apps.iasianunta.ui.AdImageView;
+import com.liviu.apps.iasianunta.ui.LEditText;
+import com.liviu.apps.iasianunta.ui.LTextView;
 import com.liviu.apps.iasianunta.utils.Console;
 
 public class CreateNewAddActivity extends Activity implements OnClickListener,
 															  IUploadNotifier,
-															  OnItemClickListener{
+															  OnItemClickListener,
+															  IAdNotifier{
 	
 	// Constants
 	private final 		 	String 	TAG 						= "CreateNewAddActivity";
@@ -52,17 +55,25 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
 	private Ad 		newAd;
 	private API 	api;
 	private NewAdImagesAdapter adapterGalleryImages;
+	private AdsManager adMan;
+	private User user;
 	
 	// UI
 	private Button 			butAddImage;
+	private Button			butSave;
+	private Button			butAdd;
 	private Gallery			galImages;
 	private AdImageView 	newImage;
+	private LTextView		txtNoImages;
+	private LEditText		edtxTitle;
+	private LEditText		edtxPhone;
+	private LEditText		edtxContent;
+	private LEditText		edtxEmail;
+	private LEditText		edtxAddress;
 	
 	// Services
 	private Vibrator		vbb;
-	
-	
-	
+			
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -79,11 +90,25 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
         api 		 = API.getInstance();
         adapterGalleryImages = new NewAdImagesAdapter(this);
         vbb			 = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+        txtNoImages  = (LTextView)findViewById(R.id.txt_no_images);
+        edtxTitle	 = (LEditText)findViewById(R.id.edtx_ad_title);
+        edtxContent	 = (LEditText)findViewById(R.id.edtx_ad_content);
+        edtxPhone	 = (LEditText)findViewById(R.id.edtx_ad_phone);
+        edtxEmail	 = (LEditText)findViewById(R.id.edtx_ad_email);
+        edtxAddress	 = (LEditText)findViewById(R.id.edtx_ad_address);
+        butAdd		 = (Button)findViewById(R.id.but_add_ad);
+        butSave		 = (Button)findViewById(R.id.but_save);
+        adMan		 = new AdsManager(this);
+        user		 = User.getInstance();
         
         butAddImage.setOnClickListener(this);
+        butAdd.setOnClickListener(this);
+        butSave.setOnClickListener(this);
         api.setUploadNotifier(this);        
         galImages.setAdapter(adapterGalleryImages);
         galImages.setOnItemClickListener(this);
+        adMan.setAdNotifier(this);
+        api.setAdNotifier(this);
 	}
 	
 	@Override
@@ -101,11 +126,15 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
 					}
 				}				
 				if(canAd){
+					if(adapterGalleryImages.getCount() == 0){
+						txtNoImages.setVisibility(View.GONE);
+					}
 					butAddImage.setEnabled(false);
 					butAddImage.setText("Uploading...");
 					AdImage adImage = new AdImage(uri, null);
 					adapterGalleryImages.addItem(adImage);
 					adapterGalleryImages.notifyDataSetChanged();
+					galImages.setSelection(adapterGalleryImages.getCount() - 1, true);
 					api.uploadImage(uri, CreateNewAddActivity.this);
 				} else{
 					Toast.makeText(CreateNewAddActivity.this, "Aceasta imagine deja a fost incarcata pe server.", Toast.LENGTH_LONG).show();
@@ -130,7 +159,19 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
 			        pickImageIntent.setType("image/*");
 			        startActivityForResult(pickImageIntent, SELECT_PHOTO_REQUEST_CODE);
 				}
-			break;		
+				break;	
+		case R.id.but_save:
+				if(constructNewAdd()){
+					Console.debug(TAG, "new ad to save: " + newAd);
+					adMan.saveAd(newAd);
+				}
+				break;
+		case R.id.but_add_ad:
+				if(constructNewAdd()){
+					Console.debug(TAG, "add new ad to server");
+					adMan.addnewAd(newAd, user.getId(), user.getAuthName(), user.getPassword());
+				}
+				break;
 		default: 
 			break;
 		}
@@ -172,12 +213,12 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
 		}
 		
 		butAddImage.setEnabled(true);
-		butAddImage.setText("Adauga\nimagine");
-		if(newAd.getImages().size() == 5){
+		butAddImage.setText("Adauga imagine");
+		if(newAd.getImages().size() == 2){
 			Toast.makeText(CreateNewAddActivity.this, "Click pe imagine pentru a o sterge.", Toast.LENGTH_LONG).show();
 		}
 	}
-	
+	    
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
@@ -190,5 +231,70 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
 		adapterGalleryImages.removeAt(position);
 		adapterGalleryImages.notifyDataSetChanged();	
 		vbb.vibrate(VIB_LENGTH);
+		if(adapterGalleryImages.getCount() == 0){
+			txtNoImages.setVisibility(View.VISIBLE);
+		}
+	}
+	
+	private boolean constructNewAdd(){		
+		if(edtxTitle.getText().toString().length() > 0){
+			if(edtxTitle.getText().toString().length() < 5){
+				Toast.makeText(CreateNewAddActivity.this, "Campul 'Titlu' trebuie sa contina minim 5 caractere", Toast.LENGTH_SHORT).show();
+				return false;				
+			} else
+				newAd.setTitle(edtxTitle.getText().toString());
+		}
+		else{
+			Toast.makeText(CreateNewAddActivity.this, "Campul 'Titlu' nu este invalid.", Toast.LENGTH_SHORT).show();
+			return false;
+		}
+		
+		if(edtxPhone.getText().toString().length() > 0)
+			newAd.setPhone(edtxPhone.getText().toString());
+		else{
+			Toast.makeText(CreateNewAddActivity.this, "Campul 'Telefon' nu este invalid.", Toast.LENGTH_SHORT).show();
+			return false;
+		}		
+		
+		if(edtxContent.getText().toString().length() > 0){
+			if(edtxContent.getText().toString().length() < 20){
+				Toast.makeText(CreateNewAddActivity.this, "Campul 'Continut' trebuie sa contina minim 20 caractere", Toast.LENGTH_SHORT).show();
+				return false;				
+			} else
+				newAd.setContent(edtxContent.getText().toString());	
+		}			
+		else{
+			Toast.makeText(CreateNewAddActivity.this, "Campul 'Continut' nu este invalid.", Toast.LENGTH_SHORT).show();
+			return false;
+		}		
+		
+		if(edtxEmail.getText().toString().length() > 0)
+			newAd.setEmail(edtxEmail.getText().toString());
+		
+		if(edtxAddress.getText().toString().length() > 0)
+			newAd.setAddress(edtxAddress.getText().toString());
+		newAd.setSource(Ad.SOURCE_ANDROID);
+		
+		return true;
+	}
+
+	@Override
+	public void onAdSaved(boolean isSuccess, Ad pSavedAd) {
+		Console.debug(TAG, "isSuccess: " + isSuccess + " pSavedAd: " + pSavedAd);
+		if(isSuccess){
+			Toast.makeText(CreateNewAddActivity.this, "Anuntul a fost salvat. Id: " + pSavedAd.getId(), Toast.LENGTH_SHORT).show();
+		} else{
+			Toast.makeText(CreateNewAddActivity.this, "Anuntul nu a putut fi salvat.", Toast.LENGTH_SHORT).show();
+		}
+	}
+
+	@Override
+	public void onAdRemoteAdded(boolean isSuccess, Ad pAdRemoteAdded) {
+		Console.debug(TAG, "onAdRemoteAdded " + isSuccess + " ad: " + pAdRemoteAdded );
+		if(isSuccess){
+			Toast.makeText(CreateNewAddActivity.this, "Ad added to server " + pAdRemoteAdded.getId(), Toast.LENGTH_SHORT).show();
+		} else{
+			Toast.makeText(CreateNewAddActivity.this, "The current ad cannot be added on server for the moment", Toast.LENGTH_SHORT).show();
+		}
 	}
 }

@@ -26,6 +26,7 @@ import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -37,22 +38,25 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 
+import com.liviu.apps.iasianunta.data.Ad;
 import com.liviu.apps.iasianunta.data.JSONResponse;
 import com.liviu.apps.iasianunta.data.User;
+import com.liviu.apps.iasianunta.interfaces.IAdNotifier;
 import com.liviu.apps.iasianunta.interfaces.ILoginNotifier;
 import com.liviu.apps.iasianunta.interfaces.IUploadNotifier;
 import com.liviu.apps.iasianunta.utils.Base64;
 import com.liviu.apps.iasianunta.utils.Console;
 
 public class API {	
-	
+		
 	// Constants
-	private final String TAG = "API";
-	private final String API_URL = "http://www.iasianunta.info/API";
-	private final String API_UPLOAD_URL = "http://www.iasianunta.info/upload.php";
-	private final int MSG_LOGIN = 1;
-	private final int MSG_LOGOUT = 2;
-	private final int MSG_UPLOAD_DONE = 3;
+	private final String TAG 				= "API";
+	private final String API_URL 			= "http://www.iasianunta.info/API";
+	private final String API_UPLOAD_URL 	= "http://www.iasianunta.info/upload.php";
+	private final int MSG_LOGIN 			= 1;
+	private final int MSG_LOGOUT 			= 2;
+	private final int MSG_UPLOAD_DONE 		= 3;
+	private final int MSG_AD_ADDED 			= 4;
 	
 	// Data
 	private static API mInstance;
@@ -64,8 +68,9 @@ public class API {
 	private Handler handler;
 	
 	// Interfaces
-	private ILoginNotifier mILoginNotifier;
+	private ILoginNotifier 	mILoginNotifier;
 	private IUploadNotifier mIUploadNotifier;
+	private IAdNotifier		mIAdNotifier;
 	
 	// private constructor
 	private API(){		
@@ -113,7 +118,15 @@ public class API {
 						}
 					}
 					break;
-
+				case MSG_AD_ADDED:
+					if(null != mIAdNotifier){
+						if(null != msg.obj){
+							mIAdNotifier.onAdRemoteAdded(true, (Ad)msg.obj);
+						} else{
+							mIAdNotifier.onAdRemoteAdded(false, null);
+						}
+					}
+					break;
 				default:
 					break;
 				}
@@ -135,8 +148,8 @@ public class API {
 	}
 		
 
-	private String doRequest(String url, JSONObject jsonParams, String userName, String userPassword){
-		Console.debug(TAG, "doRequest: " + url + " params: " + jsonParams + " userName: " + userName + " password: " + userPassword);
+	private String doRequest(String url, JSONObject jsonParams, String pUserAuth, String pUserPassword){
+		Console.debug(TAG, "doRequest: " + url + " params: " + jsonParams + " userName: " + pUserAuth + " password: " + pUserPassword);
 	    try {	       
 	        post = new HttpPost(url);       
 	        
@@ -149,13 +162,14 @@ public class API {
 	        post.setHeader("Accept", "application/json");
 	        post.setHeader("Content-type", "application/json");
 	        
-	        if(userName != null && userPassword != null)
-	        	post.addHeader("Authorization","Basic "+ getCredentials(userName, userPassword));	        
+	        if(pUserAuth != null && pUserPassword != null)
+	        	post.addHeader("Authorization","Basic "+ getCredentials(pUserAuth, pUserPassword));	        
 	        
             HttpResponse responsePOST = client.execute(post, httpContext);  
             HttpEntity resEntity = responsePOST.getEntity();
-            
-	        return EntityUtils.toString(resEntity);
+            String apiResponse = EntityUtils.toString(resEntity);
+            Console.debug(TAG, "API RESPONSE: " + apiResponse);
+	        return apiResponse;
 
 	    } catch (ClientProtocolException e) {
 	    	e.printStackTrace();
@@ -330,6 +344,11 @@ public class API {
 		return this;
 	}
 	
+	public API setAdNotifier(IAdNotifier pAdNotifier){
+		mIAdNotifier = pAdNotifier;
+		return this;
+	}
+	
 	private synchronized String getRealPathFromURI(Uri contentUri, Context ctx) {
 		if(contentUri != null){
 	        String[] proj = { MediaStore.Images.Media.DATA };
@@ -341,9 +360,82 @@ public class API {
 			return null;
 		}
     }
+	
+	 /*		/API/ads/add/
+	 *		App a new ad into system
+	 *		params:
+	 *				title: the title of the new ad [required]
+	 *				content: the conente of the new ad [required]
+	 *				price: the price [optional]
+	 *				address: the address(if it is the case) [optional]
+	 *				category_id: the id of the catergory where this comment will be added [required]
+	 *				phone: ad owner's phone [required]
+	 *				email: ad owner's email [optional]
+	 *				user_id: the current user id [required]
+	 *				source: the source of this ad (iasianunta.info, Android app, etc)
+	 *
+	 *		response: {"is_success":1,"ad":{"id":852,"title":"teasdgds","content":"dgsgds","price":"32","address":"dsdgsdgs","cat_id":"4","user_id":"1","comments":[],"total_comments":0,"views":0,"source":"iasianunta.info","email":"smartliviu@gmail.com"}}
+	 */	
+	public API addNewAd(Ad pNewAd, int pUserId, String pUserAuth, String pUserPassword){
+		if(null == pNewAd){
+			handler.sendEmptyMessage(MSG_AD_ADDED);
+			return this;
+		}
+		
+		// set constants
+		final Ad cNewAd 			= pNewAd;
+		final int cUserId 			= pUserId;
+		final String cUserAuth 		= pUserAuth;
+		final String cUserPassword 	= pUserPassword;
+		
+		Thread tAdd = new Thread(new Runnable() {			
+			@Override
+			public void run() {					
+				try {
+					JSONObject params 	= new JSONObject();
+					Message msg		 	= new Message();
+					msg.what			= MSG_AD_ADDED;
+					
+					params.put("title", cNewAd.getTitle());
+					params.put("content", cNewAd.getContent());
+					params.put("price", cNewAd.getPrice());
+					params.put("address", cNewAd.getAddress());
+					params.put("phone", cNewAd.getPhone());
+					params.put("email", cNewAd.getEmail());
+					params.put("user_id", cUserId);
+					params.put("source", cNewAd.getSource());
+					params.put("category_id", "2");
+					JSONArray images = new JSONArray();
+					for(int i = 0; i < cNewAd.getImages().size(); i++){
+						images.put(cNewAd.getImages().get(i).getServerFileInfo());						
+					}
+					params.put("images", images);
+						
+					String apiResponse = doRequest(API_URL + "/ads/add/", params, cUserAuth, cUserPassword);
+					if(null != apiResponse){
+						JSONResponse jsonResponse = new JSONResponse(apiResponse);
+						if(jsonResponse.isSuccess()){
+							cNewAd.setId(jsonResponse.getJSONObject("ad").getInt("id"));
+							//cNewAd.setDate(jsonResponse.getJSONArray("ad").getLong("date"));
+							msg.obj = cNewAd;
+							handler.sendMessage(msg);
+						} else{
+							handler.sendMessage(msg);
+						}
+					} else{
+						handler.sendMessage(msg);
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+					handler.sendEmptyMessage(MSG_AD_ADDED);
+				}
+			}
+		});
+		tAdd.start();
+		return this;
+	}
 
 	// check if the user if connected to Internet
-	//TODO do not forget to implement this.
 	public boolean isAvailable(Context mContext) {		
 		ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
 		return cm.getActiveNetworkInfo().isConnectedOrConnecting();

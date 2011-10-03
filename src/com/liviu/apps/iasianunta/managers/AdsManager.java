@@ -21,7 +21,7 @@ public class AdsManager {
 	}
 	
 	public AdsManager addnewAd(Ad pNewAd){
-		if(mApi.isAvailable()){
+		if(mApi.isAvailable(mContext)){
 			
 		} else{
 			// save the ad in database. We will add it on remote server

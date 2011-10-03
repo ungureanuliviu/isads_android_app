@@ -244,7 +244,7 @@
 							android:layout_below="@id/line22"
 							android:layout_marginLeft="10dp"
 							android:gravity="left"
-							android:spacing="10dp"																			
+							android:spacing="3dp"																			
 							android:layout_marginRight="10dp"
 							android:layout_marginTop="5dp"
 							android:layout_toLeftOf="@+id/but_add_image"/>
@@ -260,13 +260,94 @@
 							android:paddingLeft="5dp"													
 							android:paddingRight="5dp"							
 							android:layout_marginRight="5dp"
-							android:layout_marginBottom="5dp"
 							android:layout_marginTop="5dp"
-							android:background="@drawable/default_button_background"/>  													
+							android:background="@drawable/default_button_background"/>  		
+						<com.liviu.apps.iasianunta.ui.LTextView
+							android:id = "@+id/txt_others"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:layout_alignParentLeft = "true"			
+							android:textColor = "@color/text_color"
+							android:textSize="13sp"
+							android:text = "Alte"			
+							android:layout_marginLeft="5dp"		
+							android:layout_marginTop="5dp"					
+							android:layout_below = "@id/but_add_image"/>			
+						<View
+							android:id = "@+id/line31"
+							android:layout_width="fill_parent"	
+							android:layout_height="1dp"
+							android:background="@color/double_line_color"  
+							android:layout_below="@id/but_add_image"
+							android:layout_toRightOf="@id/txt_others"
+							android:layout_marginTop="12dp"
+							android:layout_marginLeft="3dp"
+							android:layout_marginRight="5dp"/>
+						<View
+							android:id = "@+id/line32"
+							android:layout_width="fill_parent"	
+							android:layout_height="1dp"
+							android:background="@color/double_line_color" 							
+							android:layout_below="@id/line31"
+							android:layout_toRightOf="@id/txt_others"
+							android:layout_marginTop="1dp"
+							android:layout_marginLeft="3dp"
+							android:layout_marginRight="5dp"
+							android:layout_marginBottom="10dp"/>	
+						<com.liviu.apps.iasianunta.ui.LTextView
+							android:id = "@+id/txt_ad_email"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"														
+							android:textSize="12sp"						
+							android:text = "Email"																
+							android:textColor="#676767"
+							android:layout_below = "@id/line32"
+							android:layout_marginTop="10dp"
+							android:layout_marginLeft="10dp"/>									
+						<com.liviu.apps.iasianunta.ui.LEditText 
+							android:id = "@+id/edtx_ad_email"
+							android:layout_width="fill_parent"
+							android:layout_height="35dp"
+							android:textColor="#575757"
+							android:hint="Email"			
+							android:text = ""											
+							android:textSize="12dp"
+							android:layout_below="@id/txt_ad_email"
+							android:paddingLeft="5dp"										
+							android:layout_marginRight="10dp"		
+							android:layout_marginLeft="10dp"	
+							android:layout_marginTop="5dp"			
+							android:drawableRight="@drawable/ic_edtx_x"
+							android:background="@drawable/edtx_background_green"/>
+						<com.liviu.apps.iasianunta.ui.LTextView
+							android:id = "@+id/txt_ad_address"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"														
+							android:textSize="12sp"						
+							android:text = "Email"																
+							android:textColor="#676767"
+							android:layout_below = "@id/edtx_ad_email"
+							android:layout_marginTop="10dp"
+							android:layout_marginLeft="10dp"/>								
+						<com.liviu.apps.iasianunta.ui.LEditText 
+							android:id = "@+id/edtx_ad_address"
+							android:layout_width="fill_parent"
+							android:layout_height="35dp"
+							android:textColor="#575757"
+							android:hint="Address"			
+							android:text = ""											
+							android:textSize="12dp"
+							android:layout_below="@id/txt_ad_address"
+							android:paddingLeft="5dp"										
+							android:layout_marginRight="10dp"		
+							android:layout_marginLeft="10dp"	
+							android:layout_marginTop="5dp"	
+							android:drawableRight="@drawable/ic_edtx_x"
+							android:background="@drawable/edtx_background_green"
+							android:layout_marginBottom="10dp"/>																																						
 					</RelativeLayout>
 				</ScrollView>		
-		<!-- second row -->
-											
+		<!-- second row -->											
 	</RelativeLayout>
 	<RelativeLayout 
 		android:id = "@id/layout_bottom"

@@ -156,20 +156,16 @@ public class Ad {
 		return Convertor.toString(this);
 	}
 
-	public AdImage removeImageByName(String imgName) {
+	public AdImage removeImageByUri(Uri pUri) {
 		if(mImages.isEmpty())
 			return null;
-		if(null == imgName)
+		if(null == pUri)
 			return null;
 		
-		for(int i = 0; i < mImages.size(); i++){
-			try {
-				if(imgName.equals(mImages.get(i).getServerFileInfo().get("name"))){
-					return mImages.remove(i);
-				}
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
+		for(int i = 0; i < mImages.size(); i++){			
+			if(pUri.equals(mImages.get(i).getUri())){
+				return mImages.remove(i);
+			}			
 		}
 		return null;
 	}

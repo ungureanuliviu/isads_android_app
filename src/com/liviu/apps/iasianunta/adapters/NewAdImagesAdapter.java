@@ -78,4 +78,12 @@ public class NewAdImagesAdapter extends BaseAdapter{
 		public ProgressBar pBar;
 		public ImageView   pImageView;
 	}
+
+	public void removeAt(int position) {
+		try{
+			mItems.remove(position);
+		} catch (IndexOutOfBoundsException e) {
+			e.printStackTrace();
+		}
+	}
 }

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"    
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#fafafa">
+	<RelativeLayout 
+		android:id = "@+id/layout_top"
+		android:layout_width="fill_parent"
+		android:layout_height="38dp"
+		android:background="@drawable/bg_top_green">
+		<ImageView 
+			android:id = "@+id/ic_home"
+			android:layout_width="26dp"
+			android:layout_height="20dp"
+			android:layout_marginLeft="6dp"
+			android:layout_alignParentLeft="true"
+			android:layout_centerVertical="true"
+			android:src="@drawable/ic_home"/>	
+		<com.liviu.apps.iasianunta.ui.LTextView
+			android:id = "@+id/title"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_toRightOf="@id/ic_home"			
+			android:textColor = "#ffffff"
+			android:textSize="18sp"
+			android:text = "Iasianunta"
+			android:textStyle="bold"
+			android:layout_marginLeft="5dp"			
+			android:layout_centerVertical="true"
+			android:layout_marginTop="2dp"/>							
+	</RelativeLayout>	
+	<RelativeLayout 
+		android:id = "@+id/layout_content"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"				
+		android:layout_below="@id/layout_top">									
+		<RelativeLayout 
+			android:id = "@+id/login_form_bg_holder"
+			android:layout_width="fill_parent"
+			android:layout_height="240dp"
+			android:layout_marginLeft="12dp"
+			android:layout_marginRight="12dp"						
+			android:background="@drawable/bg_white"
+			android:layout_centerVertical="true">			
+			<ScrollView 
+				android:layout_width="fill_parent"
+				android:layout_height="240dp"
+				android:fillViewport="true"				
+				android:scrollbars="none">		
+				<RelativeLayout 
+					android:id = "@+id/login_form_holder"
+					android:layout_width="fill_parent"					
+					android:layout_height="wrap_content">
+						<com.liviu.apps.iasianunta.ui.LTextView  
+							android:id = "@+id/txt_title"
+							android:layout_width="fill_parent"
+							android:layout_height="wrap_content"	
+							android:layout_marginTop="5dp"																	
+							android:textSize="17sp"
+							android:textStyle="bold"
+							android:text = "Login"			
+							android:gravity = "left"
+							android:layout_marginLeft="10dp"
+							android:textColor="#676767"						
+							android:layout_alignParentTop = "true"/>	
+						<View 
+							android:id="@+id/login_line1"
+							android:layout_width="fill_parent"
+							android:layout_height="1dp"
+							android:background="#dadada"
+							android:layout_marginLeft="10dp"
+							android:layout_marginRight="10dp"
+							android:layout_marginTop="5dp"
+							android:layout_below="@id/txt_title"/>					
+						<com.liviu.apps.iasianunta.ui.LTextView 
+							android:id = "@+id/txt_username" 
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"														
+							android:textSize="12sp"						   
+							android:text = "Username"			
+							android:textColor="#676767"
+							android:layout_below="@id/login_line1"						
+							android:layout_marginLeft="10dp"
+							android:layout_marginTop="10dp"/>						
+						<com.liviu.apps.iasianunta.ui.LEditText 
+							android:id = "@+id/edtx_username"
+							android:layout_width="fill_parent"
+							android:layout_height="35dp"
+							android:textColor="#575757"
+							android:hint="username"			
+							android:text = "liviu2"						
+							android:textSize="12dp"
+							android:layout_below="@id/txt_username"			
+							android:paddingLeft="5dp"			
+							android:singleLine="true"
+							android:layout_marginRight="10dp"		
+							android:layout_marginLeft="10dp"	
+							android:layout_marginTop="5dp"			
+							android:drawableRight="@drawable/ic_edtx_x"
+							android:background="@drawable/edtx_background_green"/>			
+						<com.liviu.apps.iasianunta.ui.LTextView
+							android:id = "@+id/txt_user_password"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"														
+							android:textSize="12sp"						
+							android:text = "Password"										
+							android:textColor="#676767"
+							android:layout_below = "@id/edtx_username"
+							android:layout_marginTop="10dp"
+							android:layout_marginLeft="10dp"/>						
+						<com.liviu.apps.iasianunta.ui.LEditText 
+							android:id = "@+id/edtx_user_password"
+							android:layout_width="fill_parent"
+							android:layout_height="35dp"
+							android:textColor="#575757"
+							android:hint="parola"			
+							android:text = "test"				
+							android:password="true"		
+							android:textSize="12dp"
+							android:layout_above="@+id/login_layout_bottom"	
+							android:paddingLeft="5dp"			
+							android:singleLine="true"
+							android:layout_marginRight="10dp"		
+							android:layout_marginLeft="10dp"	
+							android:layout_marginBottom="18dp"			
+							android:drawableRight="@drawable/ic_edtx_x"
+							android:background="@drawable/edtx_background_green"/>
+						<RelativeLayout 
+							android:id = "@id/login_layout_bottom"
+							android:layout_width="fill_parent" 
+							android:layout_height="45dp"
+							android:layout_alignParentBottom="true"
+							android:background="@drawable/bg_bottom_gray8">
+							<Button
+								android:id = "@+id/login_but_later"
+								android:layout_width="80dp"
+								android:layout_height="35dp"
+								android:textColor="#575757"
+								android:text = "Mai tarziu"
+								android:layout_alignParentLeft="true"	
+								android:layout_marginLeft="3dp"
+								android:layout_marginTop="2dp"
+								android:layout_below="@id/edtx_user_password"
+								android:background="@drawable/default_button_background" />									
+							<Button
+								android:id = "@+id/login_but_login"
+								android:layout_width="80dp"
+								android:layout_height="35dp"
+								android:textColor="#575757"
+								android:text = "Login"
+								android:layout_alignParentRight="true"  	
+								android:layout_marginRight="3dp"
+								android:layout_marginTop="2dp"
+								android:layout_below="@id/edtx_user_password"
+								android:background="@drawable/default_button_background" />			
+							<Button
+								android:id = "@+id/login_but_new_user"
+								android:layout_width="110dp"
+								android:layout_height="35dp"
+								android:textColor="#575757"
+								android:text = "Cont nou"
+								android:layout_centerHorizontal="true"								
+								android:layout_marginTop="2dp"								
+								android:layout_below="@id/edtx_user_password"
+								android:background="@drawable/default_button_background" />								
+						</RelativeLayout>																			
+				</RelativeLayout>		
+			</ScrollView>								
+		</RelativeLayout>											
+	</RelativeLayout>			
+</RelativeLayout>

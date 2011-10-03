@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"    
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/main_background">
+	<RelativeLayout 
+		android:id = "@+id/layout_top"
+		android:layout_width="fill_parent"
+		android:layout_height="38dp"
+		android:background="@drawable/bg_top_green">
+		<ImageView 
+			android:id = "@+id/ic_home"
+			android:layout_width="26dp"
+			android:layout_height="20dp"
+			android:layout_marginLeft="6dp"
+			android:layout_alignParentLeft="true"
+			android:layout_centerVertical="true"
+			android:src="@drawable/ic_home"/>	
+		<com.liviu.apps.iasianunta.ui.LTextView
+			android:id = "@+id/title"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_toRightOf="@id/ic_home"			
+			android:textColor = "#ffffff"
+			android:textSize="18sp"
+			android:text = "Iasianunta"
+			android:textStyle="bold"
+			android:layout_marginLeft="5dp"			
+			android:layout_centerVertical="true"
+			android:layout_marginTop="2dp"/>		
+		<com.liviu.apps.iasianunta.ui.LEditText 
+			android:id = "@+id/edtx_what"
+			android:layout_width="150dp"
+			android:layout_height="27dp"
+			android:textColor="#575757"
+			android:hint="Cauta anunturi"			
+			android:text = ""
+			android:imeOptions="actionSearch"
+			android:textSize="12dp"
+			android:layout_centerVertical="true"				
+			android:paddingLeft="5dp"			
+			android:singleLine="true"
+			android:layout_marginRight="4dp"
+			android:layout_alignParentRight="true"
+			android:drawableRight="@drawable/ic_edtx_x"
+			android:background="@drawable/edtx_background"/>				
+	</RelativeLayout>
+	<RelativeLayout 
+		android:id = "@+id/layout_top_bar"
+		android:layout_width="fill_parent"
+		android:layout_height="30dp"
+		android:background="@drawable/bg_bar_gray"
+		android:layout_below="@id/layout_top">	
+		<ImageView 
+			android:id = "@+id/user_image"
+			android:layout_width="22dp"
+			android:layout_height="22dp"
+			android:layout_marginLeft="6dp"
+			android:layout_alignParentLeft="true"
+			android:layout_centerVertical="true"
+			android:src="@drawable/ic_no_user_image"/>	
+		<com.liviu.apps.iasianunta.ui.LTextView
+			android:id = "@+id/user_name"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_toRightOf="@id/user_image"
+			android:layout_marginTop="9dp"
+			android:textColor = "#777777"
+			android:textSize="10sp"  
+			android:text = "Holla amigos"
+			android:layout_marginLeft="5dp"/>		
+		<Button 
+			android:id = "@+id/main_but_login"
+			android:layout_width="wrap_content"
+			android:layout_height="25dp"
+			android:textColor="#575757"
+			android:text="Logout"					
+			android:layout_alignParentRight="true"
+			android:layout_marginRight="1dp"
+			android:layout_centerVertical="true"
+			android:paddingLeft="10dp"
+			android:paddingRight="10dp"
+			android:textSize="10dp"
+			android:background="@drawable/button_background"/>  			  				
+	</RelativeLayout>
+	<RelativeLayout 
+		android:id = "@+id/layout_content"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"		
+		android:layout_below="@id/layout_top_bar"
+		android:layout_above="@+id/layout_bottom">			
+		<com.liviu.apps.iasianunta.ui.LTextView
+			android:id = "@+id/txt_personal"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentLeft = "true"			
+			android:textColor = "@color/text_color"
+			android:textSize="13sp"
+			android:text = "Personal"			
+			android:layout_marginLeft="5dp"
+			android:layout_marginTop="15dp"/>			
+		<View
+			android:id = "@+id/line11"
+			android:layout_width="fill_parent"	
+			android:layout_height="1dp"
+			android:background="@color/double_line_color"  
+			android:layout_toRightOf="@id/txt_personal"
+			android:layout_marginTop="23dp"
+			android:layout_marginLeft="3dp"
+			android:layout_marginRight="5dp"/>
+		<View
+			android:id = "@+id/line12"
+			android:layout_width="fill_parent"	
+			android:layout_height="1dp"
+			android:background="@color/double_line_color" 
+			android:layout_below="@id/line11"
+			android:layout_toRightOf="@id/txt_personal"
+			android:layout_marginTop="1dp"
+			android:layout_marginLeft="3dp"
+			android:layout_marginRight="5dp"
+			android:layout_marginBottom="10dp"/>	
+		<RelativeLayout 
+			android:id = "@+id/but_add_ad"
+			android:layout_width="92dp"
+			android:layout_height="wrap_content"
+			android:clickable="true"
+			android:layout_marginLeft="15dp"
+			android:paddingLeft="10dp"
+			android:paddingRight="10dp"
+			android:paddingTop="5dp"
+			android:paddingBottom="5dp"
+			android:layout_below="@id/line12"
+			android:background="@drawable/bg_home_items">
+			<TextView 				
+				android:id = "@+id/txt_add_ad"
+				android:layout_width="52dp"
+				android:layout_height="90dp"
+				android:drawableTop="@drawable/ic_add_ad"
+				android:drawablePadding="2dp"
+				android:layout_centerInParent="true"
+				android:text="Adauga anunt"
+				android:textSize="13sp"
+				android:textColor="#909090"
+				android:gravity="center_horizontal"/>	
+		</RelativeLayout>	
+		<RelativeLayout 
+			android:id = "@+id/but_alerts"
+			android:layout_width="92dp"
+			android:layout_height="wrap_content"
+			android:clickable="true"
+			android:layout_marginLeft="10dp"
+			android:paddingLeft="10dp"
+			android:paddingRight="10dp"
+			android:paddingTop="5dp"
+			android:paddingBottom="5dp"
+			android:layout_below="@id/line12"
+			android:layout_centerHorizontal="true"
+			android:background="@drawable/bg_home_items">
+			<TextView 				
+				android:id = "@+id/txt_alerts"
+				android:layout_width="wrap_content"
+				android:layout_height="90dp"
+				android:drawableTop="@drawable/ic_alerts"
+				android:drawablePadding="4dp"
+				android:layout_centerInParent="true"
+				android:text="Alerte"
+				android:textSize="13sp"
+				android:textColor="#909090"
+				android:gravity="center_horizontal"/>	
+		</RelativeLayout>	
+		<RelativeLayout 
+			android:id = "@+id/but_my_account"
+			android:layout_width="92dp"
+			android:layout_height="wrap_content"
+			android:clickable="true"
+			android:layout_marginRight="15dp"
+			android:paddingLeft="10dp"
+			android:paddingRight="10dp"
+			android:paddingTop="5dp"
+			android:paddingBottom="5dp"
+			android:layout_below="@id/line12"
+			android:layout_alignParentRight="true"
+			android:background="@drawable/bg_home_items">
+			<TextView 				
+				android:id = "@+id/txt_my_account"
+				android:layout_width="wrap_content"
+				android:layout_height="90dp"
+				android:drawableTop="@drawable/ic_my_account"
+				android:drawablePadding="4dp"
+				android:layout_centerInParent="true"
+				android:text="Contul\nmeu"
+				android:textSize="13sp"
+				android:textColor="#909090"
+				android:gravity="center_horizontal"/>	
+		</RelativeLayout>	
+		
+		<!-- second row -->
+		
+		<com.liviu.apps.iasianunta.ui.LTextView
+			android:id = "@+id/txt_others"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentLeft = "true"			
+			android:textColor = "@color/text_color"
+			android:textSize="13sp"
+			android:text = "Actiuni"			
+			android:layout_marginLeft="5dp"
+			android:layout_marginTop="6dp"
+			android:layout_below="@id/but_add_ad"/>			
+		<View
+			android:id = "@+id/line21"
+			android:layout_width="fill_parent"	
+			android:layout_height="1dp"
+			android:background="@color/double_line_color"  
+			android:layout_below="@id/but_add_ad"
+			android:layout_toRightOf="@id/txt_others"
+			android:layout_marginTop="13dp"
+			android:layout_marginLeft="3dp"
+			android:layout_marginRight="5dp"/>
+		<View
+			android:id = "@+id/line22"
+			android:layout_width="fill_parent"	
+			android:layout_height="1dp"
+			android:background="@color/double_line_color" 
+			android:layout_below="@id/line21"
+			android:layout_toRightOf="@id/txt_others"
+			android:layout_marginTop="1dp"
+			android:layout_marginLeft="3dp"
+			android:layout_marginRight="5dp"
+			android:layout_marginBottom="10dp"/>	
+		<RelativeLayout 
+			android:id = "@+id/but_recent_ads"
+			android:layout_width="92dp"
+			android:layout_height="wrap_content"
+			android:clickable="true"
+			android:layout_marginLeft="15dp"
+			android:paddingLeft="10dp"
+			android:paddingRight="10dp"
+			android:paddingTop="5dp"
+			android:paddingBottom="5dp"
+			android:layout_below="@id/line22"
+			android:background="@drawable/bg_home_items">
+			<TextView 				
+				android:id = "@+id/txt_recent_ads"
+				android:layout_width="52dp"
+				android:layout_height="90dp"
+				android:drawableTop="@drawable/ic_recent_ads"
+				android:drawablePadding="2dp"
+				android:layout_centerInParent="true"
+				android:text="Anunturi recente"
+				android:textSize="13sp"
+				android:textColor="#909090"
+				android:gravity="center_horizontal"/>	
+		</RelativeLayout>	
+		<RelativeLayout 
+			android:id = "@+id/but_categories"
+			android:layout_width="92dp"
+			android:layout_height="wrap_content"
+			android:clickable="true"
+			android:layout_marginLeft="10dp"
+			android:paddingLeft="10dp"
+			android:paddingRight="10dp"
+			android:paddingTop="5dp"
+			android:paddingBottom="5dp"
+			android:layout_below="@id/line22"
+			android:layout_centerHorizontal="true"
+			android:background="@drawable/bg_home_items">
+			<TextView 				
+				android:id = "@+id/txt_categories"
+				android:layout_width="wrap_content"
+				android:layout_height="90dp"
+				android:drawableTop="@drawable/ic_categories"
+				android:drawablePadding="4dp"
+				android:layout_centerInParent="true"
+				android:text="Categorii"
+				android:textSize="13sp"
+				android:textColor="#909090"
+				android:gravity="center_horizontal"/>	
+		</RelativeLayout>	
+		<RelativeLayout 
+			android:id = "@+id/but_search"
+			android:layout_width="92dp"
+			android:layout_height="wrap_content"
+			android:clickable="true"
+			android:layout_marginRight="15dp"
+			android:paddingLeft="10dp"
+			android:paddingRight="10dp"
+			android:paddingTop="5dp"
+			android:paddingBottom="5dp"
+			android:layout_below="@id/line22"
+			android:layout_alignParentRight="true"
+			android:background="@drawable/bg_home_items">
+			<TextView 				
+				android:id = "@+id/txt_search"
+				android:layout_width="wrap_content"
+				android:layout_height="90dp"
+				android:drawableTop="@drawable/ic_search"
+				android:drawablePadding="10dp"
+				android:layout_centerInParent="true"
+				android:text="Cauta"
+				android:textSize="13sp"
+				android:textColor="#909090"
+				android:gravity="center_horizontal"/>	
+		</RelativeLayout>											
+	</RelativeLayout>
+	<RelativeLayout 
+		android:id = "@id/layout_bottom"
+		android:layout_width="fill_parent"
+		android:layout_height="50dp"
+		android:background="@drawable/bg_bottom_gray8"
+		android:layout_alignParentBottom="true">		
+		<Button 
+			android:id = "@+id/popup_but_save"
+			android:layout_width="wrap_content"
+			android:layout_height="35dp"
+			android:textColor="#575757"
+			android:text="Testing...."					
+			android:layout_centerInParent="true"
+			android:paddingLeft="10dp"
+			android:paddingRight="10dp"
+			android:background="@drawable/button_background"/>  		  
+	</RelativeLayout>					
+</RelativeLayout>

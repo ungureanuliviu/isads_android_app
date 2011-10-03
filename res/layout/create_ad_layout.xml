@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"    
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/main_background">
+	<RelativeLayout 
+		android:id = "@+id/layout_top"
+		android:layout_width="fill_parent"
+		android:layout_height="38dp"
+		android:background="@drawable/bg_top_green">
+		<ImageView 
+			android:id = "@+id/ic_home"
+			android:layout_width="26dp"
+			android:layout_height="20dp"
+			android:layout_marginLeft="6dp"
+			android:layout_alignParentLeft="true"
+			android:layout_centerVertical="true"
+			android:src="@drawable/ic_home"/>	
+		<com.liviu.apps.iasianunta.ui.LTextView
+			android:id = "@+id/title"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_toRightOf="@id/ic_home"			
+			android:textColor = "#ffffff"
+			android:textSize="18sp"
+			android:text = "Iasianunta"
+			android:textStyle="bold"
+			android:layout_marginLeft="5dp"			
+			android:layout_centerVertical="true"
+			android:layout_marginTop="2dp"/>		
+		<com.liviu.apps.iasianunta.ui.LEditText 
+			android:id = "@+id/edtx_what"
+			android:layout_width="150dp"
+			android:layout_height="27dp"
+			android:textColor="#575757"
+			android:hint="Cauta anunturi"			
+			android:text = ""
+			android:imeOptions="actionSearch"
+			android:textSize="12dp"
+			android:layout_centerVertical="true"				
+			android:paddingLeft="5dp"			
+			android:singleLine="true"
+			android:layout_marginRight="4dp"
+			android:layout_alignParentRight="true"
+			android:drawableRight="@drawable/ic_edtx_x"
+			android:background="@drawable/edtx_background"/>				
+	</RelativeLayout>
+	<RelativeLayout 
+		android:id = "@+id/layout_top_bar"
+		android:layout_width="fill_parent"
+		android:layout_height="30dp"
+		android:background="@drawable/bg_bar_gray"
+		android:layout_below="@id/layout_top">	
+		<ImageView 
+			android:id = "@+id/user_image"
+			android:layout_width="22dp"
+			android:layout_height="22dp"
+			android:layout_marginLeft="6dp"
+			android:layout_alignParentLeft="true"
+			android:layout_centerVertical="true"
+			android:src="@drawable/ic_no_user_image"/>	
+		<com.liviu.apps.iasianunta.ui.LTextView
+			android:id = "@+id/user_name"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_toRightOf="@id/user_image"
+			android:layout_marginTop="9dp"
+			android:textColor = "#777777"
+			android:textSize="10sp"  
+			android:text = "Holla amigos"
+			android:layout_marginLeft="5dp"/>		
+		<Button 
+			android:id = "@+id/main_but_login"
+			android:layout_width="wrap_content"
+			android:layout_height="25dp"
+			android:textColor="#575757"
+			android:text="Logout"					
+			android:layout_alignParentRight="true"
+			android:layout_marginRight="1dp"
+			android:layout_centerVertical="true"
+			android:paddingLeft="10dp"
+			android:paddingRight="10dp"
+			android:textSize="10dp"
+			android:background="@drawable/default_button_background"/>  			  				
+	</RelativeLayout>
+	<RelativeLayout 
+		android:id = "@+id/layout_content"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"		
+		android:layout_below="@id/layout_top_bar"
+		android:layout_above="@+id/layout_bottom">								
+			<ScrollView 
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent"
+				android:fillViewport="true"				
+				android:scrollbars="none">		
+				<RelativeLayout 
+					android:id = "@+id/ad_inputs_holder"
+					android:layout_width="fill_parent"					
+					android:layout_height="wrap_content">	
+						<com.liviu.apps.iasianunta.ui.LTextView
+							android:id = "@+id/txt_required_content"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:layout_alignParentLeft = "true"			
+							android:textColor = "@color/text_color"
+							android:textSize="13sp"
+							android:text = "Continut*"			
+							android:layout_marginLeft="5dp"
+							android:layout_marginTop="10dp"/>			
+						<View
+							android:id = "@+id/line11"
+							android:layout_width="fill_parent"	
+							android:layout_height="1dp"
+							android:background="@color/double_line_color"  
+							android:layout_toRightOf="@id/txt_required_content"
+							android:layout_marginTop="17dp"
+							android:layout_marginLeft="3dp"
+							android:layout_marginRight="5dp"/>
+						<View
+							android:id = "@+id/line12"
+							android:layout_width="fill_parent"	
+							android:layout_height="1dp"
+							android:background="@color/double_line_color" 
+							android:layout_below="@id/line11"
+							android:layout_toRightOf="@id/txt_required_content"
+							android:layout_marginTop="1dp"
+							android:layout_marginLeft="3dp"
+							android:layout_marginRight="5dp"
+							android:layout_marginBottom="10dp"/>																			
+						<com.liviu.apps.iasianunta.ui.LTextView 
+							android:id = "@+id/txt_ad_title" 
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"														
+							android:textSize="12sp"						   
+							android:text = "Title"			
+							android:textColor="#676767"
+							android:layout_below = "@id/line12"					
+							android:layout_marginLeft="10dp"
+							android:layout_marginTop="5dp"/>						
+						<com.liviu.apps.iasianunta.ui.LEditText 
+							android:id = "@+id/edtx_ad_title"
+							android:layout_width="fill_parent"
+							android:layout_height="35dp"
+							android:textColor="#575757"
+							android:hint="titlu"			
+							android:text = ""						
+							android:textSize="12dp"
+							android:layout_below="@id/txt_ad_title"			
+							android:paddingLeft="5dp"			
+							android:singleLine="true"
+							android:layout_marginRight="10dp"		
+							android:layout_marginLeft="10dp"	
+							android:layout_marginTop="5dp"			
+							android:drawableRight="@drawable/ic_edtx_x"
+							android:background="@drawable/edtx_background_green"/>			
+						<com.liviu.apps.iasianunta.ui.LTextView
+							android:id = "@+id/txt_ad_phone"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"														
+							android:textSize="12sp"						
+							android:text = "Telefon"										
+							android:textColor="#676767"
+							android:layout_below = "@id/edtx_ad_title"
+							android:layout_marginTop="10dp"
+							android:layout_marginLeft="10dp"/>						
+						<com.liviu.apps.iasianunta.ui.LEditText 
+							android:id = "@+id/edtx_ad_phone"
+							android:layout_width="fill_parent"
+							android:layout_height="35dp"
+							android:textColor="#575757"
+							android:hint="telefon"			
+							android:text = ""											
+							android:textSize="12dp"
+							android:layout_below="@id/txt_ad_phone"
+							android:paddingLeft="5dp"										
+							android:layout_marginRight="10dp"		
+							android:layout_marginLeft="10dp"	
+							android:layout_marginTop="5dp"	
+							android:drawableRight="@drawable/ic_edtx_x"
+							android:background="@drawable/edtx_background_green"/>
+						<com.liviu.apps.iasianunta.ui.LTextView
+							android:id = "@+id/txt_ad_content"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"														
+							android:textSize="12sp"						
+							android:text = "Continut"										
+							android:textColor="#676767"
+							android:layout_below = "@id/edtx_ad_phone"
+							android:layout_marginTop="10dp"
+							android:layout_marginLeft="10dp"/>						
+						<com.liviu.apps.iasianunta.ui.LEditText 
+							android:id = "@+id/edtx_ad_content"
+							android:layout_width="fill_parent"
+							android:layout_height="70dp"
+							android:textColor="#575757"
+							android:hint="Continut"			
+							android:text = ""											
+							android:textSize="12dp"
+							android:layout_below="@id/txt_ad_content"
+							android:paddingLeft="5dp"										
+							android:layout_marginRight="10dp"		
+							android:layout_marginLeft="10dp"	
+							android:layout_marginTop="5dp"	
+							android:gravity="left|top"		
+							android:drawableRight="@drawable/ic_edtx_x"
+							android:background="@drawable/edtx_background_green"/>
+						<com.liviu.apps.iasianunta.ui.LTextView
+							android:id = "@+id/txt_images"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:layout_alignParentLeft = "true"			
+							android:textColor = "@color/text_color"
+							android:textSize="13sp"
+							android:text = "Imagini"			
+							android:layout_marginLeft="5dp"
+							android:layout_marginTop="10dp"
+							android:layout_below="@id/edtx_ad_content"/>			
+						<View
+							android:id = "@+id/line21"
+							android:layout_width="fill_parent"	
+							android:layout_height="1dp"
+							android:background="@color/double_line_color"  
+							android:layout_below="@id/edtx_ad_content"
+							android:layout_toRightOf="@id/txt_images"
+							android:layout_marginTop="17dp"
+							android:layout_marginLeft="3dp"
+							android:layout_marginRight="5dp"/>
+						<View
+							android:id = "@+id/line22"
+							android:layout_width="fill_parent"	
+							android:layout_height="1dp"
+							android:background="@color/double_line_color" 							
+							android:layout_below="@id/line21"
+							android:layout_toRightOf="@id/txt_images"
+							android:layout_marginTop="1dp"
+							android:layout_marginLeft="3dp"
+							android:layout_marginRight="5dp"
+							android:layout_marginBottom="10dp"/>	
+						<Gallery 
+							android:id = "@+id/gallery_ad_images"
+							android:layout_width="fill_parent"
+							android:layout_height="wrap_content"
+							android:layout_below="@id/line22"
+							android:layout_marginLeft="10dp"
+							android:gravity="left"
+							android:spacing="10dp"																			
+							android:layout_marginRight="10dp"
+							android:layout_marginTop="5dp"
+							android:layout_toLeftOf="@+id/but_add_image"/>
+						<Button 
+							android:id = "@id/but_add_image"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:textColor="#575757"
+							android:text="Adauga\nimagine"
+							android:layout_below="@id/line22"					
+							android:layout_alignParentRight="true"
+							android:textSize="12sp"
+							android:paddingLeft="5dp"													
+							android:paddingRight="5dp"							
+							android:layout_marginRight="5dp"
+							android:layout_marginBottom="5dp"
+							android:layout_marginTop="5dp"
+							android:background="@drawable/default_button_background"/>  													
+					</RelativeLayout>
+				</ScrollView>		
+		<!-- second row -->
+											
+	</RelativeLayout>
+	<RelativeLayout 
+		android:id = "@id/layout_bottom"
+		android:layout_width="fill_parent"
+		android:layout_height="45dp"
+		android:background="@drawable/bg_bottom_gray8"
+		android:layout_alignParentBottom="true">		
+		<Button 
+			android:id = "@+id/popup_but_add_ad"
+			android:layout_width="100dp"
+			android:layout_height="35dp"
+			android:textColor="#575757"
+			android:text="Adauga"					
+			android:layout_alignParentRight="true"
+			android:paddingLeft="5dp"
+			android:paddingRight="5dp"
+			android:layout_marginRight="9dp"
+			android:layout_marginTop="2dp"
+			android:background="@drawable/default_button_background"/>  
+		<Button 
+			android:id = "@+id/popup_but_save"
+			android:layout_width="100dp"
+			android:layout_height="35dp"
+			android:textColor="#575757"
+			android:text="Salveaza"					
+			android:layout_alignParentLeft="true"
+			android:paddingLeft="5dp"
+			android:paddingRight="5dp"
+			android:layout_marginLeft="9dp"
+			android:layout_marginTop="2dp"
+			android:background="@drawable/default_button_background"/>  		  
+	</RelativeLayout>					
+</RelativeLayout>

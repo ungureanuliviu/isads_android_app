@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"    
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#fefefe">
+	<RelativeLayout 
+		android:id = "@+id/layout_top"
+		android:layout_width="fill_parent"
+		android:layout_height="40dp"
+		android:background="@drawable/bg_top_green">		
+	</RelativeLayout>
+	<RelativeLayout 
+		android:id = "@+id/layout_top_bar"
+		android:layout_width="fill_parent"
+		android:layout_height="30dp"
+		android:background="@drawable/bg_bar_gray"
+		android:layout_below="@id/layout_top">		
+	</RelativeLayout>
+	<RelativeLayout 
+		android:id = "@+id/layout_content"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:background="@drawable/bg_gift3"
+		android:layout_below="@id/layout_top_bar"
+		android:layout_above="@+id/layout_bottom">		
+	</RelativeLayout>
+	<RelativeLayout 
+		android:id = "@id/layout_bottom"
+		android:layout_width="fill_parent"
+		android:layout_height="50dp"
+		android:background="@drawable/bg_bottom_gray8"
+		android:layout_alignParentBottom="true">		
+		<Button 
+			android:id = "@+id/popup_but_save"
+			android:layout_width="wrap_content"
+			android:layout_height="35dp"
+			android:textColor="#575757"
+			android:text="Find gifts for my friends"					
+			android:layout_centerInParent="true"
+			android:paddingLeft="10dp"
+			android:paddingRight="10dp"
+			android:background="@drawable/button_background"/>  		  
+	</RelativeLayout>					
+</RelativeLayout>

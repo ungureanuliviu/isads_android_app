@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"  
+  android:layout_width="60dp"
+  android:layout_height="60dp" 
+  android:padding="5dp" 
+  android:background="@drawable/bg_white"
+  android:layout_marginRight="20dp">
+	<ProgressBar android:id="@+id/loading_progress"
+       style="?android:attr/progressBarStyleSmall"
+       android:indeterminateOnly = "true"
+       android:layout_width="15dp"
+       android:layout_height="15dp"   
+       android:visibility="visible"          		        
+	   android:layout_centerInParent="true"						   			
+	   android:indeterminateDrawable = "@drawable/progress_small"/>  
+  	<ImageView 
+  		android:id = "@+id/ad_main_img"
+  		android:layout_width="50dp"
+  		android:layout_height="50dp"
+  		android:scaleType="fitXY"
+  		android:focusable="false"
+  		android:visibility="gone"
+  		android:layout_centerInParent="true"
+  		android:background="#00000000"
+  		android:src="@drawable/ic_my_account"/>
+</RelativeLayout>

@@ -13,16 +13,23 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
+import android.graphics.Typeface;
+import android.graphics.drawable.RotateDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.AnimationUtils;
+import android.view.animation.RotateAnimation;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.Gallery;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.liviu.apps.iasianunta.adapters.NewAdImagesAdapter;
@@ -31,6 +38,7 @@ import com.liviu.apps.iasianunta.data.Ad;
 import com.liviu.apps.iasianunta.data.AdImage;
 import com.liviu.apps.iasianunta.data.User;
 import com.liviu.apps.iasianunta.interfaces.IAdNotifier;
+import com.liviu.apps.iasianunta.interfaces.ILoginNotifier;
 import com.liviu.apps.iasianunta.interfaces.IUploadNotifier;
 import com.liviu.apps.iasianunta.managers.ActivityIdProvider;
 import com.liviu.apps.iasianunta.managers.AdsManager;
@@ -62,14 +70,20 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
 	private Button 			butAddImage;
 	private Button			butSave;
 	private Button			butAdd;
+	private Button			butLogin;
 	private Gallery			galImages;
-	private AdImageView 	newImage;
 	private LTextView		txtNoImages;
 	private LEditText		edtxTitle;
 	private LEditText		edtxPhone;
 	private LEditText		edtxContent;
 	private LEditText		edtxEmail;
 	private LEditText		edtxAddress;
+	private LTextView		txtUserName;
+	private Typeface		typeface;
+	private RelativeLayout	layoutContent;
+	private LTextView		txtPostingProgress;
+	private ProgressBar		barPosting;
+	
 	
 	// Services
 	private Vibrator		vbb;
@@ -82,6 +96,17 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
 		win.setFormat(PixelFormat.RGBA_8888);
         requestWindowFeature(Window.FEATURE_NO_TITLE);              
         setContentView(R.layout.create_ad_layout);		
+        
+        user = User.getInstance();        
+        if(!user.isLoggedIn()){
+        	// the user is not logged in
+        	// we have to redirect him to login activity
+        	Intent toLogin = new Intent(CreateNewAddActivity.this, LoginActivity.class);
+        	toLogin.putExtra(LoginActivity.PARENT_ACTIVITY_ID, ACTIVITY_ID);
+        	startActivity(toLogin);
+        	finish();
+        	return;
+        }
         
         // Initialize objects
         newAd 		 = new Ad();
@@ -98,8 +123,15 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
         edtxAddress	 = (LEditText)findViewById(R.id.edtx_ad_address);
         butAdd		 = (Button)findViewById(R.id.but_add_ad);
         butSave		 = (Button)findViewById(R.id.but_save);
-        adMan		 = new AdsManager(this);
-        user		 = User.getInstance();
+        butLogin	 = (Button)findViewById(R.id.main_but_login);
+        txtUserName	 = (LTextView)findViewById(R.id.user_name);
+        adMan		 = new AdsManager(this);     
+        typeface	 = Typeface.createFromAsset(getAssets(), "fonts/VAGRON.TTF");
+        txtPostingProgress 	= (LTextView)findViewById(R.id.txt_posting);
+        barPosting	 		= (ProgressBar)findViewById(R.id.posting_progress);
+        layoutContent  		= (RelativeLayout)findViewById(R.id.layout_content);
+        
+        txtUserName.setText(user.getName());
         
         butAddImage.setOnClickListener(this);
         butAdd.setOnClickListener(this);
@@ -109,6 +141,10 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
         galImages.setOnItemClickListener(this);
         adMan.setAdNotifier(this);
         api.setAdNotifier(this);
+        butLogin.setOnClickListener(this);       
+        
+        butAdd.setTypeface(typeface);
+        butSave.setTypeface(typeface);
 	}
 	
 	@Override
@@ -150,7 +186,7 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
 	@Override
 	public void onClick(View v) {
 		Console.debug(TAG, "onclick on " + v);		
-		switch (v.getId()) {
+		switch (v.getId()) {  
 		case R.id.but_add_image:
 				if(newAd.getImages().size() >= MAX_UPLOADED_IMAGES){
 					Toast.makeText(CreateNewAddActivity.this, "Ai atins numarul maxim de imagini ce pot fi atasate unui anunt.", Toast.LENGTH_LONG).show();
@@ -170,8 +206,45 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
 				if(constructNewAdd()){
 					Console.debug(TAG, "add new ad to server");
 					adMan.addnewAd(newAd, user.getId(), user.getAuthName(), user.getPassword());
+					butAdd.setText("Public anuntul...");
+					butAdd.setEnabled(false);
+					layoutContent.setVisibility(View.GONE);
+					barPosting.setVisibility(View.VISIBLE);
+					txtPostingProgress.setVisibility(View.VISIBLE);
 				}
 				break;
+		case R.id.main_but_login:
+			if(!user.isLoggedIn()){
+				// we have to log in the user so 
+				// let's start login activity
+				Intent toLoginIntent = new Intent(CreateNewAddActivity.this, LoginActivity.class);
+				toLoginIntent.putExtra(LoginActivity.PARENT_ACTIVITY_ID, ACTIVITY_ID);
+				startActivity(toLoginIntent);
+				finish();
+			} else{
+				// the user is logged in. 
+				// Now, we will log him out.
+				api.logoutUser(user, new ILoginNotifier() {					
+						@Override
+						public void onLogout(boolean isSuccess, int pUserId) {
+							if(isSuccess){
+								// logout done
+								user.logout();
+								Toast.makeText(CreateNewAddActivity.this, "Logout success.", Toast.LENGTH_SHORT).show();
+								butLogin.setText("Login"); // update the main button
+								txtUserName.setText("Holla amigos");
+							} else{
+								// hmmm.. something went wrong...
+								Toast.makeText(CreateNewAddActivity.this, "Logout error.", Toast.LENGTH_SHORT).show(); 
+							}
+						}					
+						@Override
+						public void onLogin(boolean isSuccess, User pUser) {
+							// nothing here
+						}
+					});
+			}
+			break;				
 		default: 
 			break;
 		}
@@ -281,8 +354,21 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
 	@Override
 	public void onAdSaved(boolean isSuccess, Ad pSavedAd) {
 		Console.debug(TAG, "isSuccess: " + isSuccess + " pSavedAd: " + pSavedAd);
-		if(isSuccess){
-			Toast.makeText(CreateNewAddActivity.this, "Anuntul a fost salvat. Id: " + pSavedAd.getId(), Toast.LENGTH_SHORT).show();
+		boolean postingFailed = !butAdd.isEnabled();
+		if(!butAdd.isEnabled()){
+			butAdd.setText("Publica");
+			butAdd.setEnabled(true);
+			layoutContent.setVisibility(View.VISIBLE);
+			barPosting.setVisibility(View.GONE);
+			txtPostingProgress.setVisibility(View.GONE);
+			
+		}
+		
+		if(isSuccess){		
+			if(postingFailed)
+				Toast.makeText(CreateNewAddActivity.this, "Anuntul dvs nu a putut fi adaugat insa acesta a fost salvat local si il veti putea adauga mai tarziu.", Toast.LENGTH_SHORT).show();
+			else
+				Toast.makeText(CreateNewAddActivity.this, "Anuntul a fost salvat local. ID: " + pSavedAd.getId(), Toast.LENGTH_SHORT).show();
 		} else{
 			Toast.makeText(CreateNewAddActivity.this, "Anuntul nu a putut fi salvat.", Toast.LENGTH_SHORT).show();
 		}
@@ -290,11 +376,17 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
 
 	@Override
 	public void onAdRemoteAdded(boolean isSuccess, Ad pAdRemoteAdded) {
+		butAdd.setText("Publica");
+		butAdd.setEnabled(true);
+		layoutContent.setVisibility(View.VISIBLE);
+		barPosting.setVisibility(View.GONE);
+		txtPostingProgress.setVisibility(View.GONE);		
 		Console.debug(TAG, "onAdRemoteAdded " + isSuccess + " ad: " + pAdRemoteAdded );
 		if(isSuccess){
-			Toast.makeText(CreateNewAddActivity.this, "Ad added to server " + pAdRemoteAdded.getId(), Toast.LENGTH_SHORT).show();
+			Toast.makeText(CreateNewAddActivity.this, "Anuntul dvs. a fost adauga pe www.iasianunta.info. ID: " + pAdRemoteAdded.getId(), Toast.LENGTH_LONG).show();
+			finish();
 		} else{
-			Toast.makeText(CreateNewAddActivity.this, "The current ad cannot be added on server for the moment", Toast.LENGTH_SHORT).show();
+			Toast.makeText(CreateNewAddActivity.this, "Anuntul dvs. nu poate fi adaugat pentru momenent. Va rugam re-incercati in cateva minute.", Toast.LENGTH_LONG).show();
 		}
 	}
 }

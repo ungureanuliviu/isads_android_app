@@ -3,6 +3,8 @@ package com.liviu.apps.iasianunta;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.RotateDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -47,6 +49,7 @@ public class MainActivity extends Activity implements OnClickListener{
         butLogin = (Button)findViewById(R.id.main_but_login);
         butAddNewAdd = (RelativeLayout)findViewById(R.id.but_add_ad);
         
+        
         // check if the use is logged in
         if(user.isLoggedIn()){
         	txtUserName.setText("Salut " + user.getName());
@@ -71,7 +74,7 @@ public class MainActivity extends Activity implements OnClickListener{
 			startActivity(toCreateNewAdActivity);
 			break;
 		case R.id.main_but_login:
-			if(butLogin.getText().equals("Login")){
+			if(!user.isLoggedIn()){
 				// we have to log in the user so 
 				// let's start login activity
 				Intent toLoginIntent = new Intent(MainActivity.this, LoginActivity.class);

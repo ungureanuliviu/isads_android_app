@@ -38,7 +38,6 @@ public class AdsManager {
 						}
 					}
 					break;
-
 				default:
 					break;
 				}
@@ -56,9 +55,18 @@ public class AdsManager {
 			Thread tSaveAd = new Thread(new Runnable() {				
 				@Override
 				public void run() {
-					mDbManager.saveAd(cAd);
+					Message msg = new Message();
+					msg.what = MSG_AD_SAVED;
+					Ad justAdded = mDbManager.saveAd(cAd);
+					if(null != justAdded){
+						msg.obj = justAdded;						
+					} 
+					
+					mHandler.sendMessage(msg);
 				}
 			});
+			
+			tSaveAd.start();
 		}
 		return this;
 	}

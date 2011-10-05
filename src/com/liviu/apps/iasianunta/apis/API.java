@@ -149,7 +149,7 @@ public class API {
 		
 
 	private String doRequest(String url, JSONObject jsonParams, String pUserAuth, String pUserPassword){
-		Console.debug(TAG, "doRequest: " + url + " params: " + jsonParams + " userName: " + pUserAuth + " password: " + pUserPassword);
+		Console.debug(TAG, "doRequest: " + url + " params: " + jsonParams.toString().replaceAll(",", "\n") + " userName: " + pUserAuth + " password: " + pUserPassword);
 	    try {	       
 	        post = new HttpPost(url);       
 	        
@@ -244,7 +244,7 @@ public class API {
 			mILoginNotifier.onLogout(false, pUser.getId());
 			return this;
 		}
-		final int cUserId = pUser.getId();		
+		final User cUser = pUser;		
 				
 		Thread tLogout = new Thread(new Runnable() {			
 			@Override
@@ -257,11 +257,10 @@ public class API {
 					String url = API_URL + "/session/logout/";
 					JSONObject params = new JSONObject();
 					
-					params.put("user_id", cUserId);					
-					String apiResponse = doRequest(url, params, null, null);
+					params.put("user_id", cUser.getId());					
+					String apiResponse = doRequest(url, params, cUser.getAuthName(), cUser.getPassword());
 					
-					if(null != apiResponse){
-						User loggedUser = User.getInstance();
+					if(null != apiResponse){						
 						JSONResponse jsonReponse = new JSONResponse(apiResponse);
 						if(jsonReponse.isSuccess()){
 							int userId = jsonReponse.getInt("user_id");
@@ -437,7 +436,10 @@ public class API {
 
 	// check if the user if connected to Internet
 	public boolean isAvailable(Context mContext) {		
-		ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-		return cm.getActiveNetworkInfo().isConnectedOrConnecting();
+		ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);	
+		if(null == cm.getActiveNetworkInfo())
+			return false;
+		else
+			return cm.getActiveNetworkInfo().isConnectedOrConnecting();
 	}
 }

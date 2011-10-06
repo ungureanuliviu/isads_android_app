@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"    
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/main_background">
+	<RelativeLayout 
+		android:id = "@+id/layout_top"
+		android:layout_width="fill_parent"
+		android:layout_height="38dp"
+		android:background="@drawable/bg_top_green">
+		<ImageView 
+			android:id = "@+id/ic_home"
+			android:layout_width="26dp"
+			android:layout_height="20dp"
+			android:layout_marginLeft="6dp"
+			android:layout_alignParentLeft="true"
+			android:layout_centerVertical="true"
+			android:src="@drawable/ic_home"/>	
+		<com.liviu.apps.iasianunta.ui.LTextView
+			android:id = "@+id/title"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_toRightOf="@id/ic_home"			
+			android:textColor = "#ffffff"
+			android:textSize="18sp"
+			android:text = "Adauga anunt"
+			android:textStyle="bold"
+			android:layout_marginLeft="5dp"			
+			android:layout_centerVertical="true"
+			android:layout_marginTop="2dp"/>							
+	</RelativeLayout>
+	<RelativeLayout 
+		android:id = "@+id/layout_top_bar"
+		android:layout_width="fill_parent"
+		android:layout_height="30dp"
+		android:background="@drawable/bg_bar_gray"
+		android:layout_below="@id/layout_top">	
+		<ImageView 
+			android:id = "@+id/user_image"
+			android:layout_width="22dp"
+			android:layout_height="22dp"
+			android:layout_marginLeft="6dp"
+			android:layout_alignParentLeft="true"
+			android:layout_centerVertical="true"
+			android:src="@drawable/ic_no_user_image"/>	
+		<com.liviu.apps.iasianunta.ui.LTextView
+			android:id = "@+id/user_name"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_toRightOf="@id/user_image"
+			android:layout_marginTop="9dp"
+			android:textColor = "#777777"
+			android:textSize="10sp"  
+			android:text = "Holla amigos"
+			android:layout_marginLeft="5dp"/>		
+		<Button 
+			android:id = "@+id/main_but_login"
+			android:layout_width="wrap_content"
+			android:layout_height="25dp"
+			android:textColor="#575757"
+			android:text="Logout"					
+			android:layout_alignParentRight="true"
+			android:layout_marginRight="1dp"
+			android:layout_centerVertical="true"
+			android:paddingLeft="10dp"
+			android:paddingRight="10dp"
+			android:textSize="10dp"
+			android:background="@drawable/default_button_background"/>  			  				
+	</RelativeLayout>
+	<ProgressBar android:id="@+id/loading_ads_progress"
+       style="?android:attr/progressBarStyleSmall"
+       android:indeterminateOnly = "true"
+       android:layout_width="15dp"
+       android:layout_height="15dp"   
+       android:visibility="gone"          		        
+	   android:layout_centerInParent="true"	   
+	   android:indeterminateDrawable = "@drawable/progress_small"/>  	
+	<com.liviu.apps.iasianunta.ui.LTextView
+		android:id = "@+id/txt_loading_ads"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_centerHorizontal="true"						   	   					
+		android:textColor = "#888888"
+		android:textSize="12sp"
+		android:visibility="gone"
+		android:text = "Incarc anunturile...."							
+		android:layout_marginTop="5dp"					
+		android:drawableLeft="@drawable/ic_but_upload"
+		android:drawablePadding="5dp"		
+		android:gravity="left|center_vertical"
+		android:layout_below="@id/loading_ads_progress"/>		
+	<RelativeLayout 
+		android:id = "@+id/layout_content"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"		
+		android:layout_below="@id/layout_top_bar"		
+		android:layout_above="@+id/layout_bottom">	
+		<Gallery 
+			android:id = "@+id/gal_top_categories"
+			android:layout_width="fill_parent"			
+			android:layout_height="30dp"
+			android:layout_alignParentTop="true"
+			android:spacing="1dp"			
+			android:unselectedAlpha="1"
+			android:gravity="left"
+			android:background="@drawable/bordered_bcg">
+		</Gallery>
+	</RelativeLayout>		   	
+	<RelativeLayout 
+		android:id = "@id/layout_bottom"
+		android:layout_width="fill_parent"
+		android:layout_height="50dp"
+		android:background="@drawable/bg_bottom_gray8"
+		android:layout_marginTop="10dp"
+		android:layout_alignParentBottom="true">		
+		<Button 
+			android:id = "@+id/but_add_ad"
+			android:layout_width="135dp"
+			android:layout_height="35dp"
+			android:textColor="#666666"
+			android:text="Publica"					
+			android:layout_alignParentRight="true"
+			android:paddingLeft="9dp"
+			android:paddingRight="5dp"
+			android:layout_marginRight="9dp"
+			android:layout_marginTop="6dp"
+			android:textSize="13sp"
+			android:gravity="left|center_vertical"			
+			android:drawablePadding="5dp"
+			android:drawableLeft="@drawable/ic_but_upload"
+			android:background="@drawable/default_button_background"/>  
+		<Button 
+			android:id = "@+id/but_save"
+			android:layout_width="135dp"
+			android:layout_height="35dp"
+			android:textColor="#666666"
+			android:text="Salveaza"					
+			android:layout_alignParentLeft="true"
+			android:paddingLeft="9dp"			
+			android:paddingRight="5dp"
+			android:textSize="13sp"
+			android:layout_marginLeft="9dp"			
+			android:layout_marginTop="6dp"		
+			android:gravity="left|center_vertical"			
+			android:drawablePadding="5dp"			
+			android:drawableLeft="@drawable/ic_but_save"	
+			android:background="@drawable/default_button_background"/>  		  
+	</RelativeLayout>					
+</RelativeLayout>

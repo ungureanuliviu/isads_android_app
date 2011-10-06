@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.liviu.apps.iasianunta.ui.LTextView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/category_title"
+	android:layout_width="100dp"	
+	android:layout_height="30dp"
+	android:gravity="center"
+	android:textColor="#ffffff"
+	android:background="#00aeff"
+	android:text="Toate"
+	android:textStyle="bold"/>

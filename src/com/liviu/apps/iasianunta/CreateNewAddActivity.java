@@ -189,7 +189,7 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
 		switch (v.getId()) {  
 		case R.id.but_add_image:
 				if(newAd.getImages().size() >= MAX_UPLOADED_IMAGES){
-					Toast.makeText(CreateNewAddActivity.this, "Ai atins numarul maxim de imagini ce pot fi atasate unui anunt.", Toast.LENGTH_LONG).show();
+					Toast.makeText(CreateNewAddActivity.this, "Ati atins numarul maxim de imagini ce pot fi atasate unui anunt.", Toast.LENGTH_LONG).show();
 				} else{
 			        Intent pickImageIntent = new Intent(Intent.ACTION_PICK);
 			        pickImageIntent.setType("image/*");
@@ -203,15 +203,23 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
 				}
 				break;
 		case R.id.but_add_ad:
-				if(constructNewAdd()){
-					Console.debug(TAG, "add new ad to server");
-					adMan.addnewAd(newAd, user.getId(), user.getAuthName(), user.getPassword());
-					butAdd.setText("Public anuntul...");
-					butAdd.setEnabled(false);
-					layoutContent.setVisibility(View.GONE);
-					barPosting.setVisibility(View.VISIBLE);
-					txtPostingProgress.setVisibility(View.VISIBLE);
-				}
+		        if(!user.isLoggedIn()){
+		        	// the user is not logged in
+		        	// we have to redirect him to login activity
+		        	Intent toLogin = new Intent(CreateNewAddActivity.this, LoginActivity.class);
+		        	toLogin.putExtra(LoginActivity.PARENT_ACTIVITY_ID, ACTIVITY_ID);
+		        	startActivity(toLogin);
+		        	finish();
+		        	return;
+		        } else if(constructNewAdd()){
+		        		Console.debug(TAG, "add new ad to server");
+						adMan.addnewAd(newAd, user.getId(), user.getAuthName(), user.getPassword());
+						butAdd.setText("Public anuntul...");
+						butAdd.setEnabled(false);
+						layoutContent.setVisibility(View.GONE);
+						barPosting.setVisibility(View.VISIBLE);
+						txtPostingProgress.setVisibility(View.VISIBLE);
+					}
 				break;
 		case R.id.main_but_login:
 			if(!user.isLoggedIn()){
@@ -360,8 +368,7 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
 			butAdd.setEnabled(true);
 			layoutContent.setVisibility(View.VISIBLE);
 			barPosting.setVisibility(View.GONE);
-			txtPostingProgress.setVisibility(View.GONE);
-			
+			txtPostingProgress.setVisibility(View.GONE);			
 		}
 		
 		if(isSuccess){		
@@ -383,7 +390,7 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
 		txtPostingProgress.setVisibility(View.GONE);		
 		Console.debug(TAG, "onAdRemoteAdded " + isSuccess + " ad: " + pAdRemoteAdded );
 		if(isSuccess){
-			Toast.makeText(CreateNewAddActivity.this, "Anuntul dvs. a fost adauga pe www.iasianunta.info. ID: " + pAdRemoteAdded.getId(), Toast.LENGTH_LONG).show();
+			Toast.makeText(CreateNewAddActivity.this, "Anuntul dvs. a fost adaugat pe \nwww.iasianunta.info. ID: " + pAdRemoteAdded.getId(), Toast.LENGTH_LONG).show();
 			finish();
 		} else{
 			Toast.makeText(CreateNewAddActivity.this, "Anuntul dvs. nu poate fi adaugat pentru momenent. Va rugam re-incercati in cateva minute.", Toast.LENGTH_LONG).show();

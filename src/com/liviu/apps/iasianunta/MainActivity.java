@@ -33,6 +33,7 @@ public class MainActivity extends Activity implements OnClickListener{
 	private LTextView txtUserName;
 	private Button butLogin;
 	private RelativeLayout butAddNewAdd;
+	private RelativeLayout butShowAds;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,7 @@ public class MainActivity extends Activity implements OnClickListener{
         txtUserName = (LTextView)findViewById(R.id.user_name);
         butLogin = (Button)findViewById(R.id.main_but_login);
         butAddNewAdd = (RelativeLayout)findViewById(R.id.but_add_ad);
+        butShowAds   = (RelativeLayout)findViewById(R.id.but_recent_ads);
         
         
         // check if the use is logged in
@@ -62,12 +64,18 @@ public class MainActivity extends Activity implements OnClickListener{
         
         // set listeners
         butLogin.setOnClickListener(this);
-        butAddNewAdd.setOnClickListener(this);                                
+        butAddNewAdd.setOnClickListener(this);   
+        butShowAds.setOnClickListener(this);
     }
 // ========================== Interfaces ========================
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
+		case R.id.but_recent_ads:
+			// show the ads activity
+			Intent toShowAdsActivity = new Intent(MainActivity.this, ShowAdsActivity.class);
+			startActivity(toShowAdsActivity);
+			break;
 		case R.id.but_add_ad:
 			// start the create new ad activity
 			Intent toCreateNewAdActivity = new Intent(MainActivity.this, CreateNewAddActivity.class);

@@ -10,6 +10,7 @@ import android.location.Address;
 
 import com.liviu.apps.iasianunta.data.Ad;
 import com.liviu.apps.iasianunta.data.AdImage;
+import com.liviu.apps.iasianunta.data.Category;
 import com.liviu.apps.iasianunta.interfaces.IDbAdNotifier;
 import com.liviu.apps.iasianunta.utils.Console;
 
@@ -25,8 +26,16 @@ public class DBManager {
 	private final String DB_NAME 		= "is_db";	
 	
 	// Tables
-	private final String TABLE_SAVED_ADS = "table_saved_ads";
-	private final String TABLE_IMAGES	 = "table_ad_images";
+	private final String TABLE_SAVED_ADS 	= "table_saved_ads";
+	private final String TABLE_IMAGES	 	= "table_ad_images";
+	private final String TABLE_CATEGORIES 	= "table_categories";
+	
+	private final String CREATE_TABLE_CATEGORIES = "create table if not exists table_categories (" +
+												   "cat_id integer not null," +
+												   "cat_name text not null)";
+	
+	private final String CAT_ID 	= "cat_id";
+	private final String CAT_NAME 	= "cat_name";
 	
 	private final String CREATE_IMAGES_TABLE = "create table if not exists table_ad_images (" +
 											   "ad_id integer not null, " +
@@ -86,6 +95,7 @@ public class DBManager {
 			mDb = mContext.openOrCreateDatabase(DB_NAME, Context.MODE_PRIVATE, null);
 			mDb.execSQL(CREATE_SAVED_ADS_TABLE);
 			mDb.execSQL(CREATE_IMAGES_TABLE);
+			mDb.execSQL(CREATE_TABLE_CATEGORIES);
 			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -169,8 +179,38 @@ public class DBManager {
 			closeDatabase();
 			return true;			
 		} catch (JSONException e) {
+			closeDatabase();
 			e.printStackTrace();
 			return false;
+		}
+	}
+	
+	public synchronized Category addCategory(Category pCategory){
+		if(null == pCategory)
+			return null;
+		
+		ContentValues  values = new ContentValues();
+		values.put(CAT_ID, pCategory.getId());
+		values.put(CAT_NAME, pCategory.getName());
+		
+		try{
+			openOrCreateDatabase();
+			int newId = (int)mDb.insert(TABLE_CATEGORIES, null, values);
+			if(newId > -1){
+				// insert success
+				pCategory.setId(newId);
+				closeDatabase();
+				return pCategory;
+			} else{
+				// insert error
+				closeDatabase();
+				closeDatabase();
+				return null;
+			}			
+		}catch (SQLException e) {
+			e.printStackTrace();
+			closeDatabase();
+			return null;
 		}
 	}
 }

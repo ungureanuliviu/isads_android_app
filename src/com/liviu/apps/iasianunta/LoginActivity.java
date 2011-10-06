@@ -39,13 +39,13 @@ public class LoginActivity extends Activity implements ILoginNotifier,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);  
 		
-		Window win = getWindow();
+		Window win = getWindow(); 
 		win.setFormat(PixelFormat.RGBA_8888);
         requestWindowFeature(Window.FEATURE_NO_TITLE);              
         setContentView(R.layout.login);
          
         // Initialize
-        api = API.getInstance();
+        api = new API();
         user = User.getInstance();
         butLater = (Button)findViewById(R.id.login_but_later);
         butLogin = (Button)findViewById(R.id.login_but_login);

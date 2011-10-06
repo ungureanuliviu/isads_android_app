@@ -2,12 +2,10 @@ package com.liviu.apps.iasianunta;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.view.ViewGroup.MarginLayoutParams;
 import android.view.Window;
-import android.widget.Gallery;
 import android.widget.RelativeLayout;
 
 import com.liviu.apps.iasianunta.adapters.TopCateogoriesAdapter;
@@ -15,6 +13,7 @@ import com.liviu.apps.iasianunta.data.Category;
 import com.liviu.apps.iasianunta.data.User;
 import com.liviu.apps.iasianunta.managers.ActivityIdProvider;
 import com.liviu.apps.iasianunta.managers.AdsManager;
+import com.liviu.apps.iasianunta.ui.TopCategoryView;
 
 public class ShowAdsActivity extends Activity{
 	// Constants
@@ -27,7 +26,7 @@ public class ShowAdsActivity extends Activity{
 	private TopCateogoriesAdapter adapterTopCategories;
 	
 	// UI
-	private Gallery			galleryTopCategories;
+	private TopCategoryView categoryView;
 	private RelativeLayout	layoutContent;
 	
 	@Override
@@ -49,40 +48,16 @@ public class ShowAdsActivity extends Activity{
         	finish();
         	return;
         }
-        
-        
+                
         // Initialize objects		
         adsMan 					= new AdsManager(this);
-        galleryTopCategories 	= (Gallery)findViewById(R.id.gal_top_categories);
+        categoryView			= (TopCategoryView)findViewById(R.id.top_categories);
         adapterTopCategories 	= new TopCateogoriesAdapter(this);
-        layoutContent			= (RelativeLayout)findViewById(R.id.layout_content);
+        layoutContent			= (RelativeLayout)findViewById(R.id.layout_content); 
 
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);        
-
-        MarginLayoutParams mlp = (MarginLayoutParams) galleryTopCategories.getLayoutParams();
-        mlp.setMargins(-(metrics.widthPixels/2) - 100, 
-                       mlp.topMargin, 
-                       mlp.rightMargin, 
-                       mlp.bottomMargin
-        );                               
-        
-        adapterTopCategories.addItem(new Category("Toate"));
-        adapterTopCategories.addItem(new Category("Imobiliare")); 
-        adapterTopCategories.addItem(new Category("Vanzari"));
-        adapterTopCategories.addItem(new Category("Vanzari"));
-        adapterTopCategories.addItem(new Category("Vanzari"));
-        adapterTopCategories.addItem(new Category("Toate"));
-        adapterTopCategories.addItem(new Category("Imobiliare")); 
-        adapterTopCategories.addItem(new Category("Vanzari"));
-        adapterTopCategories.addItem(new Category("Vanzari"));
-        adapterTopCategories.addItem(new Category("Vanzari"));        
-        adapterTopCategories.addItem(new Category("Toate"));
-        adapterTopCategories.addItem(new Category("Imobiliare")); 
-        adapterTopCategories.addItem(new Category("Vanzari"));
-        adapterTopCategories.addItem(new Category("Vanzari"));
-        adapterTopCategories.addItem(new Category("Vanzari"));
-        
-        galleryTopCategories.setAdapter(adapterTopCategories);        
+                        
+        categoryView.addCategory(new Category("Cat "), 100, Color.parseColor("#00aeff"));
+        categoryView.addCategory(new Category("Cat "), 100, Color.parseColor("#8FA359"));        
+          
 	}
 }

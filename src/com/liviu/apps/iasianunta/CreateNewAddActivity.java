@@ -60,11 +60,11 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
 	private final 			int 	VIB_LENGTH					= 30;
 	
 	// Data
-	private Ad 		newAd;
-	private API 	api;
+	private Ad 				newAd;
+	private API 			api;
 	private NewAdImagesAdapter adapterGalleryImages;
-	private AdsManager adMan;
-	private User user;
+	private AdsManager 		adMan;
+	private User 			user;
 	
 	// UI
 	private Button 			butAddImage;
@@ -112,7 +112,7 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
         newAd 		 = new Ad();
         butAddImage  = (Button)findViewById(R.id.but_add_image);
         galImages	 = (Gallery)findViewById(R.id.gallery_ad_images);
-        api 		 = API.getInstance();
+        api 		 = new API();
         adapterGalleryImages = new NewAdImagesAdapter(this);
         vbb			 = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
         txtNoImages  = (LTextView)findViewById(R.id.txt_no_images);

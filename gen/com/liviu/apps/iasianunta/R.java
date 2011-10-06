@@ -105,7 +105,6 @@ public final class R {
         public static final int edtx_user_password=0x7f06002d;
         public static final int edtx_username=0x7f06002b;
         public static final int edtx_what=0x7f060032;
-        public static final int gal_top_categories=0x7f060042;
         public static final int gallery_ad_images=0x7f06001a;
         public static final int ic_home=0x7f060003;
         public static final int layout_bottom=0x7f06000c;
@@ -131,6 +130,7 @@ public final class R {
         public static final int popup_but_save=0x7f06003f;
         public static final int posting_progress=0x7f060009;
         public static final int title=0x7f060004;
+        public static final int top_categories=0x7f060042;
         public static final int txt_ad_address=0x7f060022;
         public static final int txt_ad_content=0x7f060015;
         public static final int txt_ad_email=0x7f060020;

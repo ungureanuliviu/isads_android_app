@@ -59,7 +59,6 @@ public class API {
 	private final int MSG_AD_ADDED 			= 4;
 	
 	// Data
-	private static API mInstance;
 	private HttpClient client; 	
 	private ClientConnectionManager	cm;
     private HttpPost post;	  
@@ -73,7 +72,7 @@ public class API {
 	private IAdNotifier		mIAdNotifier;
 	
 	// private constructor
-	private API(){		
+	public API(){		
 		params 		= new BasicHttpParams();
         httpContext = new BasicHttpContext();
         
@@ -133,14 +132,6 @@ public class API {
         	};
         };
         
-	}
-	
-	// get a instance of singleton object
-	public static API getInstance(){
-		if(mInstance != null)
-			return mInstance;
-		else
-			return (mInstance = new API()); 		
 	}
 	
 	private String getCredentials(String userName, String password){		
@@ -441,5 +432,18 @@ public class API {
 			return false;
 		else
 			return cm.getActiveNetworkInfo().isConnectedOrConnecting();
+	}
+
+	public JSONObject getAllCategories() {
+		Thread tGetAllCategories = new Thread(new Runnable() {			
+			@Override
+			public void run() {
+				JSONObject params = new JSONObject();
+				String apiResponse = doRequest(API_URL + "/categories/get_all_categories/", params, null, null);
+				Console.debug(TAG, "get all categories response: " + apiResponse);
+			}
+		});
+		tGetAllCategories.start();
+		return null;
 	}
 }

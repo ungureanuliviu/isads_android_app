@@ -3,8 +3,6 @@ package com.liviu.apps.iasianunta;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.PixelFormat;
-import android.graphics.drawable.AnimationDrawable;
-import android.graphics.drawable.RotateDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,17 +15,20 @@ import com.liviu.apps.iasianunta.apis.API;
 import com.liviu.apps.iasianunta.data.User;
 import com.liviu.apps.iasianunta.interfaces.ILoginNotifier;
 import com.liviu.apps.iasianunta.managers.ActivityIdProvider;
+import com.liviu.apps.iasianunta.managers.SyncManager;
 import com.liviu.apps.iasianunta.ui.LTextView;
 
 public class MainActivity extends Activity implements OnClickListener{
 	
 	// Constants
 	private final String TAG = "LoginActivity";
-	public  final static int ACTIVITY_ID = ActivityIdProvider.getInstance().getNewId(MainActivity.class);
+	public  final static int ACTIVITY_ID 	= ActivityIdProvider.getInstance().getNewId(MainActivity.class);
+	public  final static String PREFS_NAME 	= "IS_ADS_PREFS";
 	
 	// Data
 	private User user;
 	private API api;
+	private SyncManager syncMan;
 
 	// UI
 	private LTextView txtUserName;
@@ -44,12 +45,13 @@ public class MainActivity extends Activity implements OnClickListener{
         requestWindowFeature(Window.FEATURE_NO_TITLE);             
         setContentView(R.layout.main);
         
-        user = User.getInstance(); 
-        api = API.getInstance();
-        txtUserName = (LTextView)findViewById(R.id.user_name);
-        butLogin = (Button)findViewById(R.id.main_but_login);
-        butAddNewAdd = (RelativeLayout)findViewById(R.id.but_add_ad);
-        butShowAds   = (RelativeLayout)findViewById(R.id.but_recent_ads);
+        user 			= User.getInstance(); 
+        api 			= new API();
+        txtUserName 	= (LTextView)findViewById(R.id.user_name);
+        butLogin 		= (Button)findViewById(R.id.main_but_login);
+        butAddNewAdd 	= (RelativeLayout)findViewById(R.id.but_add_ad);
+        butShowAds   	= (RelativeLayout)findViewById(R.id.but_recent_ads);
+        syncMan			= new SyncManager(this);
         
         
         // check if the use is logged in
@@ -66,6 +68,7 @@ public class MainActivity extends Activity implements OnClickListener{
         butLogin.setOnClickListener(this);
         butAddNewAdd.setOnClickListener(this);   
         butShowAds.setOnClickListener(this);
+        syncMan.syncCategories();
     }
 // ========================== Interfaces ========================
 	@Override

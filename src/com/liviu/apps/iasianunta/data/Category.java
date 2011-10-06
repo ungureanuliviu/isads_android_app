@@ -8,24 +8,34 @@ public class Category {
 	private final String TAG = "Category";
 	
 	// Data
-	private String mTitle;
+	private String mName;
+	private int    mId;
 	
-	public Category(String pTitle) {
-		mTitle = pTitle;
+	public Category(String pName) {
+		mName = pName;
 	}
 	
-	public Category setTitle(String pTitle){
-		mTitle = pTitle;
+	public Category setName(String pName){
+		mName = pName;
 		return this;
 	}
 	
-	public String getTitle() {
-		return mTitle;
+	public String getName() {
+		return mName;
 	}
 	
 	@Override
 	public String toString() {
 		return Convertor.toString(this);
+	}
+
+	public int getId() {
+		return mId;
+	}
+	
+	public Category setId(int pId){
+		mId = pId;
+		return this;
 	}
 
 }

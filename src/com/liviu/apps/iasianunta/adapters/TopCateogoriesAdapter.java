@@ -62,7 +62,7 @@ public class TopCateogoriesAdapter extends BaseAdapter{
 		} else
 			vh = (ViewHolder)convertView.getTag();
 		
-			vh.txtTitle.setText(mItems.get(position).getTitle());			
+			vh.txtTitle.setText(mItems.get(position).getName());			
 			
 		return convertView;
 	}

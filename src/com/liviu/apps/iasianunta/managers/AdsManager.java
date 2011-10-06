@@ -24,7 +24,7 @@ public class AdsManager {
 	
 	public AdsManager(Context pContext) {
 		mContext 	= pContext;
-		mApi 		= API.getInstance();
+		mApi 		= new API();
 		mDbManager 	= DBManager.getInstance(pContext);
 		mHandler	= new Handler(){
 			public void handleMessage(android.os.Message msg) {

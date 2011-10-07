@@ -39,7 +39,7 @@ public class CategoryView {
 	}
 	
 	public CategoryView setSelected(boolean pIsSelected){
-		mIsSelected = pIsSelected;
+		mIsSelected = pIsSelected;		
 		return this;
 	}
 	

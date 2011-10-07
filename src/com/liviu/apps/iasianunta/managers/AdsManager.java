@@ -1,17 +1,24 @@
 package com.liviu.apps.iasianunta.managers;
 
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 
 import com.liviu.apps.iasianunta.apis.API;
 import com.liviu.apps.iasianunta.data.Ad;
+import com.liviu.apps.iasianunta.data.Category;
 import com.liviu.apps.iasianunta.interfaces.IAdNotifier;
+import com.liviu.apps.iasianunta.interfaces.ICategoryNotifier;
+import com.liviu.apps.iasianunta.utils.Console;
 
 public class AdsManager {
+	
 	// Constants
-	private final String 	TAG = "AdsManager";
-	private final int	 	MSG_AD_SAVED = 1;
+	private final String 	TAG 					= "AdsManager";
+	private final int	 	MSG_AD_SAVED 			= 1;
+	private final int 		MSG_CATEGORIES_LOADED 	= 2;
 	
 	// Data
 	private API 		mApi;
@@ -20,7 +27,9 @@ public class AdsManager {
 	private Handler		mHandler;
 	
 	// Notifiers
-	private IAdNotifier	mIAdNotifier;	
+	private IAdNotifier			mIAdNotifier;	
+	private ICategoryNotifier 	mICategoryNotifier;
+	
 	
 	public AdsManager(Context pContext) {
 		mContext 	= pContext;
@@ -35,6 +44,15 @@ public class AdsManager {
 							mIAdNotifier.onAdSaved(true, (Ad)msg.obj);
 						} else{
 							mIAdNotifier.onAdSaved(false, null);
+						}
+					}
+					break;
+				case MSG_CATEGORIES_LOADED:
+					if(null != mICategoryNotifier){
+						if(null != msg.obj){
+							mICategoryNotifier.onCategoriesLoaded(true, (ArrayList<Category>)msg.obj);
+						} else{
+							mICategoryNotifier.onCategoriesLoaded(false, null);
 						}
 					}
 					break;
@@ -60,8 +78,7 @@ public class AdsManager {
 					Ad justAdded = mDbManager.saveAd(cAd);
 					if(null != justAdded){
 						msg.obj = justAdded;						
-					} 
-					
+					} 					
 					mHandler.sendMessage(msg);
 				}
 			});
@@ -108,6 +125,27 @@ public class AdsManager {
 	
 	public AdsManager setAdNotifier(IAdNotifier pAdNotifier){
 		mIAdNotifier = pAdNotifier;
+		return this;
+	}
+
+	public AdsManager getCategories(ICategoryNotifier pICategoryNotifier) {
+		if(null != pICategoryNotifier){
+			mICategoryNotifier = pICategoryNotifier;
+			Thread tLoadCategories = new Thread(new Runnable() {				
+				@Override
+				public void run() {
+					ArrayList<Category> loadedCategories = mDbManager.getAllCategories();
+					Message msg = new Message();
+					msg.what 	= MSG_CATEGORIES_LOADED;
+					msg.obj  	= loadedCategories;
+					
+					mHandler.sendMessage(msg);
+				}
+			});
+			tLoadCategories.start();
+		} else{
+			Console.debug(TAG, "no notifier specified for categories load");
+		}		
 		return this;
 	}
 }

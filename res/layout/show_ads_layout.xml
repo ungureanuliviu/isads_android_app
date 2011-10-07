@@ -100,7 +100,8 @@
 			android:layout_width="fill_parent"			
 			android:layout_height="30dp"
 			android:layout_alignParentTop="true"
-			android:background="@drawable/bordered_bcg"/>
+			android:background="@drawable/bordered_bcg"
+			android:scrollbars="none"/>
 	</RelativeLayout>		   	
 	<RelativeLayout 
 		android:id = "@id/layout_bottom"

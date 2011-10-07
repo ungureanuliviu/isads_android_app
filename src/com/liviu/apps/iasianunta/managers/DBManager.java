@@ -1,9 +1,13 @@
 package com.liviu.apps.iasianunta.managers;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 import org.json.JSONException;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Address;
@@ -212,5 +216,34 @@ public class DBManager {
 			closeDatabase();
 			return null;
 		}
+	}
+
+	public synchronized ArrayList<Category> getAllCategories() {
+		ArrayList<Category> categories = new ArrayList<Category>();
+		String[] projection 		   = new String[]{CAT_ID, CAT_NAME};
+		Cursor c 					   = null;
+		
+		openOrCreateDatabase();
+		c = mDb.query(TABLE_CATEGORIES, projection, null, null, null, null, CAT_ID + " ASC");
+		if(c == null){
+			closeDatabase();
+			return categories;
+		} else if(c.getCount() == 0){
+			c.close();
+			closeDatabase();
+			return categories;
+		} else {
+			int numRows = c.getCount();
+			c.moveToFirst();
+			
+			for(int i = 0; i < numRows; i++){
+				categories.add(new Category(c.getInt(0), c.getString(1)));
+				c.moveToNext();
+			}
+			
+			c.close();
+			closeDatabase();
+			return categories;				
+		}						
 	}
 }

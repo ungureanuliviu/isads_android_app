@@ -1,5 +1,7 @@
 package com.liviu.apps.iasianunta;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -11,19 +13,24 @@ import android.widget.RelativeLayout;
 import com.liviu.apps.iasianunta.adapters.TopCateogoriesAdapter;
 import com.liviu.apps.iasianunta.data.Category;
 import com.liviu.apps.iasianunta.data.User;
+import com.liviu.apps.iasianunta.interfaces.ICategoryNotifier;
 import com.liviu.apps.iasianunta.managers.ActivityIdProvider;
 import com.liviu.apps.iasianunta.managers.AdsManager;
 import com.liviu.apps.iasianunta.ui.TopCategoryView;
+import com.liviu.apps.iasianunta.utils.Console;
 
 public class ShowAdsActivity extends Activity{
 	// Constants
 	private final String	TAG 		= "ShowAdsActivity";
 	private final int    	ACTIVITY_ID = ActivityIdProvider.getInstance().getNewId(ShowAdsActivity.class);
-	
+	/*
+	private final int[]		COLORS		= new int[]{Color.parseColor("#00aeff"), Color.parseColor("#45e600"), 
+													Color.parseColor("#ffcc00"), Color.parseColor("#ff8a00"),
+													Color.parseColor("#ff3600")};
+	 */
 	// Data
 	private User 			user;
-	private AdsManager 		adsMan;
-	private TopCateogoriesAdapter adapterTopCategories;
+	private AdsManager 		adsMan;	
 	
 	// UI
 	private TopCategoryView categoryView;
@@ -51,13 +58,26 @@ public class ShowAdsActivity extends Activity{
                 
         // Initialize objects		
         adsMan 					= new AdsManager(this);
-        categoryView			= (TopCategoryView)findViewById(R.id.top_categories);
-        adapterTopCategories 	= new TopCateogoriesAdapter(this);
+        categoryView			= (TopCategoryView)findViewById(R.id.top_categories);        
         layoutContent			= (RelativeLayout)findViewById(R.id.layout_content); 
 
-                        
-        categoryView.addCategory(new Category("Cat "), 100, Color.parseColor("#00aeff"));
-        categoryView.addCategory(new Category("Cat "), 100, Color.parseColor("#8FA359"));        
-          
+        // load categories
+        adsMan.getCategories(new ICategoryNotifier() {			
+			@Override
+			public void onCategoriesSyncronized(boolean isSuccess,
+					ArrayList<Category> pCategories) {
+			}
+			
+			@Override
+			public void onCategoriesLoaded(boolean isSuccess, ArrayList<Category> pCategories) {
+				Console.debug(TAG, "onCategoriesLoaded: " + isSuccess + " " + pCategories);
+				int color = Color.parseColor("#00aeff");
+				if(isSuccess){
+					for(int i = 0; i < pCategories.size(); i++){
+						categoryView.addCategory(pCategories.get(i), 100, color);
+					}
+				}
+			}
+		});          
 	}
 }

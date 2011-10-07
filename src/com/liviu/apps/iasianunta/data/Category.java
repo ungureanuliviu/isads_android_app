@@ -11,8 +11,9 @@ public class Category {
 	private String mName;
 	private int    mId;
 	
-	public Category(String pName) {
+	public Category(int pId, String pName) {
 		mName = pName;
+		mId   = pId;
 	}
 	
 	public Category setName(String pName){

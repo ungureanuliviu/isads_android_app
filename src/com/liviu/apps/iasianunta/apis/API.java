@@ -2,6 +2,7 @@ package com.liviu.apps.iasianunta.apis;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -39,24 +40,27 @@ import android.os.Message;
 import android.provider.MediaStore;
 
 import com.liviu.apps.iasianunta.data.Ad;
+import com.liviu.apps.iasianunta.data.Category;
 import com.liviu.apps.iasianunta.data.JSONResponse;
 import com.liviu.apps.iasianunta.data.User;
 import com.liviu.apps.iasianunta.interfaces.IAdNotifier;
+import com.liviu.apps.iasianunta.interfaces.ICategoryNotifier;
 import com.liviu.apps.iasianunta.interfaces.ILoginNotifier;
 import com.liviu.apps.iasianunta.interfaces.IUploadNotifier;
 import com.liviu.apps.iasianunta.utils.Base64;
 import com.liviu.apps.iasianunta.utils.Console;
 
 public class API {	
-		
+			
 	// Constants
-	private final String TAG 				= "API";
-	private final String API_URL 			= "http://www.iasianunta.info/API";
-	private final String API_UPLOAD_URL 	= "http://www.iasianunta.info/upload.php";
-	private final int MSG_LOGIN 			= 1;
-	private final int MSG_LOGOUT 			= 2;
-	private final int MSG_UPLOAD_DONE 		= 3;
-	private final int MSG_AD_ADDED 			= 4;
+	private final String TAG 						= "API";
+	private final String API_URL 					= "http://www.iasianunta.info/API";
+	private final String API_UPLOAD_URL 			= "http://www.iasianunta.info/upload.php";
+	private final int MSG_LOGIN 					= 1;
+	private final int MSG_LOGOUT 					= 2;
+	private final int MSG_UPLOAD_DONE 				= 3;
+	private final int MSG_AD_ADDED 					= 4;
+	private final int MSG_GET_CATEGORIES_DONE 		= 5;
 	
 	// Data
 	private HttpClient client; 	
@@ -67,9 +71,10 @@ public class API {
 	private Handler handler;
 	
 	// Interfaces
-	private ILoginNotifier 	mILoginNotifier;
-	private IUploadNotifier mIUploadNotifier;
-	private IAdNotifier		mIAdNotifier;
+	private ILoginNotifier 		mILoginNotifier;
+	private IUploadNotifier 	mIUploadNotifier;
+	private IAdNotifier			mIAdNotifier;
+	private ICategoryNotifier	mICategoryNotifier;
 	
 	// private constructor
 	public API(){		
@@ -126,6 +131,15 @@ public class API {
 						}
 					}
 					break;
+				case MSG_GET_CATEGORIES_DONE:
+					if(null != mICategoryNotifier){
+						if(null != msg.obj){
+							mICategoryNotifier.onCategoriesSyncronized(true, (ArrayList<Category>)msg.obj);
+						} else{
+							mICategoryNotifier.onCategoriesSyncronized(false, null);
+						}
+					}
+					break;
 				default:
 					break;
 				}
@@ -140,12 +154,17 @@ public class API {
 		
 
 	private String doRequest(String url, JSONObject jsonParams, String pUserAuth, String pUserPassword){
-		Console.debug(TAG, "doRequest: " + url + " params: " + jsonParams.toString().replaceAll(",", "\n") + " userName: " + pUserAuth + " password: " + pUserPassword);
+		Console.debug(TAG, "doRequest: " + url + " params: " + (null != jsonParams ? jsonParams.toString().replaceAll(",", "\n") : null) + " userName: " + pUserAuth + " password: " + pUserPassword);
 	    try {	       
 	        post = new HttpPost(url);       
 	        
 	        // prepare parameters
-	        JSONObject params = jsonParams;
+	        JSONObject params = null;
+	        if(null == jsonParams)
+	        	params = new JSONObject();
+	        else
+	        	params = jsonParams;
+	        
 	        params.put("client", "android"); // set the client
             StringEntity en = new StringEntity(params.toString());	
             Console.debug(TAG, "params: " + params);
@@ -339,6 +358,11 @@ public class API {
 		return this;
 	}
 	
+	public API setCategoryNotifier(ICategoryNotifier pICategoryNotifier){
+		mICategoryNotifier = pICategoryNotifier;
+		return this;
+	}
+	
 	private synchronized String getRealPathFromURI(Uri contentUri, Context ctx) {
 		if(contentUri != null){
 	        String[] proj = { MediaStore.Images.Media.DATA };
@@ -434,16 +458,42 @@ public class API {
 			return cm.getActiveNetworkInfo().isConnectedOrConnecting();
 	}
 
-	public JSONObject getAllCategories() {
+	public API getAllCategories() {
 		Thread tGetAllCategories = new Thread(new Runnable() {			
 			@Override
-			public void run() {
-				JSONObject params = new JSONObject();
-				String apiResponse = doRequest(API_URL + "/categories/get_all_categories/", params, null, null);
-				Console.debug(TAG, "get all categories response: " + apiResponse);
+			public void run() {				
+				String 	apiResponse = doRequest(API_URL + "/categories/get_all/", null, null, null);
+				Message msg 		= new Message();
+				msg.what = MSG_GET_CATEGORIES_DONE;
+				
+				try {
+					JSONResponse jsonResponse = new JSONResponse(apiResponse);
+					if(jsonResponse.isSuccess()){						
+						ArrayList<Category> categories = new ArrayList<Category>();
+						JSONArray catArray = jsonResponse.getJSONArray("categories");
+						
+						for(int i = 0; i < catArray.length(); i++){
+							try{
+								categories.add(new Category(catArray.getJSONObject(i).getInt("id"),
+															catArray.getJSONObject(i).getString("name")));
+							}catch (JSONException e) {
+								e.printStackTrace();
+							}
+						}					
+						
+						msg.obj = categories;
+						handler.sendMessage(msg);
+						
+					}else{
+						handler.sendMessage(msg);
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+					handler.sendMessage(msg);
+				}
 			}
 		});
 		tGetAllCategories.start();
-		return null;
+		return this;
 	}
 }

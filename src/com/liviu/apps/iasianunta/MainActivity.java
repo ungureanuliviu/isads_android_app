@@ -1,5 +1,7 @@
 package com.liviu.apps.iasianunta;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.PixelFormat;
@@ -12,13 +14,17 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.liviu.apps.iasianunta.apis.API;
+import com.liviu.apps.iasianunta.data.Category;
 import com.liviu.apps.iasianunta.data.User;
+import com.liviu.apps.iasianunta.interfaces.ICategoryNotifier;
 import com.liviu.apps.iasianunta.interfaces.ILoginNotifier;
 import com.liviu.apps.iasianunta.managers.ActivityIdProvider;
 import com.liviu.apps.iasianunta.managers.SyncManager;
 import com.liviu.apps.iasianunta.ui.LTextView;
+import com.liviu.apps.iasianunta.utils.Console;
 
-public class MainActivity extends Activity implements OnClickListener{
+public class MainActivity extends Activity implements OnClickListener,
+													  ICategoryNotifier{
 	
 	// Constants
 	private final String TAG = "LoginActivity";
@@ -68,7 +74,10 @@ public class MainActivity extends Activity implements OnClickListener{
         butLogin.setOnClickListener(this);
         butAddNewAdd.setOnClickListener(this);   
         butShowAds.setOnClickListener(this);
-        syncMan.syncCategories();
+        if(syncMan.shouldSyncCategories()){
+        	syncMan.setOnCategoriesSyncedNotifier(this);
+	        syncMan.syncCategories();	        
+        }
     }
 // ========================== Interfaces ========================
 	@Override
@@ -120,5 +129,14 @@ public class MainActivity extends Activity implements OnClickListener{
 		default:
 			break;
 		}
+	}
+	@Override
+	public void onCategoriesSyncronized(boolean isSuccess, ArrayList<Category> pCategories) {
+		Console.debug(TAG, "onCategoriesReceveid: " + isSuccess + " " + pCategories);		
+	}
+	@Override
+	public void onCategoriesLoaded(boolean isSuccess,
+			ArrayList<Category> pcaArrayList) {
+		// nothing here
 	}
 }

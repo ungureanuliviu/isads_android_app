@@ -70,21 +70,29 @@ public class TopCategoryView extends HorizontalScrollView implements OnClickList
 		newCategoryView.setId(mItems.size() + 1);				
 		
 		float[] hsv = new float[3];
+		int darkerBgColor = Color.parseColor("#cacaca");
+		/*
 		int darkerBgColor = bgColor;
 		Color.colorToHSV(darkerBgColor, hsv);
-		hsv[2] *= 0.9f; // value component
-		darkerBgColor = Color.HSVToColor(hsv);
+		hsv[2] *= 0.7f; // value component
+		darkerBgColor = Color.HSVToColor(hsv); */
 		
-		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(width, LayoutParams.FILL_PARENT);
+		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.FILL_PARENT);
 		if(mItems.size() > 0){
-			params.addRule(RelativeLayout.RIGHT_OF, mItems.size());
+			params.addRule(RelativeLayout.RIGHT_OF, mItems.size());		
 		} else{
 			params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
 		}
+		params.rightMargin = 1;				
 		newCategoryView.setText(pCategory.getName());
 		newCategoryView.setTag(mItems.size());
 		newCategoryView.setBackgroundColor(darkerBgColor);
-		mItems.add(new CategoryView(pCategory, bgColor, darkerBgColor));
+		if(pCategory.getId() == 1){
+			mItems.add(new CategoryView(pCategory, bgColor, darkerBgColor).setSelected(true));
+			newCategoryView.setBackgroundColor(bgColor);
+		}
+		else
+			mItems.add(new CategoryView(pCategory, bgColor, darkerBgColor));
 		mLayout.addView(newCategoryView, params);
 		
 		newCategoryView.setOnClickListener(this);
@@ -97,10 +105,8 @@ public class TopCategoryView extends HorizontalScrollView implements OnClickList
 		int position = ((Integer)view.getTag()).intValue();
 		CategoryView catView = mItems.get(position);
 		if(catView.isSelected()){
-			Console.debug(TAG, "1");
 			view.setBackgroundColor(catView.getDefaultColor());
-		} else{
-			Console.debug(TAG, "2");
+		} else{			
 			view.setBackgroundColor(catView.getSelectedColor());
 		}
 		mItems.get(position).setSelected(!catView.isSelected());

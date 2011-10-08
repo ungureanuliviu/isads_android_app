@@ -2,6 +2,10 @@ package com.liviu.apps.iasianunta.apis;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 import org.apache.http.HttpEntity;
@@ -33,6 +37,8 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Handler;
@@ -40,18 +46,20 @@ import android.os.Message;
 import android.provider.MediaStore;
 
 import com.liviu.apps.iasianunta.data.Ad;
+import com.liviu.apps.iasianunta.data.AdImage;
 import com.liviu.apps.iasianunta.data.Category;
 import com.liviu.apps.iasianunta.data.JSONResponse;
 import com.liviu.apps.iasianunta.data.User;
-import com.liviu.apps.iasianunta.interfaces.IAdNotifier;
+import com.liviu.apps.iasianunta.interfaces.IAdsNotifier;
 import com.liviu.apps.iasianunta.interfaces.ICategoryNotifier;
 import com.liviu.apps.iasianunta.interfaces.ILoginNotifier;
 import com.liviu.apps.iasianunta.interfaces.IUploadNotifier;
 import com.liviu.apps.iasianunta.utils.Base64;
 import com.liviu.apps.iasianunta.utils.Console;
+import com.liviu.apps.iasianunta.utils.Utils;
 
 public class API {	
-			
+				
 	// Constants
 	private final String TAG 						= "API";
 	private final String API_URL 					= "http://www.iasianunta.info/API";
@@ -61,6 +69,7 @@ public class API {
 	private final int MSG_UPLOAD_DONE 				= 3;
 	private final int MSG_AD_ADDED 					= 4;
 	private final int MSG_GET_CATEGORIES_DONE 		= 5;
+	private final int MSG_ADS_DOWNLOADED 			= 6;
 	
 	// Data
 	private HttpClient client; 	
@@ -73,7 +82,7 @@ public class API {
 	// Interfaces
 	private ILoginNotifier 		mILoginNotifier;
 	private IUploadNotifier 	mIUploadNotifier;
-	private IAdNotifier			mIAdNotifier;
+	private IAdsNotifier		mIAdsNotifier;
 	private ICategoryNotifier	mICategoryNotifier;
 	
 	// private constructor
@@ -123,11 +132,11 @@ public class API {
 					}
 					break;
 				case MSG_AD_ADDED:
-					if(null != mIAdNotifier){
+					if(null != mIAdsNotifier){
 						if(null != msg.obj){
-							mIAdNotifier.onAdRemoteAdded(true, (Ad)msg.obj);
+							mIAdsNotifier.onAdRemoteAdded(true, (Ad)msg.obj);
 						} else{
-							mIAdNotifier.onAdRemoteAdded(false, null);
+							mIAdsNotifier.onAdRemoteAdded(false, null);
 						}
 					}
 					break;
@@ -137,6 +146,26 @@ public class API {
 							mICategoryNotifier.onCategoriesSyncronized(true, (ArrayList<Category>)msg.obj);
 						} else{
 							mICategoryNotifier.onCategoriesSyncronized(false, null);
+						}
+					}
+					break;
+				case MSG_ADS_DOWNLOADED:
+					if(null != mIAdsNotifier){
+						if(null != msg.obj){
+							JSONObject jsonRespnse = (JSONObject)msg.obj;
+							int categoryId;
+							try {
+								categoryId = jsonRespnse.getInt("category_id");
+								int adsPerPage 	= jsonRespnse.getInt("ads_per_page");
+								int page	    = jsonRespnse.getInt("page");
+								ArrayList<Ad> adsList = (ArrayList<Ad>)jsonRespnse.get("ads_list");
+								mIAdsNotifier.onAdsLoaded(true, categoryId, page, adsPerPage, adsList);								
+							} catch (JSONException e) {
+								e.printStackTrace();
+								mIAdsNotifier.onAdsLoaded(false, -1, -1, -1, null);
+							}
+						} else{
+							mIAdsNotifier.onAdsLoaded(false, -1, -1, -1, null);
 						}
 					}
 					break;
@@ -153,7 +182,7 @@ public class API {
 	}
 		
 
-	private String doRequest(String url, JSONObject jsonParams, String pUserAuth, String pUserPassword){
+	private JSONResponse doRequest(String url, JSONObject jsonParams, String pUserAuth, String pUserPassword){
 		Console.debug(TAG, "doRequest: " + url + " params: " + (null != jsonParams ? jsonParams.toString().replaceAll(",", "\n") : null) + " userName: " + pUserAuth + " password: " + pUserPassword);
 	    try {	       
 	        post = new HttpPost(url);       
@@ -179,7 +208,8 @@ public class API {
             HttpEntity resEntity = responsePOST.getEntity();
             String apiResponse = EntityUtils.toString(resEntity);
             Console.debug(TAG, "API RESPONSE: " + apiResponse);
-	        return apiResponse;
+            JSONResponse response = new JSONResponse(apiResponse);
+	        return response;
 
 	    } catch (ClientProtocolException e) {
 	    	e.printStackTrace();
@@ -210,11 +240,10 @@ public class API {
 					
 					params.put("user_name", cUserAuthName);
 					params.put("user_password", cUserPassword);
-					String apiResponse = doRequest(url, params, cUserAuthName, cUserPassword);
+					JSONResponse jsonReponse = doRequest(url, params, cUserAuthName, cUserPassword);
 					
-					if(null != apiResponse){
-						User loggedUser = User.getInstance();
-						JSONResponse jsonReponse = new JSONResponse(apiResponse);
+					if(null != jsonReponse){
+						User loggedUser = User.getInstance();						
 						if(jsonReponse.isSuccess()){
 							JSONObject userJson = jsonReponse.getJSONObject("user");
 							if(null != userJson){ 								
@@ -268,10 +297,9 @@ public class API {
 					JSONObject params = new JSONObject();
 					
 					params.put("user_id", cUser.getId());					
-					String apiResponse = doRequest(url, params, cUser.getAuthName(), cUser.getPassword());
+					JSONResponse jsonReponse = doRequest(url, params, cUser.getAuthName(), cUser.getPassword());
 					
-					if(null != apiResponse){						
-						JSONResponse jsonReponse = new JSONResponse(apiResponse);
+					if(null != jsonReponse){												
 						if(jsonReponse.isSuccess()){
 							int userId = jsonReponse.getInt("user_id");
 							msg.arg1 = userId;
@@ -353,8 +381,8 @@ public class API {
 		return this;
 	}
 	
-	public API setAdNotifier(IAdNotifier pAdNotifier){
-		mIAdNotifier = pAdNotifier;
+	public API setAdNotifier(IAdsNotifier pAdNotifier){
+		mIAdsNotifier = pAdNotifier;
 		return this;
 	}
 	
@@ -411,6 +439,7 @@ public class API {
 					msg.what			= MSG_AD_ADDED;
 					
 					params.put("title", cNewAd.getTitle());
+					
 					params.put("content", cNewAd.getContent());
 					params.put("price", cNewAd.getPrice());
 					params.put("address", cNewAd.getAddress());
@@ -418,16 +447,15 @@ public class API {
 					params.put("email", cNewAd.getEmail());
 					params.put("user_id", cUserId);
 					params.put("source", cNewAd.getSource());
-					params.put("category_id", "2");
+					params.put("category_id", cNewAd.getCategoryId());					
 					JSONArray images = new JSONArray();
 					for(int i = 0; i < cNewAd.getImages().size(); i++){
 						images.put(cNewAd.getImages().get(i).getServerFileInfo());						
 					}
 					params.put("images", images);
 						
-					String apiResponse = doRequest(API_URL + "/ads/add/", params, cUserAuth, cUserPassword);
-					if(null != apiResponse){
-						JSONResponse jsonResponse = new JSONResponse(apiResponse);
+					JSONResponse jsonResponse = doRequest(API_URL + "/ads/add/", params, cUserAuth, cUserPassword);
+					if(null != jsonResponse){						
 						if(jsonResponse.isSuccess()){
 							cNewAd.setId(jsonResponse.getJSONObject("ad").getInt("id"));
 							//cNewAd.setDate(jsonResponse.getJSONArray("ad").getLong("date"));
@@ -462,13 +490,12 @@ public class API {
 		Thread tGetAllCategories = new Thread(new Runnable() {			
 			@Override
 			public void run() {				
-				String 	apiResponse = doRequest(API_URL + "/categories/get_all/", null, null, null);
+				JSONResponse jsonResponse = doRequest(API_URL + "/categories/get_all/", null, null, null);
 				Message msg 		= new Message();
 				msg.what = MSG_GET_CATEGORIES_DONE;
 				
-				try {
-					JSONResponse jsonResponse = new JSONResponse(apiResponse);
-					if(jsonResponse.isSuccess()){						
+				try {					 
+					if(null != jsonResponse && jsonResponse.isSuccess()){						
 						ArrayList<Category> categories = new ArrayList<Category>();
 						JSONArray catArray = jsonResponse.getJSONArray("categories");
 						
@@ -496,4 +523,100 @@ public class API {
 		tGetAllCategories.start();
 		return this;
 	}
+
+	public API getAds(int pCategoryId, int pPage, int pAdsPerPage) {
+		final int cCategoryId  	= pCategoryId;
+		final int cPage 		= pPage;
+		final int cAdsPerPage 	= pAdsPerPage;
+		
+		Thread tGetAds = new Thread(new Runnable() {			
+			@Override
+			public void run() {
+				Message msg = new Message();
+				msg.what = MSG_ADS_DOWNLOADED;
+				
+				try {
+					JSONObject params = new JSONObject();
+					params.put("page", cPage);
+					params.put("category_id", cCategoryId);
+					params.put("ads_per_page", cAdsPerPage);
+					JSONResponse jsonResponse = doRequest(API_URL + "/ads/get_all/", params, null, null);										
+					if(jsonResponse.isSuccess()){						
+						JSONObject data = new JSONObject();
+						data.put("category_id", cCategoryId);
+						data.put("page", cPage);
+						data.put("ads_per_page", cAdsPerPage);
+						
+						ArrayList<Ad> adsList 	= new ArrayList<Ad>();
+						JSONArray adsJSonArray 	= jsonResponse.getJSONArray("ads");
+						for(int i = 0; i < adsJSonArray.length(); i++){
+							JSONObject jAd = adsJSonArray.getJSONObject(i);
+							Ad ad = new Ad();
+							ad.setId(jAd.getInt("id"))
+							  .setAddress(jAd.isNull("address") 	== true ? null : jAd.getString("address"))
+							  .setCategoryId(jAd.isNull("cat_id") 	== true ? null : jAd.getInt("cat_id"))
+							  .setContent(jAd.isNull("content") 	== true ? null : jAd.getString("content"))
+							  .setDate(jAd.isNull("date") 			== true ? -1 : jAd.getLong("date")* 1000)
+							  .setEmail(jAd.isNull("email")	 		== true ? null : jAd.getString("email"))
+							  .setPhone(jAd.isNull("phone") 		== true ? null : jAd.getString("phone"))
+							  .setSource(jAd.isNull("source") 		== true ? null : jAd.getString("source"))
+							  .setTitle(jAd.isNull("title") 		== true ? null : jAd.getString("title"))							  
+							  .setUserId(jAd.isNull("user_id") 		== true ? -1 : jAd.getInt("user_id"))
+							  .setViewsCount(jAd.isNull("views") 	== true ? 0 : jAd.getInt("views"))
+							  .setAuthor(jAd.isNull("user_name") 	== true ? null : jAd.getString("user_name"))
+							  .setFormattedDate(jAd.isNull("date") == true ? "" : Utils.formatDate(jAd.getLong("date") * 1000, "d MMM yyyy HH:mm:ss"))
+							  .setCategoryName(jAd.isNull("cat_name") == true ? null : jAd.getString("cat_name"))
+							.setTotalComments(jAd.isNull("total_comments") == true ? 0 : jAd.getInt("total_comments"));
+								
+							JSONArray jAdImages = jAd.getJSONArray("images");
+							for(int imgIndex = 0; imgIndex < jAdImages.length(); imgIndex++){
+								AdImage img = new AdImage(null, jAdImages.getJSONObject(imgIndex));
+								ad.addImage(img);
+							}
+							
+							adsList.add(ad);							
+						}
+						
+						data.put("ads_list", adsList);
+						msg.obj = data;
+						handler.sendMessage(msg);
+					} else{
+						handler.sendMessage(msg);
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+					handler.sendMessage(msg);
+				}				
+			}
+		});
+		tGetAds.start();
+		
+		return this;
+	}
+
+	public synchronized Bitmap downloadThImage(String pImgUrl) {
+		Bitmap 	bmImg;		
+		URL 	myFileUrl =	null; 
+		
+		try {
+			myFileUrl= new URL(pImgUrl);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			HttpURLConnection conn= (HttpURLConnection)myFileUrl.openConnection();
+			conn.setDoInput(true);
+			conn.connect();
+			InputStream is 	= conn.getInputStream();
+			bmImg 			= BitmapFactory.decodeStream(is);		
+			
+			is.close();
+			conn.disconnect();			
+			return bmImg;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}	
+	}	
 }

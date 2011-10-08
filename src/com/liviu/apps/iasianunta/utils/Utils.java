@@ -2,10 +2,10 @@ package com.liviu.apps.iasianunta.utils;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 	public class Utils {
+	private final static String TAG ="Utils";
 	public static final int	EARTH_RADIUS_KM = 6371;		
 	public static final String PAYPAL_DONATE_LINK = "https://www.paypal.com/ro/cgi-bin/webscr?cmd=_flow&SESSION=xAB09h6sQxdJQYokCoNq2hjC6vnFek2AP0HEs0NSJnxBSCXx1-L8fMzIbSG&dispatch=5885d80a13c0db1f8e263663d3faee8d1e83f46a36995b3856cef1e18897ad75";
 	public static final String GA_ID = "UA-16744167-7";
@@ -41,20 +41,18 @@ import java.util.Date;
 		return Integer.parseInt(Utils.formatDate(System.currentTimeMillis(), "M"));
 	}
 	
-	public static String formatDate(long pTimeStamp, String pattern){
-		String 			 	defaultPattern	= "E, dd MMM yyyy HH:mm:ss";
+	public static String formatDate(long pTimeStamp, String pattern){		
+		String 			 	defaultPattern	= (null == pattern ? "E, dd MMM yyyy HH:mm:ss" : pattern);
 		SimpleDateFormat	formatter		= null;
 		
 		try{
-			formatter = new SimpleDateFormat(pattern);			
+			formatter = new SimpleDateFormat(defaultPattern);			
 		}
 		catch (Exception e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 			formatter = new SimpleDateFormat(defaultPattern);
-		}
-		
-		return formatter.format(new Date(pTimeStamp));
-		
+		}		
+		return  formatter.format(new Date(pTimeStamp));						
 	}	
 	
 	public static String formatTime(long pTime){

@@ -2,25 +2,177 @@
 <RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"  
   android:layout_width="fill_parent"
-  android:layout_height="100dp"
-  android:background="@drawable/bg_white"
-  android:layout_marginTop="10dp"
-  android:paddingLeft="10dp"
-  android:paddingRight="10dp"
-  android:paddingTop="5dp">
-  <TextView 
-  	android:id = "@+id/ad_title"
+  android:layout_height="wrap_content">
+  <RelativeLayout 	
   	android:layout_width="fill_parent"
   	android:layout_height="wrap_content"
-  	android:text="Imobiliare"
-  	android:textSize="15sp"
-  	android:textColor="#777777"
-  	android:layout_alignParentTop="true"
-  	android:gravity="left|center_vertical"/>
-  <View
-  	android:id = "@+id/ad_line1"
-  	android:layout_width="fill_parent"
-	android:layout_height="1dp"
-	android:background="#c0c0c0"
-	android:layout_below="@id/ad_title"/>
+  	android:background="@drawable/bg_white"	
+	android:paddingLeft="10dp"
+	android:layout_marginTop="15dp"
+	android:paddingRight="10dp"
+	android:paddingTop="5dp"
+	android:paddingBottom="10dp">
+	  <com.liviu.apps.iasianunta.ui.LTextView 
+	  	android:id = "@+id/ad_index"
+	  	android:layout_width="wrap_content"
+	  	android:layout_height="wrap_content"
+	  	android:text="0"
+		android:paddingRight="3dp"
+		android:paddingLeft="3dp"	  	
+	  	android:textStyle="bold"
+	  	android:textSize="11sp"
+	  	android:textColor="#ffffff"
+	  	android:layout_marginLeft="3dp"
+	  	android:layout_alignParentTop="true"
+	  	android:layout_marginTop="5dp"
+	  	android:gravity="center"
+	  	android:background = "@drawable/bg_blue"
+		android:shadowColor="#777777"
+		android:shadowDx="0.8"
+		android:shadowDy="0.8"
+		android:shadowRadius="0.6"/>	
+	  <com.liviu.apps.iasianunta.ui.LTextView 
+	  	android:id = "@+id/ad_category"
+	  	android:layout_width="wrap_content"
+	  	android:layout_height="wrap_content"
+	  	android:text="Imobiliare"
+	  	android:textSize="13sp"
+	  	android:textColor="#777777"
+	  	android:layout_toRightOf = "@id/ad_index"
+	  	android:layout_alignParentTop="true"
+	  	android:layout_marginLeft = "5dp"
+	  	android:layout_marginTop="5dp"
+	  	android:gravity="left|center_vertical"/>
+	  <com.liviu.apps.iasianunta.ui.LTextView 
+	  	android:id = "@+id/ad_date"
+	  	android:layout_width="wrap_content"
+	  	android:layout_height="wrap_content"
+	  	android:text="12-12-2012"
+	  	android:textSize="10sp"
+	  	android:textColor="#777777"
+	  	android:layout_alignParentRight="true" 	  
+	  	android:layout_marginTop="5dp"
+	  	/>  	
+	  <View
+	  	android:id = "@+id/ad_line1"
+	  	android:layout_width="fill_parent"
+		android:layout_height="1dp"
+		android:layout_marginTop="3dp"
+		android:background="#cccccc"
+		android:layout_below="@id/ad_index"/>
+		<!-- images  -->	
+	  <ImageButton 
+	  	android:id = "@+id/ad_view_images"
+	  	android:layout_width="70dp"
+	  	android:layout_height="70dp"
+	  	android:background="@drawable/bg_white"
+	  	android:layout_below="@id/ad_line1"
+	  	android:layout_alignParentLeft="true"
+	  	android:layout_marginTop="5dp"
+	  	android:src="@drawable/ic_no_ad_image"
+	  	android:scaleType="fitXY"
+	  	android:visibility="visible"
+	  	android:padding="5dp"/> 	
+	  <!-- Title + author -->
+	  <com.liviu.apps.iasianunta.ui.LTextView 
+	  	android:id = "@+id/ad_title"
+	  	android:layout_width="fill_parent"
+	  	android:layout_height="wrap_content"
+	  	android:text="Titlu"
+	  	android:textStyle="bold"
+	  	android:textSize="15sp"
+	  	android:textColor="#777777"
+	  	android:layout_below="@id/ad_line1"
+	  	android:gravity="left|center_vertical"
+	  	android:layout_toRightOf="@id/ad_view_images"
+	  	android:layout_marginTop="5dp"  	
+	  	android:layout_alignWithParentIfMissing="true"
+	  	android:layout_marginLeft="5dp"/>  	  
+	  <com.liviu.apps.iasianunta.ui.LTextView 
+	  	android:id = "@+id/ad_author"
+	  	android:layout_width="fill_parent"
+	  	android:layout_height="wrap_content"
+	  	android:text="iasianuta.info"  	
+	  	android:textSize="11sp"
+	  	android:textColor="#777777"
+	  	android:layout_below="@id/ad_title"
+	  	android:gravity="left|center_vertical"
+	  	android:layout_toRightOf="@id/ad_view_images"
+	  	android:layout_alignWithParentIfMissing="true"  	
+	  	android:layout_marginLeft="5dp"/>    
+	  <com.liviu.apps.iasianunta.ui.LTextView 
+	  	android:id = "@+id/ad_views"
+	  	android:layout_width="fill_parent"
+	  	android:layout_height="wrap_content"
+	  	android:text="12 vizualizari"  	
+	  	android:textSize="11sp"
+	  	android:textColor="#777777"
+	  	android:layout_below="@id/ad_author"
+	  	android:gravity="left|center_vertical"
+	  	android:layout_toRightOf="@id/ad_view_images"
+	  	android:layout_alignWithParentIfMissing="true"  	
+	  	android:layout_marginLeft="5dp"/>	  	
+	  <com.liviu.apps.iasianunta.ui.LTextView 
+	  	android:id = "@+id/ad_content"
+	  	android:layout_width="fill_parent"
+	  	android:layout_height="wrap_content"
+	  	android:text="imobiliare imobilia reitmobili arei mobi liare  imobi mob ili are imob ili are imo bili are  sdsg  imo biliare imobil ia...."  	
+	  	android:textSize="13sp"
+	  	android:textColor="#777777"
+	  	android:layout_below="@id/ad_view_images"	  	
+	  	android:gravity="left|center_vertical"  	  	
+	  	android:layout_marginLeft="3dp"
+	  	android:layout_alignWithParentIfMissing="true"
+	  	android:layout_marginTop="5dp"/>  	  
+	  <!-- Lines  -->	
+	  <View
+	  	android:id = "@+id/ad_line2"
+	  	android:layout_width="fill_parent"
+		android:layout_height="1dp"
+		android:layout_marginTop="15dp"
+		android:layout_marginLeft="2dp"
+		android:background="#cccccc"
+		android:layout_below="@id/ad_content"/>
+	  <View
+	  	android:id = "@+id/ad_line3"
+	  	android:layout_width="fill_parent"
+		android:layout_height="1dp"
+		android:layout_marginTop="1dp"
+		android:layout_marginLeft="2dp"
+		android:background="#cccccc"
+		android:layout_below="@id/ad_line2"/>	  	
+	  <!-- Buttons  -->
+	  <Button 
+	  	android:id = "@+id/ad_but_commentes"
+	  	android:layout_width="120dp"
+	  	android:layout_height="30dp"
+	  	android:layout_marginLeft="2dp"
+	  	android:background="@drawable/default_button_background"
+	  	android:layout_below="@id/ad_line3"
+	  	android:layout_alignParentLeft="true"
+	  	android:textSize="13sp"
+	  	android:text = "12 comentarii"  	
+	  	android:textColor="#777777"
+	  	android:drawableLeft="@drawable/ic_ads_comments"
+	  	android:paddingLeft="7dp"
+	  	android:drawablePadding="3dp"
+	  	android:gravity="left|center_vertical"
+	  	android:layout_marginTop="10dp"/>  	
+	  <Button 
+	  	android:id = "@+id/ad_but_call"
+	  	android:layout_width="120dp"
+	  	android:layout_height="30dp"
+	  	android:layout_marginLeft="2dp"
+	  	android:background="@drawable/default_button_background"
+	  	android:layout_below="@id/ad_line3"
+	  	android:layout_alignParentRight="true"
+	  	android:textSize="13sp"
+	  	android:text = "0761492677"  	
+	  	android:textColor="#777777"
+	  	android:drawableLeft="@drawable/ic_but_phone"
+	  	android:paddingLeft="7dp"
+	  	android:drawablePadding="3dp"
+	  	android:gravity="left|center_vertical"
+	  	android:layout_marginTop="10dp"/>   		  		
+	</RelativeLayout>
 </RelativeLayout>

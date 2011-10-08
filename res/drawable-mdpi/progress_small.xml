@@ -11,13 +11,17 @@
                 android:width="36dip" 
                 android:height="36dip" 
         /> 
+       <!-- 
+       android:startColor="#c5ffac" 
+       android:centerColor="#6bdc3a"
+        -->        
         <gradient 
                 android:type="sweep" 
                 android:useLevel="false" 
-                android:startColor="#c5ffac" 
-                android:centerColor="#6bdc3a" 
+                android:startColor="#ace5ff" 
+                android:centerColor="#3ab8dc"
                 android:centerY="0.50" 
-                android:endColor="#3ec404" 
+                android:endColor="#0495c4" 
         /> 
     </shape> 
 </rotate> 

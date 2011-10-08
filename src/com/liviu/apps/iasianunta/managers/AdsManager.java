@@ -2,24 +2,29 @@ package com.liviu.apps.iasianunta.managers;
 
 import java.util.ArrayList;
 
+import org.json.JSONException;
+
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
 
 import com.liviu.apps.iasianunta.apis.API;
 import com.liviu.apps.iasianunta.data.Ad;
 import com.liviu.apps.iasianunta.data.Category;
-import com.liviu.apps.iasianunta.interfaces.IAdNotifier;
+import com.liviu.apps.iasianunta.data.JSONResponse;
+import com.liviu.apps.iasianunta.interfaces.IAdsNotifier;
 import com.liviu.apps.iasianunta.interfaces.ICategoryNotifier;
 import com.liviu.apps.iasianunta.utils.Console;
 
 public class AdsManager {
-	
+		
 	// Constants
 	private final String 	TAG 					= "AdsManager";
 	private final int	 	MSG_AD_SAVED 			= 1;
 	private final int 		MSG_CATEGORIES_LOADED 	= 2;
-	
+	private final int 		MSG_TH_IMAGE_LOADED 	= 3;
+
 	// Data
 	private API 		mApi;
 	private DBManager 	mDbManager;
@@ -27,8 +32,8 @@ public class AdsManager {
 	private Handler		mHandler;
 	
 	// Notifiers
-	private IAdNotifier			mIAdNotifier;	
-	private ICategoryNotifier 	mICategoryNotifier;
+	private IAdsNotifier			mIAdsNotifier;	
+	private ICategoryNotifier 		mICategoryNotifier;
 	
 	
 	public AdsManager(Context pContext) {
@@ -39,11 +44,11 @@ public class AdsManager {
 			public void handleMessage(android.os.Message msg) {
 				switch (msg.what) {
 				case MSG_AD_SAVED:
-					if(mIAdNotifier != null){
+					if(mIAdsNotifier != null){
 						if(null != msg.obj){
-							mIAdNotifier.onAdSaved(true, (Ad)msg.obj);
+							mIAdsNotifier.onAdSaved(true, (Ad)msg.obj);
 						} else{
-							mIAdNotifier.onAdSaved(false, null);
+							mIAdsNotifier.onAdSaved(false, null);
 						}
 					}
 					break;
@@ -53,6 +58,15 @@ public class AdsManager {
 							mICategoryNotifier.onCategoriesLoaded(true, (ArrayList<Category>)msg.obj);
 						} else{
 							mICategoryNotifier.onCategoriesLoaded(false, null);
+						}
+					}
+					break;
+				case MSG_TH_IMAGE_LOADED:
+					if(null != mIAdsNotifier){
+						if(null != msg.obj){
+							mIAdsNotifier.onImageDownloaded(true, msg.arg1, (Bitmap)msg.obj);
+						} else{
+							mIAdsNotifier.onImageDownloaded(false, msg.arg1, null);
 						}
 					}
 					break;
@@ -91,7 +105,7 @@ public class AdsManager {
 	/**
 	 * Save an ad in database
 	 * @param pNewAd : the ad which will be saved in database
-	 * @return nothing but check for {@link IAdNotifier#onAdSaved(boolean, Ad)}
+	 * @return nothing but check for {@link IAdsNotifier#onAdSaved(boolean, Ad)}
 	 */
 	public void saveAd(Ad pNewAd) {
 		if(null == pNewAd){
@@ -123,8 +137,9 @@ public class AdsManager {
 		}
 	}
 	
-	public AdsManager setAdNotifier(IAdNotifier pAdNotifier){
-		mIAdNotifier = pAdNotifier;
+	public AdsManager setAdsNotifier(IAdsNotifier pAdsNotifier){
+		mIAdsNotifier = pAdsNotifier;
+		mApi.setAdNotifier(pAdsNotifier);
 		return this;
 	}
 
@@ -146,6 +161,44 @@ public class AdsManager {
 		} else{
 			Console.debug(TAG, "no notifier specified for categories load");
 		}		
+		return this;
+	}
+
+	public void getAds(int pCategoryId, int pCurrentPage, int pAdsPerPage) {
+		mApi.getAds(pCategoryId, pCurrentPage, pAdsPerPage);
+	}
+
+	public AdsManager loadThImages(ArrayList<Ad> pLoadedAds) {
+		final ArrayList<Ad> cAds = pLoadedAds;
+		Thread loadImagesThread = new Thread(new Runnable() {			
+			@Override
+			public void run() {
+				 
+				for(int i = 0; i < cAds.size(); i++){
+					Message msg = new Message();
+					msg.what = MSG_TH_IMAGE_LOADED;
+					if(cAds.get(i).getImages().size() > 0){
+						String imgUrl;
+						try {
+							imgUrl = "http://iasianunta.info/library/img/ads_img/th/" + cAds.get(i).getImages().get(0).getServerFileInfo().getString("name");
+							Console.debug(TAG, "imgUrl: " + imgUrl);
+							Bitmap bmp = mApi.downloadThImage(imgUrl);
+							msg.obj 	= bmp;
+							msg.arg1 	= cAds.get(i).getId();
+							mHandler.sendMessage(msg);														
+						} catch (JSONException e) {
+							e.printStackTrace();
+							msg.arg1 = cAds.get(i).getId();
+							mHandler.sendMessage(msg);
+						}											
+					} else{
+						msg.arg1 = cAds.get(i).getId();
+						mHandler.sendMessage(msg);
+					}
+				}
+			}
+		});
+		loadImagesThread.start();
 		return this;
 	}
 }

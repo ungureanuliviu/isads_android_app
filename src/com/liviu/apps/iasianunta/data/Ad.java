@@ -20,14 +20,19 @@ public class Ad {
 	private int mId;
 	private int mCategoryId;
 	private int mViewsCount;
+	private int mTotalComments;
+	private int mUserId;	
 	private double mPrice;
+	private String mAuthor;
+	private String mCategoryName;
 	private String mTitle;
 	private String mContent;
 	private String mPhone;
 	private String mEmail;
 	private String mAddress;
 	private String mSource;	
-	private long   mDate;
+	private String mFormattedDate;
+	private long   mDate;		
 	private ArrayList<AdImage> mImages;
 	
 	public Ad() {
@@ -43,6 +48,38 @@ public class Ad {
 		mSource = "";
 		mDate = Utils.now();
 		mImages = new ArrayList<AdImage>();
+		mTotalComments = 0;
+		mUserId = -1;
+		mAuthor = "";
+		mCategoryId = -1;
+		mFormattedDate = "";
+	}
+	
+	public Ad setFormattedDate(String pFormattedDate){
+		mFormattedDate = pFormattedDate;
+		return this;
+	}
+	
+	public String getFormattedDate(){
+		return mFormattedDate;
+	}
+	
+	public Ad setAuthor(String pAuthor){
+		mAuthor = pAuthor;
+		return this;
+	}
+	
+	public String getAuthor(){
+		return mAuthor;
+	}
+	
+	public Ad setCategoryName(String pCategoryName){
+		mCategoryName = pCategoryName;
+		return this;
+	}
+	
+	public String getCategoryName(){
+		return mCategoryName;
 	}
 	
 	public ArrayList<AdImage> getImages(){
@@ -170,5 +207,23 @@ public class Ad {
 			}			
 		}
 		return null;
+	}
+
+	public Ad setTotalComments(int pTotalComments) {
+		mTotalComments = pTotalComments;
+		return this;
+	}
+	
+	public  int getTotalComments() {
+		return mTotalComments;
+	}
+
+	public Ad setUserId(int pUserId) {
+		mUserId = pUserId;
+		return this;
+	}
+	
+	public int getUserId(){
+		return mUserId;
 	}
 }

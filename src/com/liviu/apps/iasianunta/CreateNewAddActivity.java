@@ -2,6 +2,7 @@ package com.liviu.apps.iasianunta;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,15 +15,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
 import android.graphics.Typeface;
-import android.graphics.drawable.RotateDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.animation.AnimationUtils;
-import android.view.animation.RotateAnimation;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -37,12 +34,11 @@ import com.liviu.apps.iasianunta.apis.API;
 import com.liviu.apps.iasianunta.data.Ad;
 import com.liviu.apps.iasianunta.data.AdImage;
 import com.liviu.apps.iasianunta.data.User;
-import com.liviu.apps.iasianunta.interfaces.IAdNotifier;
+import com.liviu.apps.iasianunta.interfaces.IAdsNotifier;
 import com.liviu.apps.iasianunta.interfaces.ILoginNotifier;
 import com.liviu.apps.iasianunta.interfaces.IUploadNotifier;
 import com.liviu.apps.iasianunta.managers.ActivityIdProvider;
 import com.liviu.apps.iasianunta.managers.AdsManager;
-import com.liviu.apps.iasianunta.ui.AdImageView;
 import com.liviu.apps.iasianunta.ui.LEditText;
 import com.liviu.apps.iasianunta.ui.LTextView;
 import com.liviu.apps.iasianunta.utils.Console;
@@ -50,14 +46,14 @@ import com.liviu.apps.iasianunta.utils.Console;
 public class CreateNewAddActivity extends Activity implements OnClickListener,
 															  IUploadNotifier,
 															  OnItemClickListener,
-															  IAdNotifier{
+															  IAdsNotifier{
 	
 	// Constants
 	private final 		 	String 	TAG 						= "CreateNewAddActivity";
 	public  final static 	int 	ACTIVITY_ID 				= ActivityIdProvider.getInstance().getNewId(CreateNewAddActivity.class);
 	private final 			int 	SELECT_PHOTO_REQUEST_CODE 	= 1; 
 	private final 			int     MAX_UPLOADED_IMAGES 		= 5;
-	private final 			int 	VIB_LENGTH					= 30;
+	public  final static	int 	VIB_LENGTH					= 30;
 	
 	// Data
 	private Ad 				newAd;
@@ -139,8 +135,7 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
         api.setUploadNotifier(this);        
         galImages.setAdapter(adapterGalleryImages);
         galImages.setOnItemClickListener(this);
-        adMan.setAdNotifier(this);
-        api.setAdNotifier(this);
+        adMan.setAdsNotifier(this);        
         butLogin.setOnClickListener(this);       
         
         butAdd.setTypeface(typeface);
@@ -395,5 +390,14 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
 		} else{
 			Toast.makeText(CreateNewAddActivity.this, "Anuntul dvs. nu poate fi adaugat pentru momenent. Va rugam re-incercati in cateva minute.", Toast.LENGTH_LONG).show();
 		}
+	}
+
+	@Override
+	public void onAdsLoaded(boolean isSuccess, int pCategoryId, int pPage,
+			int pAdsPerPage, ArrayList<Ad> pLoadedAds) {
+	}
+
+	@Override
+	public void onImageDownloaded(boolean isSuccess, int pAdId, Bitmap pImg) {
 	}
 }

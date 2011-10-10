@@ -42,6 +42,7 @@ import com.liviu.apps.iasianunta.managers.AdsManager;
 import com.liviu.apps.iasianunta.ui.LEditText;
 import com.liviu.apps.iasianunta.ui.LTextView;
 import com.liviu.apps.iasianunta.utils.Console;
+import com.liviu.apps.iasianunta.utils.Utils;
 
 public class CreateNewAddActivity extends Activity implements OnClickListener,
 															  IUploadNotifier,
@@ -92,6 +93,12 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
 		win.setFormat(PixelFormat.RGBA_8888);
         requestWindowFeature(Window.FEATURE_NO_TITLE);              
         setContentView(R.layout.create_ad_layout);		
+                
+        if(!Utils.isConnected(this)){
+        	Toast.makeText(this, "No internet connection. Please try again later.", Toast.LENGTH_LONG).show();
+        	finish();
+        	return;
+        }
         
         user = User.getInstance();        
         if(!user.isLoggedIn()){
@@ -106,9 +113,9 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
         
         // Initialize objects
         newAd 		 = new Ad();
-        butAddImage  = (Button)findViewById(R.id.but_add_image);
-        galImages	 = (Gallery)findViewById(R.id.gallery_ad_images);
         api 		 = new API();
+        butAddImage  = (Button)findViewById(R.id.but_add_image);
+        galImages	 = (Gallery)findViewById(R.id.gallery_ad_images);        
         adapterGalleryImages = new NewAdImagesAdapter(this);
         vbb			 = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
         txtNoImages  = (LTextView)findViewById(R.id.txt_no_images);

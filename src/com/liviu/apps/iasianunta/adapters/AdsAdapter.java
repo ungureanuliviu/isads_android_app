@@ -1,6 +1,7 @@
 package com.liviu.apps.iasianunta.adapters;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -18,6 +19,7 @@ import com.liviu.apps.iasianunta.data.Ad;
 import com.liviu.apps.iasianunta.data.AdView;
 import com.liviu.apps.iasianunta.data.Category;
 import com.liviu.apps.iasianunta.managers.AdsManager;
+import com.liviu.apps.iasianunta.ui.CommentsView;
 import com.liviu.apps.iasianunta.ui.LTextView;
 import com.liviu.apps.iasianunta.utils.Console;
 import com.liviu.apps.iasianunta.utils.Utils;
@@ -76,6 +78,7 @@ public class AdsAdapter extends BaseAdapter{
 			vh.txtDate		= (LTextView)convertView.findViewById(R.id.ad_date);
 			vh.txtIndex		= (LTextView)convertView.findViewById(R.id.ad_index);
 			vh.txtViewsCount= (LTextView)convertView.findViewById(R.id.ad_views);
+			vh.comments     = (CommentsView)convertView.findViewById(R.id.ad_comments);
 			if(null != mOnClickListener){
 				vh.butCall.setOnClickListener(mOnClickListener);
 				vh.butComments.setOnClickListener(mOnClickListener);
@@ -112,7 +115,13 @@ public class AdsAdapter extends BaseAdapter{
 				((RelativeLayout.LayoutParams)vh.txtContent.getLayoutParams()).topMargin = 60;
 				//vh.viewImages.setImageResource(R.drawable.ic_no_ad_image);
 			}
-			
+//			if(mItems.get(position).getAd().getComments().size() > 0){
+//				vh.comments.clear();
+//				for(int i = 0; i < mItems.get(position).getAd().getComments().size(); i++){		
+//					if(i < 3)
+//						vh.comments.addComment(mItems.get(position).getAd().getComments().get(i));					
+//				}														
+//			}
 			vh.butCall.setTag(position);
 			vh.butComments.setTag(position);
 			vh.viewImages.setTag(position);
@@ -130,7 +139,8 @@ public class AdsAdapter extends BaseAdapter{
 		public LTextView	txtViewsCount;
 		public ImageButton	viewImages;
 		public Button		butCall;
-		public Button		butComments;		
+		public Button		butComments;
+		public CommentsView comments;
 	}
 
 	public void removeAt(int position) {
@@ -154,4 +164,6 @@ public class AdsAdapter extends BaseAdapter{
 		mOnClickListener = pListener;
 		return this;
 	}
+	
+	
 }

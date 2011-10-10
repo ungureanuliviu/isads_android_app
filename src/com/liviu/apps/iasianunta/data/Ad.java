@@ -1,5 +1,6 @@
 package com.liviu.apps.iasianunta.data;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import org.json.JSONException;
@@ -33,26 +34,28 @@ public class Ad {
 	private String mSource;	
 	private String mFormattedDate;
 	private long   mDate;		
+	private ArrayList<Comment> mComments;
 	private ArrayList<AdImage> mImages;
 	
 	public Ad() {
-		mId = -1;
-		mCategoryId = -1;
-		mViewsCount = 0;
-		mPrice = 0.00;
-		mTitle = "";
-		mContent = "";
-		mPhone = "";
-		mEmail = "";
-		mAddress = "";
-		mSource = "";
-		mDate = Utils.now();
-		mImages = new ArrayList<AdImage>();
-		mTotalComments = 0;
-		mUserId = -1;
-		mAuthor = "";
-		mCategoryId = -1;
-		mFormattedDate = "";
+		mId 			= -1;
+		mCategoryId 	= -1;
+		mViewsCount 	= 0;
+		mPrice 			= 0.00;
+		mTitle 			= "";
+		mContent 		= "";
+		mPhone 			= "";
+		mEmail 			= "";
+		mAddress 		= "";
+		mSource 		= "";
+		mDate 			= Utils.now();
+		mImages 		= new ArrayList<AdImage>();
+		mComments 		= new ArrayList<Comment>();
+		mTotalComments 	= 0;
+		mUserId 		= -1;
+		mAuthor 		= "";
+		mCategoryId 	= -1;
+		mFormattedDate 	= "";
 	}
 	
 	public Ad setFormattedDate(String pFormattedDate){
@@ -225,5 +228,14 @@ public class Ad {
 	
 	public int getUserId(){
 		return mUserId;
+	}
+
+	public ArrayList<Comment> getComments() {
+		return mComments;
+	}
+	
+	public Ad adComment(Comment pComment){
+		mComments.add(pComment);
+		return this;
 	}
 }

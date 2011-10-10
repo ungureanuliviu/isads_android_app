@@ -49,6 +49,7 @@ import android.provider.MediaStore;
 import com.liviu.apps.iasianunta.data.Ad;
 import com.liviu.apps.iasianunta.data.AdImage;
 import com.liviu.apps.iasianunta.data.Category;
+import com.liviu.apps.iasianunta.data.Comment;
 import com.liviu.apps.iasianunta.data.JSONResponse;
 import com.liviu.apps.iasianunta.data.User;
 import com.liviu.apps.iasianunta.interfaces.IAdsNotifier;
@@ -478,15 +479,6 @@ public class API {
 		return this;
 	}
 
-	// check if the user if connected to Internet
-	public boolean isAvailable(Context mContext) {		
-		ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);	
-		if(null == cm.getActiveNetworkInfo())
-			return false;
-		else
-			return cm.getActiveNetworkInfo().isConnectedOrConnecting();
-	}
-
 	public API getAllCategories() {
 		Thread tGetAllCategories = new Thread(new Runnable() {			
 			@Override
@@ -567,7 +559,14 @@ public class API {
 							  .setAuthor(jAd.isNull("user_name") 	== true ? null : jAd.getString("user_name"))
 							  .setFormattedDate(jAd.isNull("date") == true ? "" : Utils.formatDate(jAd.getLong("date") * 1000, "d MMM yyyy HH:mm:ss"))
 							  .setCategoryName(jAd.isNull("cat_name") == true ? null : jAd.getString("cat_name"))
-							.setTotalComments(jAd.isNull("total_comments") == true ? 0 : jAd.getInt("total_comments"));
+							  .adComment(new Comment().setTitle("testing1"))
+							  .adComment(new Comment().setTitle("testing2"))
+							  .adComment(new Comment().setTitle("testing3"))
+							  .adComment(new Comment().setTitle("testing4"))
+							  .adComment(new Comment().setTitle("testing5"))
+							  .adComment(new Comment().setTitle("testing6"))
+							  .adComment(new Comment().setTitle("testing7"))
+							  .setTotalComments(jAd.isNull("total_comments") == true ? 0 : jAd.getInt("total_comments"));
 								
 							JSONArray jAdImages = jAd.getJSONArray("images");
 							for(int imgIndex = 0; imgIndex < jAdImages.length(); imgIndex++){

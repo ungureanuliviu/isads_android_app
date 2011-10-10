@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout 
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id = "@+id/ad_comment_holder1"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:background="@drawable/bg_white"
+	android:layout_marginTop="5dp"
+	android:clickable="true">
+	<com.liviu.apps.iasianunta.ui.LTextView 
+		android:id = "@+id/ad_comment_title"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text = "Comment title"
+		android:layout_alignParentTop="true"
+		android:layout_alignParentLeft="true"
+		android:layout_marginTop="5dp"
+		android:layout_marginLeft="5dp"
+		android:textColor="#555555"
+		android:textStyle="bold"
+		android:textSize="12sp"/>	
+	<com.liviu.apps.iasianunta.ui.LTextView 
+		android:id = "@+id/ad_comment_date"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text = "12-12-2012"
+		android:layout_alignParentTop="true"
+		android:layout_alignParentRight="true"
+		android:layout_marginTop="5dp"
+		android:layout_marginRight="5dp"
+		android:textColor="#555555"
+		android:textSize="10sp"/>
+	<com.liviu.apps.iasianunta.ui.LTextView 
+		android:id = "@+id/ad_comment_author"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text = "Ungureanu Liviu"
+		android:layout_below="@id/ad_comment_title"
+		android:layout_alignParentLeft="true"
+		android:layout_marginLeft="5dp"
+		android:textColor="#555555"
+		android:textSize="10sp"/>
+	<com.liviu.apps.iasianunta.ui.LTextView 
+		android:id = "@+id/ad_comment_content"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text = "This is the comment content"
+		android:layout_below="@id/ad_comment_author"
+		android:layout_alignParentLeft="true"
+		android:layout_marginTop="5dp"
+		android:layout_marginLeft="5dp"
+		android:textColor="#555555"
+		android:textSize="12sp"/>	  					  					  				
+</RelativeLayout>	

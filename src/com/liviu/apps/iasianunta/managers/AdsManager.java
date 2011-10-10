@@ -17,6 +17,7 @@ import com.liviu.apps.iasianunta.data.JSONResponse;
 import com.liviu.apps.iasianunta.interfaces.IAdsNotifier;
 import com.liviu.apps.iasianunta.interfaces.ICategoryNotifier;
 import com.liviu.apps.iasianunta.utils.Console;
+import com.liviu.apps.iasianunta.utils.Utils;
 
 public class AdsManager {
 		
@@ -82,7 +83,7 @@ public class AdsManager {
 	}
 	
 	public AdsManager addnewAd(Ad pNewAd, int pUserId, String pUserAuth, String pUserPassword){
-		if(mApi.isAvailable(mContext)){
+		if(Utils.isConnected(mContext)){
 			mApi.addNewAd(pNewAd, pUserId, pUserAuth, pUserPassword);
 		} else{
 			// save the ad in database. We will add it on remote server

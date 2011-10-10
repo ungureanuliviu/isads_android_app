@@ -4,6 +4,9 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+
 	public class Utils {
 	private final static String TAG ="Utils";
 	public static final int	EARTH_RADIUS_KM = 6371;		
@@ -105,5 +108,14 @@ import java.util.Date;
         }		
         
         return time;
+	}
+	
+	// check if the user if connected to Internet
+	public static boolean isConnected(Context mContext) {		
+		ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);	
+		if(null == cm.getActiveNetworkInfo())
+			return false;
+		else
+			return cm.getActiveNetworkInfo().isConnectedOrConnecting();
 	}
 }

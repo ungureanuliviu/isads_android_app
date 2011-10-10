@@ -37,6 +37,7 @@ import com.liviu.apps.iasianunta.managers.AdsManager;
 import com.liviu.apps.iasianunta.ui.LTextView;
 import com.liviu.apps.iasianunta.ui.TopCategoryView;
 import com.liviu.apps.iasianunta.utils.Console;
+import com.liviu.apps.iasianunta.utils.Utils;
 
 public class ShowAdsActivity extends Activity implements IAdsNotifier, 
 														 OnScrollListener,
@@ -83,10 +84,15 @@ public class ShowAdsActivity extends Activity implements IAdsNotifier,
         requestWindowFeature(Window.FEATURE_NO_TITLE);              
         setContentView(R.layout.show_ads_layout);		
         
+        if(!Utils.isConnected(this)){
+        	Toast.makeText(this, "No internet connection. Please try again later.", Toast.LENGTH_LONG).show();
+        	finish();
+        	return;
+        }        
         user = User.getInstance();        
                 
         // Initialize objects		
-        adsMan 					= new AdsManager(this);
+        adsMan 					= new AdsManager(this);        
         categoryView			= (TopCategoryView)findViewById(R.id.top_categories);        
         layoutContent			= (RelativeLayout)findViewById(R.id.layout_content); 
         lstAds					= (ListView)findViewById(R.id.ads_list);

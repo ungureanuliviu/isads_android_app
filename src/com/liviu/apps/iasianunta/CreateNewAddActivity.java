@@ -398,6 +398,6 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
 	}
 
 	@Override
-	public void onImageDownloaded(boolean isSuccess, int pAdId, Bitmap pImg) {
+	public void onImageDownloaded(boolean isSuccess, int pAdId, Bitmap pImg, boolean isFullImage) {
 	}
 }

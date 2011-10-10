@@ -6,6 +6,7 @@ import org.json.JSONException;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
 
@@ -64,9 +65,12 @@ public class AdsManager {
 				case MSG_TH_IMAGE_LOADED:
 					if(null != mIAdsNotifier){
 						if(null != msg.obj){
-							mIAdsNotifier.onImageDownloaded(true, msg.arg1, (Bitmap)msg.obj);
+							if(msg.arg2 == 1)
+								mIAdsNotifier.onImageDownloaded(true, msg.arg1, (Bitmap)msg.obj, true);
+							else 
+								mIAdsNotifier.onImageDownloaded(true, msg.arg1, (Bitmap)msg.obj, false);
 						} else{
-							mIAdsNotifier.onImageDownloaded(false, msg.arg1, null);
+							mIAdsNotifier.onImageDownloaded(false, msg.arg1, null, false);
 						}
 					}
 					break;
@@ -182,7 +186,7 @@ public class AdsManager {
 						try {
 							imgUrl = "http://iasianunta.info/library/img/ads_img/th/" + cAds.get(i).getImages().get(0).getServerFileInfo().getString("name");
 							Console.debug(TAG, "imgUrl: " + imgUrl);
-							Bitmap bmp = mApi.downloadThImage(imgUrl);
+							Bitmap bmp = mApi.downloadThImage(imgUrl, null);
 							msg.obj 	= bmp;
 							msg.arg1 	= cAds.get(i).getId();
 							mHandler.sendMessage(msg);														
@@ -201,4 +205,45 @@ public class AdsManager {
 		loadImagesThread.start();
 		return this;
 	}
+	
+	public AdsManager loadImages(Ad pAd) {
+		final Ad cAd = pAd;
+		Thread loadImagesThread = new Thread(new Runnable() {			
+			@Override
+			public void run() {				 
+					Console.debug(TAG, "cAd.getImages().size(): " + cAd.getImages().size());					
+					if(cAd.getImages().size() > 0){
+						BitmapFactory.Options options = new BitmapFactory.Options();
+						options.inSampleSize = 2;
+						for(int i = 0; i < cAd.getImages().size(); i++){
+							Message msg = new Message();
+							msg.what = MSG_TH_IMAGE_LOADED;
+							String imgUrl;
+							try {
+								imgUrl = "http://iasianunta.info/library/img/ads_img/" + cAd.getImages().get(i).getServerFileInfo().getString("name");
+								Console.debug(TAG, "imgUrl: " + imgUrl);
+								Bitmap bmp = mApi.downloadThImage(imgUrl, options);
+								msg.obj 	= bmp;
+								msg.arg1 	= cAd.getId();
+								msg.arg2    = 1;
+								mHandler.sendMessage(msg);														
+							} catch (JSONException e) {
+								e.printStackTrace();
+								msg.arg1 = cAd.getId();
+								msg.arg2 = 1;
+								mHandler.sendMessage(msg);
+							}
+						}
+					} else{
+						Message msg = new Message();
+						msg.what 	= MSG_TH_IMAGE_LOADED;
+						msg.arg1 	= cAd.getId();
+						msg.arg2	= 1;
+						mHandler.sendMessage(msg);
+					}
+				}
+		});
+		loadImagesThread.start();
+		return this;
+	}	
 }

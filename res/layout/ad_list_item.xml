@@ -28,8 +28,8 @@
 	  	android:gravity="center"
 	  	android:background = "@drawable/bg_blue"
 		android:shadowColor="#777777"
-		android:shadowDx="0.8"
-		android:shadowDy="0.8"
+		android:shadowDx="0.6"
+		android:shadowDy="0.7"
 		android:shadowRadius="0.6"/>	
 	  <com.liviu.apps.iasianunta.ui.LTextView 
 	  	android:id = "@+id/ad_category"

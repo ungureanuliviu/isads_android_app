@@ -7,6 +7,7 @@
 		android:id = "@+id/layout_top"
 		android:layout_width="fill_parent"
 		android:layout_height="38dp"
+		android:clickable="true"
 		android:background="@drawable/bg_top_green">
 		<ImageView 
 			android:id = "@+id/ic_home"
@@ -183,5 +184,33 @@
 			android:drawablePadding="5dp"			
 			android:drawableLeft="@drawable/ic_but_save"	
 			android:background="@drawable/default_button_background"/>  		  
-	</RelativeLayout>					
+	</RelativeLayout>	
+	<RelativeLayout 
+		android:id = "@+id/layout_images"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:background="#cc000000"
+		android:visibility="gone">
+		<Gallery 
+			android:id = "@+id/gallery_images"
+			android:layout_width="fill_parent"
+			android:layout_height="300dp"
+			android:layout_centerInParent="true"
+			android:unselectedAlpha="0.5"/>
+		<Button 
+			android:id = "@+id/gallery_but_back"
+			android:layout_width="100dp"
+			android:layout_height="35dp"
+			android:textColor="#666666"  
+			android:text="Inapoi"					
+			android:layout_centerHorizontal="true"
+			android:paddingLeft="9dp"			
+			android:paddingRight="5dp"
+			android:textSize="13sp"
+			android:layout_below="@id/gallery_images"
+			android:gravity="left|center_vertical"			
+			android:drawablePadding="5dp"			
+			android:drawableLeft="@drawable/ic_back"	
+			android:background="@drawable/default_button_background"/>  		
+	</RelativeLayout>				
 </RelativeLayout>

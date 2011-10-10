@@ -39,6 +39,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Handler;
@@ -594,7 +595,7 @@ public class API {
 		return this;
 	}
 
-	public synchronized Bitmap downloadThImage(String pImgUrl) {
+	public synchronized Bitmap downloadThImage(String pImgUrl, Options options) {
 		Bitmap 	bmImg;		
 		URL 	myFileUrl =	null; 
 		
@@ -609,7 +610,7 @@ public class API {
 			conn.setDoInput(true);
 			conn.connect();
 			InputStream is 	= conn.getInputStream();
-			bmImg 			= BitmapFactory.decodeStream(is);		
+			bmImg 			= BitmapFactory.decodeStream(is, null, options);
 			
 			is.close();
 			conn.disconnect();			

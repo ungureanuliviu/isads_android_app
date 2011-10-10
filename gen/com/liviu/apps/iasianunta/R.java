@@ -64,32 +64,33 @@ public final class R {
         public static final int ic_add_ad=0x7f02002d;
         public static final int ic_ads_comments=0x7f02002e;
         public static final int ic_alerts=0x7f02002f;
-        public static final int ic_but_add=0x7f020030;
-        public static final int ic_but_choose_image=0x7f020031;
-        public static final int ic_but_note=0x7f020032;
-        public static final int ic_but_phone=0x7f020033;
-        public static final int ic_but_save=0x7f020034;
-        public static final int ic_but_upload=0x7f020035;
-        public static final int ic_categories=0x7f020036;
-        public static final int ic_edtx_x=0x7f020037;
-        public static final int ic_home=0x7f020038;
-        public static final int ic_home_find_gift=0x7f020039;
-        public static final int ic_home_friends=0x7f02003a;
-        public static final int ic_home_suggest_gifts=0x7f02003b;
-        public static final int ic_lines=0x7f02003c;
-        public static final int ic_loading=0x7f02003d;
-        public static final int ic_my_account=0x7f02003e;
-        public static final int ic_no_ad_image=0x7f02003f;
-        public static final int ic_no_user_image=0x7f020040;
-        public static final int ic_recent_ads=0x7f020041;
-        public static final int ic_search=0x7f020042;
-        public static final int ic_trash=0x7f020043;
-        public static final int icon=0x7f020044;
-        public static final int main_background=0x7f020045;
-        public static final int progress_small=0x7f020046;
-        public static final int rotate_drawable=0x7f020047;
-        public static final int round_corner_shape=0x7f020048;
-        public static final int white_bcg=0x7f020049;
+        public static final int ic_back=0x7f020030;
+        public static final int ic_but_add=0x7f020031;
+        public static final int ic_but_choose_image=0x7f020032;
+        public static final int ic_but_note=0x7f020033;
+        public static final int ic_but_phone=0x7f020034;
+        public static final int ic_but_save=0x7f020035;
+        public static final int ic_but_upload=0x7f020036;
+        public static final int ic_categories=0x7f020037;
+        public static final int ic_edtx_x=0x7f020038;
+        public static final int ic_home=0x7f020039;
+        public static final int ic_home_find_gift=0x7f02003a;
+        public static final int ic_home_friends=0x7f02003b;
+        public static final int ic_home_suggest_gifts=0x7f02003c;
+        public static final int ic_lines=0x7f02003d;
+        public static final int ic_loading=0x7f02003e;
+        public static final int ic_my_account=0x7f02003f;
+        public static final int ic_no_ad_image=0x7f020040;
+        public static final int ic_no_user_image=0x7f020041;
+        public static final int ic_recent_ads=0x7f020042;
+        public static final int ic_search=0x7f020043;
+        public static final int ic_trash=0x7f020044;
+        public static final int icon=0x7f020045;
+        public static final int main_background=0x7f020046;
+        public static final int progress_small=0x7f020047;
+        public static final int rotate_drawable=0x7f020048;
+        public static final int round_corner_shape=0x7f020049;
+        public static final int white_bcg=0x7f02004a;
     }
     public static final class id {
         public static final int ad_author=0x7f060008;
@@ -116,7 +117,7 @@ public final class R {
         public static final int but_recent_ads=0x7f060046;
         public static final int but_save=0x7f060032;
         public static final int but_search=0x7f06004a;
-        public static final int category_title=0x7f060054;
+        public static final int category_title=0x7f060057;
         public static final int edtx_ad_address=0x7f060030;
         public static final int edtx_ad_content=0x7f060023;
         public static final int edtx_ad_email=0x7f06002e;
@@ -126,9 +127,12 @@ public final class R {
         public static final int edtx_username=0x7f060038;
         public static final int edtx_what=0x7f06003f;
         public static final int gallery_ad_images=0x7f060027;
+        public static final int gallery_but_back=0x7f060056;
+        public static final int gallery_images=0x7f060055;
         public static final int ic_home=0x7f060010;
         public static final int layout_bottom=0x7f060019;
         public static final int layout_content=0x7f060018;
+        public static final int layout_images=0x7f060054;
         public static final int layout_progress=0x7f060051;
         public static final int layout_top=0x7f06000f;
         public static final int layout_top_bar=0x7f060012;
@@ -180,13 +184,14 @@ public final class R {
     }
     public static final class layout {
         public static final int ad_image_layout=0x7f030000;
-        public static final int ad_list_item=0x7f030001;
-        public static final int create_ad_layout=0x7f030002;
-        public static final int login=0x7f030003;
-        public static final int main=0x7f030004;
-        public static final int main_schelet=0x7f030005;
-        public static final int show_ads_layout=0x7f030006;
-        public static final int top_category_layout=0x7f030007;
+        public static final int ad_image_layout_large=0x7f030001;
+        public static final int ad_list_item=0x7f030002;
+        public static final int create_ad_layout=0x7f030003;
+        public static final int login=0x7f030004;
+        public static final int main=0x7f030005;
+        public static final int main_schelet=0x7f030006;
+        public static final int show_ads_layout=0x7f030007;
+        public static final int top_category_layout=0x7f030008;
     }
     public static final class string {
         public static final int app_name=0x7f050001;

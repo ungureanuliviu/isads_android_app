@@ -13,19 +13,22 @@ import android.os.Message;
 import com.liviu.apps.iasianunta.apis.API;
 import com.liviu.apps.iasianunta.data.Ad;
 import com.liviu.apps.iasianunta.data.Category;
+import com.liviu.apps.iasianunta.data.Comment;
 import com.liviu.apps.iasianunta.data.JSONResponse;
+import com.liviu.apps.iasianunta.interfaces.ICommentsNotifier;
 import com.liviu.apps.iasianunta.interfaces.IAdsNotifier;
 import com.liviu.apps.iasianunta.interfaces.ICategoryNotifier;
 import com.liviu.apps.iasianunta.utils.Console;
 import com.liviu.apps.iasianunta.utils.Utils;
 
 public class AdsManager {
-		
+			
 	// Constants
 	private final String 	TAG 					= "AdsManager";
 	private final int	 	MSG_AD_SAVED 			= 1;
 	private final int 		MSG_CATEGORIES_LOADED 	= 2;
 	private final int 		MSG_TH_IMAGE_LOADED 	= 3;
+	private final int 		MSG_COMMENTS_LOADED		= 4;
 
 	// Data
 	private API 		mApi;
@@ -36,6 +39,7 @@ public class AdsManager {
 	// Notifiers
 	private IAdsNotifier			mIAdsNotifier;	
 	private ICategoryNotifier 		mICategoryNotifier;
+	private ICommentsNotifier		mCommentsNotifer;
 	
 	
 	public AdsManager(Context pContext) {
@@ -72,6 +76,15 @@ public class AdsManager {
 								mIAdsNotifier.onImageDownloaded(true, msg.arg1, (Bitmap)msg.obj, false);
 						} else{
 							mIAdsNotifier.onImageDownloaded(false, msg.arg1, null, false);
+						}
+					}
+					break;
+				case MSG_COMMENTS_LOADED:
+					if(null != mCommentsNotifer){
+						if(null != msg.obj){
+							mCommentsNotifer.onCommentLoaded(true, msg.arg1, (ArrayList<Comment>)msg.obj);
+						}else{
+							mCommentsNotifer.onCommentLoaded(true, -1, null);
 						}
 					}
 					break;
@@ -245,6 +258,36 @@ public class AdsManager {
 				}
 		});
 		loadImagesThread.start();
+		return this;
+	}
+
+	public void setCommentsNotifier(ICommentsNotifier lNotifier) {
+		mCommentsNotifer = lNotifier;
+	}
+
+	public AdsManager getAllComments(int pAdId) {
+		if(0 > pAdId){
+			mHandler.sendEmptyMessage(MSG_COMMENTS_LOADED);
+		} else{
+			final int cAdId = pAdId;
+			Thread tLoadComments = new Thread(new Runnable() {				
+				@Override
+				public void run() {
+					Message msg = new Message();
+					msg.what = MSG_COMMENTS_LOADED;
+					
+					ArrayList<Comment> commentsList = mApi.getComments(cAdId);
+					if(null != commentsList){
+						msg.obj 	= commentsList;
+						msg.arg1 	= cAdId;
+					}
+					
+					mHandler.sendMessage(msg);
+				}
+			});
+			tLoadComments.start();
+		}
+		
 		return this;
 	}	
 }

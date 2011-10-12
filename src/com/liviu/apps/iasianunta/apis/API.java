@@ -526,7 +526,7 @@ public class API {
 			@Override
 			public void run() {
 				Message msg = new Message();
-				msg.what = MSG_ADS_DOWNLOADED;
+				msg.what 	= MSG_ADS_DOWNLOADED;
 				
 				try {
 					JSONObject params = new JSONObject();
@@ -557,7 +557,7 @@ public class API {
 							  .setUserId(jAd.isNull("user_id") 		== true ? -1 : jAd.getInt("user_id"))
 							  .setViewsCount(jAd.isNull("views") 	== true ? 0 : jAd.getInt("views"))
 							  .setAuthor(jAd.isNull("user_name") 	== true ? null : jAd.getString("user_name"))
-							  .setFormattedDate(jAd.isNull("date") == true ? "" : Utils.formatDate(jAd.getLong("date") * 1000, "d MMM yyyy HH:mm:ss"))
+							  .setFormattedDate(jAd.isNull("date")  == true ? "" : Utils.formatDate(jAd.getLong("date") * 1000, "d MMM yyyy HH:mm:ss"))
 							  .setCategoryName(jAd.isNull("cat_name") == true ? null : jAd.getString("cat_name"))
 							  .adComment(new Comment().setTitle("testing1"))
 							  .adComment(new Comment().setTitle("testing2"))
@@ -618,5 +618,41 @@ public class API {
 			e.printStackTrace();
 			return null;
 		}	
+	}
+
+	public synchronized ArrayList<Comment> getComments(int cAdId) {			
+		try {
+			JSONObject params = new JSONObject();
+			params.put("ad_id", cAdId);
+			JSONResponse jsonResponse = doRequest(API_URL + "/comments/get_all/", params, null, null);
+			if(null != jsonResponse){
+				if(jsonResponse.isSuccess()){
+					JSONArray jComments = jsonResponse.getJSONArray("comments");
+					ArrayList<Comment> commentsList = new ArrayList<Comment>();
+					for(int i = 0; i < jComments.length(); i++){
+						Comment 	comment	 = new Comment();
+						JSONObject 	jComment = jComments.getJSONObject(i); 
+						comment.setId(jComment.getInt("id"))
+							   .setTitle(jComment.getString("title"))
+							   .setContent(jComment.getString("content"))
+							   .setAdId(jComment.getInt("ad_id"))
+							   .setAuthorId(jComment.getInt("owner_user_id"))
+							   .setDate(jComment.getLong("date") * 1000)
+							   .setFormattedDate(Utils.formatDate(jComment.getLong("date") * 1000, "d MMM yyyy HH:mm:ss"))
+							   .setAuthor(jComment.getString("user_name"))
+							   .setRating(jComment.getInt("rating"));
+						commentsList.add(comment);
+					}
+					return commentsList;
+				}else{
+					return null;
+				}
+			}else{
+				return null;
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		}		
 	}	
 }

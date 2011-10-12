@@ -74,11 +74,10 @@ public class AdsAdapter extends BaseAdapter{
 			vh.txtContent	= (LTextView)convertView.findViewById(R.id.ad_content);
 			vh.viewImages	= (ImageButton)convertView.findViewById(R.id.ad_view_images);
 			vh.butCall		= (Button)convertView.findViewById(R.id.ad_but_call);
-			vh.butComments	= (Button)convertView.findViewById(R.id.ad_but_commentes);
+			vh.butComments	= (Button)convertView.findViewById(R.id.ad_but_comments);
 			vh.txtDate		= (LTextView)convertView.findViewById(R.id.ad_date);
 			vh.txtIndex		= (LTextView)convertView.findViewById(R.id.ad_index);
 			vh.txtViewsCount= (LTextView)convertView.findViewById(R.id.ad_views);
-			vh.comments     = (CommentsView)convertView.findViewById(R.id.ad_comments);
 			if(null != mOnClickListener){
 				vh.butCall.setOnClickListener(mOnClickListener);
 				vh.butComments.setOnClickListener(mOnClickListener);
@@ -115,13 +114,6 @@ public class AdsAdapter extends BaseAdapter{
 				((RelativeLayout.LayoutParams)vh.txtContent.getLayoutParams()).topMargin = 60;
 				//vh.viewImages.setImageResource(R.drawable.ic_no_ad_image);
 			}
-//			if(mItems.get(position).getAd().getComments().size() > 0){
-//				vh.comments.clear();
-//				for(int i = 0; i < mItems.get(position).getAd().getComments().size(); i++){		
-//					if(i < 3)
-//						vh.comments.addComment(mItems.get(position).getAd().getComments().get(i));					
-//				}														
-//			}
 			vh.butCall.setTag(position);
 			vh.butComments.setTag(position);
 			vh.viewImages.setTag(position);
@@ -140,7 +132,6 @@ public class AdsAdapter extends BaseAdapter{
 		public ImageButton	viewImages;
 		public Button		butCall;
 		public Button		butComments;
-		public CommentsView comments;
 	}
 
 	public void removeAt(int position) {

@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.net.Uri;
 
@@ -58,6 +59,28 @@ public class Ad {
 		mFormattedDate 	= "";
 	}
 	
+	public Ad(JSONObject json) throws JSONException {
+		if(null != json){
+			mPhone 			= json.getString("mPhone");
+			mCategoryId 	= json.getInt("mCategoryId");
+			mPrice 			= json.getDouble("mPrice");
+			mFormattedDate 	= json.getString("mFormattedDate");
+			mDate 			= json.getLong("mDate");
+			mCategoryName 	= json.getString("mCategoryName");
+			mId 			= json.getInt("mId");
+			mViewsCount 	= json.getInt("mViewsCount");
+			mSource 		= json.getString("mSource");
+			mTotalComments 	= json.getInt("mTotalComments");
+			mTitle 			= json.getString("mTitle");
+			mAddress 		= json.getString("mAddress");
+			mContent 		= json.getString("mContent");
+			mUserId 		= json.getInt("mUserId");
+			mEmail 			= json.getString("mEmail");
+			mImages 		= new ArrayList<AdImage>();
+			mComments 		= new ArrayList<Comment>();
+		}
+	}
+
 	public Ad setFormattedDate(String pFormattedDate){
 		mFormattedDate = pFormattedDate;
 		return this;
@@ -237,5 +260,9 @@ public class Ad {
 	public Ad adComment(Comment pComment){
 		mComments.add(pComment);
 		return this;
+	}
+
+	public JSONObject toJson() {
+		return Convertor.toJson(this, false);
 	}
 }

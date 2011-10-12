@@ -14,10 +14,21 @@ public class Comment {
 	private String  mFormattedDate;
 	private long    mDate;
 	private int	   	mId;
+	private int     mAdId;
 	private int 	mAuthorId;
+	private int		mRating;
 	
 	public Comment() {
 		
+	}
+	
+	public int getAdId(){
+		return mAdId;
+	}
+	
+	public Comment setAdId(int pAdId){
+		mAdId = pAdId;
+		return this;
 	}
 	
 	public String getTitle(){
@@ -87,6 +98,13 @@ public class Comment {
 	public String toString() {
 		return Convertor.toString(this);
 	}
+
+	public Comment setRating(int pRating) {
+		mRating = pRating;
+		return this;
+	}
 	
-	
+	public int getRating(){
+		return mRating;
+	}
 }

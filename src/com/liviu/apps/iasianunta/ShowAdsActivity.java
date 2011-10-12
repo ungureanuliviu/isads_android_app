@@ -2,6 +2,8 @@ package com.liviu.apps.iasianunta;
 
 import java.util.ArrayList;
 
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -260,6 +262,20 @@ public class ShowAdsActivity extends Activity implements IAdsNotifier,
 			case R.id.layout_top:
 				if(adsAdapter.getCount() > 0)
 					lstAds.setSelectionAfterHeaderView();	
+				break;
+			case R.id.ad_but_comments:
+				if(position == -1){
+					return;
+				}
+				Intent toCommentsActivity = new Intent(ShowAdsActivity.this, CommentsActivity.class);
+				JSONObject jsonAd = adsAdapter.getItem(position).getAd().toJson();
+				if(null != jsonAd){
+					Console.debug(TAG, "json ad: " + jsonAd);				
+					toCommentsActivity.putExtra(Utils.TRANSPORT_KEY, jsonAd.toString());
+					startActivityForResult(toCommentsActivity, CommentsActivity.ACTIVITY_ID);				
+				} else{
+					Toast.makeText(ShowAdsActivity.this, "Internal problem.", Toast.LENGTH_SHORT).show();
+				}
 				break;
 			default:
 				break;

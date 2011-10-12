@@ -82,7 +82,7 @@ public class MainActivity extends Activity implements OnClickListener,
 // ========================== Interfaces ========================
 	@Override
 	public void onClick(View v) {
-		switch (v.getId()) {
+		switch (v.getId()) {		
 		case R.id.but_recent_ads:
 			// show the ads activity
 			Intent toShowAdsActivity = new Intent(MainActivity.this, ShowAdsActivity.class);

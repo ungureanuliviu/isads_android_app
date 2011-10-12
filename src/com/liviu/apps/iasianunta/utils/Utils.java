@@ -8,11 +8,12 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 
 	public class Utils {
-	private final static String TAG ="Utils";
-	public static final int	EARTH_RADIUS_KM = 6371;		
-	public static final String PAYPAL_DONATE_LINK = "https://www.paypal.com/ro/cgi-bin/webscr?cmd=_flow&SESSION=xAB09h6sQxdJQYokCoNq2hjC6vnFek2AP0HEs0NSJnxBSCXx1-L8fMzIbSG&dispatch=5885d80a13c0db1f8e263663d3faee8d1e83f46a36995b3856cef1e18897ad75";
-	public static final String GA_ID = "UA-16744167-7";
-	public static String roundTwoDecimals(double d) {
+	private static final String TAG ="Utils";
+	public 	static final int	EARTH_RADIUS_KM = 6371;		
+	public 	static final String PAYPAL_DONATE_LINK = "https://www.paypal.com/ro/cgi-bin/webscr?cmd=_flow&SESSION=xAB09h6sQxdJQYokCoNq2hjC6vnFek2AP0HEs0NSJnxBSCXx1-L8fMzIbSG&dispatch=5885d80a13c0db1f8e263663d3faee8d1e83f46a36995b3856cef1e18897ad75";
+	public 	static final String GA_ID = "UA-16744167-7";
+	public  static final String TRANSPORT_KEY = "transport_key";
+	public 	static String roundTwoDecimals(double d) {
     	DecimalFormat twoDForm = new DecimalFormat("0.00");
 	
     	return twoDForm.format(d);

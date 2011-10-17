@@ -23,18 +23,23 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Gallery;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.liviu.apps.iasianunta.adapters.CategoriesAdapter;
 import com.liviu.apps.iasianunta.adapters.NewAdImagesAdapter;
 import com.liviu.apps.iasianunta.apis.API;
 import com.liviu.apps.iasianunta.data.Ad;
 import com.liviu.apps.iasianunta.data.AdImage;
+import com.liviu.apps.iasianunta.data.Category;
 import com.liviu.apps.iasianunta.data.User;
 import com.liviu.apps.iasianunta.interfaces.IAdsNotifier;
+import com.liviu.apps.iasianunta.interfaces.ICategoryNotifier;
 import com.liviu.apps.iasianunta.interfaces.ILoginNotifier;
 import com.liviu.apps.iasianunta.interfaces.IUploadNotifier;
 import com.liviu.apps.iasianunta.managers.ActivityIdProvider;
@@ -62,6 +67,7 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
 	private NewAdImagesAdapter adapterGalleryImages;
 	private AdsManager 		adMan;
 	private User 			user;
+	private CategoriesAdapter adapterCategories;
 	
 	// UI
 	private Button 			butAddImage;
@@ -80,6 +86,7 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
 	private RelativeLayout	layoutContent;
 	private LTextView		txtPostingProgress;
 	private ProgressBar		barPosting;
+	private Spinner			spinCategories;
 	
 	
 	// Services
@@ -132,7 +139,9 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
         typeface	 = Typeface.createFromAsset(getAssets(), "fonts/VAGRON.TTF");
         txtPostingProgress 	= (LTextView)findViewById(R.id.txt_posting);
         barPosting	 		= (ProgressBar)findViewById(R.id.posting_progress);
-        layoutContent  		= (RelativeLayout)findViewById(R.id.layout_content);
+        layoutContent  		= (RelativeLayout)findViewById(R.id.layout_content);   
+        spinCategories		= (Spinner) findViewById(R.id.ad_categories);        
+        adapterCategories	= new CategoriesAdapter(this);
         
         txtUserName.setText(user.getName());
         
@@ -147,6 +156,23 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
         
         butAdd.setTypeface(typeface);
         butSave.setTypeface(typeface);
+        adMan.getCategories(new ICategoryNotifier() {			
+			@Override
+			public void onCategoriesSyncronized(boolean isSuccess,
+					ArrayList<Category> pCategories) {
+			}			
+			@Override
+			public void onCategoriesLoaded(boolean isSuccess, ArrayList<Category> pCategories) {
+				if(isSuccess){
+					for(int i = 0; i < pCategories.size(); i++){
+						adapterCategories.add(pCategories.get(i));
+					}										
+				}else{
+					adapterCategories.add(new Category(1, "Toate"));
+				}
+				spinCategories.setAdapter(adapterCategories);
+			}
+		});
 	}
 	
 	@Override
@@ -356,7 +382,14 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
 		
 		if(edtxAddress.getText().toString().length() > 0)
 			newAd.setAddress(edtxAddress.getText().toString());
-		newAd.setSource(Ad.SOURCE_ANDROID);
+		int selectedItemPosition = spinCategories.getSelectedItemPosition();
+		if(Spinner.INVALID_POSITION == selectedItemPosition){
+			selectedItemPosition = 0;
+		}
+		Category newAdCat = adapterCategories.getItem(selectedItemPosition);
+		newAd.setCategoryId(newAdCat.getId());
+		newAd.setCategoryName(newAdCat.getName());		
+		newAd.setSource(Ad.SOURCE_ANDROID);		
 		
 		return true;
 	}

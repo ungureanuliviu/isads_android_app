@@ -6,6 +6,18 @@
     <uses-sdk android:minSdkVersion="8" />
 
     <application android:icon="@drawable/icon" android:label="@string/app_name">
+	<receiver android:name=".MyC2dmReceiver" android:permission="com.google.android.c2dm.permission.SEND">
+	          <!-- Receive the actual message -->
+	          <intent-filter>
+	              <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+	              <category android:name="com.liviu.apps.iasianunta" />
+	          </intent-filter>
+	          <!-- Receive the registration id -->
+	          <intent-filter>
+	              <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+	              <category android:name="com.liviu.apps.iasianunta" />
+	          </intent-filter>
+        </receiver>    
         <activity android:name=".LoginActivity"
                   android:label="@string/app_name"
                   android:windowSoftInputMode="adjustResize">
@@ -49,6 +61,9 @@
             </intent-filter>
         </activity>                                 
     </application>    
+ 	<permission android:name="com.liviu.apps.iasianunta.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+   	<uses-permission android:name="com.liviu.apps.iasianunta.permission.C2D_MESSAGE" />
+   	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />    
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />

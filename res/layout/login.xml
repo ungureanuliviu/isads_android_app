@@ -2,12 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"    
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#fafafa">
+    android:background="#eaeaea">
 	<RelativeLayout 
 		android:id = "@+id/layout_top"
 		android:layout_width="fill_parent"
 		android:layout_height="38dp"
-		android:background="@drawable/bg_top_green">
+		android:background="@drawable/top_new_background">
 		<ImageView 
 			android:id = "@+id/ic_home"
 			android:layout_width="26dp"
@@ -27,7 +27,22 @@
 			android:textStyle="bold"
 			android:layout_marginLeft="5dp"			
 			android:layout_centerVertical="true"
-			android:layout_marginTop="2dp"/>							
+			android:layout_marginTop="2dp"/>	
+			<Button
+				android:id = "@+id/login_but_new_user"
+				android:layout_width="110dp"
+				android:layout_height="30dp"
+				android:textColor="#575757"
+				android:text = "Cont nou"
+				android:layout_centerVertical="true"											
+				android:layout_alignParentRight="true"
+				android:layout_marginRight="5dp"				
+				android:gravity="left|center_vertical"			
+				android:drawablePadding="5dp"			
+				android:drawableLeft="@drawable/ic_back"
+				android:paddingLeft="9dp"
+				android:textSize="13sp"							
+				android:background="@drawable/new_button_background" />							
 	</RelativeLayout>	
 	<RelativeLayout 
 		android:id = "@+id/layout_content"
@@ -39,8 +54,7 @@
 			android:layout_width="fill_parent"
 			android:layout_height="240dp"
 			android:layout_marginLeft="12dp"
-			android:layout_marginRight="12dp"						
-			android:background="@drawable/bg_white"
+			android:layout_marginRight="12dp"									
 			android:layout_centerVertical="true">			
 			<ScrollView 
 				android:layout_width="fill_parent"
@@ -50,17 +64,18 @@
 				<RelativeLayout 
 					android:id = "@+id/login_form_holder"
 					android:layout_width="fill_parent"					
-					android:layout_height="wrap_content">
+					android:layout_height="wrap_content"
+					android:background="@drawable/round_corner_shape">
 						<com.liviu.apps.iasianunta.ui.LTextView  
 							android:id = "@+id/txt_title"
 							android:layout_width="fill_parent"
 							android:layout_height="wrap_content"	
-							android:layout_marginTop="5dp"																	
-							android:textSize="17sp"
+							android:layout_marginTop="10dp"																	
+							android:textSize="16sp"
 							android:textStyle="bold"
 							android:text = "Login"			
 							android:gravity = "left"
-							android:layout_marginLeft="10dp"
+							android:layout_marginLeft="10dp"							
 							android:textColor="#676767"						
 							android:layout_alignParentTop = "true"/>	
 						<View 
@@ -129,40 +144,42 @@
 							android:id = "@id/login_layout_bottom"
 							android:layout_width="fill_parent" 
 							android:layout_height="45dp"
+							android:layout_marginLeft="1dp"
+							android:layout_marginRight="1dp"
+							android:layout_marginBottom="1dp"
 							android:layout_alignParentBottom="true"
 							android:background="@drawable/bg_bottom_gray8">
 							<Button
 								android:id = "@+id/login_but_later"
-								android:layout_width="80dp"
+								android:layout_width="140dp"
 								android:layout_height="35dp"
 								android:textColor="#575757"
 								android:text = "Mai tarziu"
-								android:layout_alignParentLeft="true"	
-								android:layout_marginLeft="3dp"
-								android:layout_marginTop="2dp"
-								android:layout_below="@id/edtx_user_password"
-								android:background="@drawable/default_button_background" />									
+								android:layout_alignParentLeft="true"								
+								android:layout_marginTop="2dp"				
+								android:layout_marginLeft="5dp"		
+								android:gravity="left|center_vertical"			
+								android:drawablePadding="5dp"			
+								android:drawableLeft="@drawable/ic_but_ok"
+								android:paddingLeft="9dp"
+								android:textSize="13sp"			
+								android:background="@drawable/new_button_background" />								
 							<Button
 								android:id = "@+id/login_but_login"
-								android:layout_width="80dp"
+								android:layout_width="140dp"
 								android:layout_height="35dp"
 								android:textColor="#575757"
 								android:text = "Login"
-								android:layout_alignParentRight="true"  	
-								android:layout_marginRight="3dp"
-								android:layout_marginTop="2dp"
+								android:layout_alignParentRight="true"								
+								android:layout_marginTop="2dp"				
+								android:layout_marginRight="5dp"		
+								android:gravity="left|center_vertical"			
+								android:drawablePadding="5dp"			
+								android:drawableLeft="@drawable/ic_back"
+								android:paddingLeft="9dp"
+								android:textSize="13sp"			
 								android:layout_below="@id/edtx_user_password"
-								android:background="@drawable/default_button_background" />			
-							<Button
-								android:id = "@+id/login_but_new_user"
-								android:layout_width="110dp"
-								android:layout_height="35dp"
-								android:textColor="#575757"
-								android:text = "Cont nou"
-								android:layout_centerHorizontal="true"								
-								android:layout_marginTop="2dp"								
-								android:layout_below="@id/edtx_user_password"
-								android:background="@drawable/default_button_background" />								
+								android:background="@drawable/new_button_background" />																						
 						</RelativeLayout>																			
 				</RelativeLayout>		
 			</ScrollView>								

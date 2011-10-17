@@ -2,13 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"    
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/main_background">
+    android:background="#eaeaea">
 	<RelativeLayout 
 		android:id = "@+id/layout_top"
 		android:layout_width="fill_parent"
 		android:layout_height="38dp"
 		android:clickable="true"
-		android:background="@drawable/bg_top_green">
+		android:background="@drawable/top_new_background">
 		<ImageView 
 			android:id = "@+id/ic_home"
 			android:layout_width="26dp"
@@ -36,19 +36,11 @@
 		android:layout_height="30dp"
 		android:background="@drawable/bg_bar_gray"
 		android:layout_below="@id/layout_top">	
-		<ImageView 
-			android:id = "@+id/user_image"
-			android:layout_width="22dp"
-			android:layout_height="22dp"
-			android:layout_marginLeft="6dp"
-			android:layout_alignParentLeft="true"
-			android:layout_centerVertical="true"
-			android:src="@drawable/ic_no_user_image"/>	
 		<com.liviu.apps.iasianunta.ui.LTextView
 			android:id = "@+id/user_name"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_toRightOf="@id/user_image"
+			android:layout_alignParentLeft="true"
 			android:layout_marginTop="9dp"
 			android:textColor = "#777777"
 			android:textSize="10sp"  
@@ -66,7 +58,7 @@
 			android:paddingLeft="10dp"
 			android:paddingRight="10dp"
 			android:textSize="10dp"
-			android:background="@drawable/default_button_background"/>  			  				
+			android:background="@drawable/new_button_background"/>  			  				
 	</RelativeLayout>
 	<ProgressBar android:id="@+id/loading_ads_progress"
        style="?android:attr/progressBarStyleSmall"
@@ -84,12 +76,24 @@
 		android:textColor = "#888888"
 		android:textSize="12sp"
 		android:visibility="visible"
-		android:text = "Preiau anunturi...."							
+		android:text = "Preiau anunturile...."							
 		android:layout_marginTop="5dp"					
 		android:drawableLeft="@drawable/ic_loading"
 		android:drawablePadding="5dp"		
 		android:gravity="left|center_vertical"
 		android:layout_below="@id/loading_ads_progress"/>		
+	<com.liviu.apps.iasianunta.ui.LTextView
+		android:id = "@+id/txt_no_ads"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_centerInParent = "true"
+		android:textColor = "#888888"
+		android:textSize="12sp"
+		android:visibility="gone"
+		android:text = "Nu exista nici un anunt."													
+		android:drawableLeft="@drawable/ic_but_note"
+		android:drawablePadding="5dp"		
+		android:gravity="left|center_vertical"/>			
 	<RelativeLayout 
 		android:id = "@+id/layout_content"
 		android:layout_width="fill_parent"
@@ -167,7 +171,7 @@
 			android:gravity="left|center_vertical"			
 			android:drawablePadding="5dp"
 			android:drawableLeft="@drawable/ic_but_upload"
-			android:background="@drawable/default_button_background"/>  
+			android:background="@drawable/new_button_background"/>  
 		<Button 
 			android:id = "@+id/but_save"
 			android:layout_width="135dp"
@@ -183,13 +187,14 @@
 			android:gravity="left|center_vertical"			
 			android:drawablePadding="5dp"			
 			android:drawableLeft="@drawable/ic_but_save"	
-			android:background="@drawable/default_button_background"/>  		  
+			android:background="@drawable/new_button_background"/>  		  
 	</RelativeLayout>	
 	<RelativeLayout 
 		android:id = "@+id/layout_images"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
 		android:background="#cc000000"
+		android:clickable="true"
 		android:visibility="gone">
 		<Gallery 
 			android:id = "@+id/gallery_images"
@@ -211,6 +216,6 @@
 			android:gravity="left|center_vertical"			
 			android:drawablePadding="5dp"			
 			android:drawableLeft="@drawable/ic_back"	
-			android:background="@drawable/default_button_background"/>  		
+			android:background="@drawable/new_button_background"/>  		
 	</RelativeLayout>				
 </RelativeLayout>

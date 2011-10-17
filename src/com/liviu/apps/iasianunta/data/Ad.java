@@ -61,21 +61,22 @@ public class Ad {
 	
 	public Ad(JSONObject json) throws JSONException {
 		if(null != json){
-			mPhone 			= json.getString("mPhone");
-			mCategoryId 	= json.getInt("mCategoryId");
-			mPrice 			= json.getDouble("mPrice");
-			mFormattedDate 	= json.getString("mFormattedDate");
-			mDate 			= json.getLong("mDate");
-			mCategoryName 	= json.getString("mCategoryName");
-			mId 			= json.getInt("mId");
-			mViewsCount 	= json.getInt("mViewsCount");
-			mSource 		= json.getString("mSource");
-			mTotalComments 	= json.getInt("mTotalComments");
-			mTitle 			= json.getString("mTitle");
-			mAddress 		= json.getString("mAddress");
-			mContent 		= json.getString("mContent");
-			mUserId 		= json.getInt("mUserId");
-			mEmail 			= json.getString("mEmail");
+			mPhone 			= (json.isNull("mPhone") 			== false ? json.getString("mPhone") : "");
+			mAuthor			= (json.isNull("mAuthor") 			== false ? json.getString("mAuthor") : "");
+			mCategoryId 	= (json.isNull("mCategoryId") 		== false ? json.getInt("mCategoryId") : -1);
+			mPrice 			= (json.isNull("mPrice")			== false ? json.getDouble("mPrice") : 0);
+			mFormattedDate 	= (json.isNull("mFormattedDate") 	== false ? json.getString("mFormattedDate") : ""); 
+			mDate 			= (json.isNull("mDate") 			== false ? json.getLong("mDate") : Utils.now());
+			mCategoryName 	= (json.isNull("mCategoryName") 	== false ? json.getString("mCategoryName") : "");
+			mId 			= (json.isNull("mId") 				== false ? json.getInt("mId") : -1);
+			mViewsCount 	= (json.isNull("mViewsCount") 		== false ? json.getInt("mViewsCount") : 0);
+			mSource 		= (json.isNull("mSource") 			== false ? json.getString("mSource") : "android");
+			mTotalComments 	= (json.isNull("mTotalComments") 	== false ? json.getInt("mTotalComments") : 0);
+			mTitle 			= (json.isNull("mTitle") 			== false ? json.getString("mTitle") : "");
+			mAddress 		= (json.isNull("mAddress") 			== false ? json.getString("mAddress") : "");
+			mContent 		= (json.isNull("mContent") 			== false ? json.getString("mContent") : "");
+			mUserId 		= (json.isNull("mUserId") 			== false ? json.getInt("mUserId") : -1);
+			mEmail 			= (json.isNull("mEmail") 			== false ? json.getString("mEmail") : "");
 			mImages 		= new ArrayList<AdImage>();
 			mComments 		= new ArrayList<Comment>();
 		}

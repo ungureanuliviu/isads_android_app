@@ -3,6 +3,7 @@ package com.liviu.apps.iasianunta;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
@@ -78,6 +79,14 @@ public class MainActivity extends Activity implements OnClickListener,
         	syncMan.setOnCategoriesSyncedNotifier(this);
 	        syncMan.syncCategories();	        
         }
+        
+        Intent registrationIntent = new Intent("com.google.android.c2dm.intent.REGISTER");
+
+        registrationIntent.putExtra("app", PendingIntent.getBroadcast(this, 0, new Intent(), 0));
+
+        registrationIntent.putExtra("sender", "smartliviu@gmail.com");
+
+        startService(registrationIntent);        
     }
 // ========================== Interfaces ========================
 	@Override
@@ -140,3 +149,11 @@ public class MainActivity extends Activity implements OnClickListener,
 		// nothing here
 	}
 }
+/*
+	DQAAAMEAAAAcZArTYpaDS14tBrSxrzga3oH2BTkrVz4o7SlX_m_6YBY5kXjSPH6s8ZKmRfqHbPPQYkULM_FC4p80uQQ6WWqdJFiPNWMsmEvnrQUI3L8jKS3p3I6nNL2vsOgGkT5xFdXVJhNIpR08enEqOD5w--hGeCdXrzcOiOzyPfvGo6d0K2kmT84ZmyXqBxEHcr41-7vhJZnYrXOWTIjgo20yytFOvu2Lo386Gb-m9S99Q5U_lmSrnaSMtwAFyxVFGtIMl7MwXy6ijyJR-wY4_dq3nw6s
+	APA91bFJwCGGcgG9eKvJLCzI7c_5L0ITxThuzG5G2SqFjX82uDqyR_h8ZhKFnCTP_Dw2Pr22qNW6hcNIQ3xilmKw4_37b7bqvEKYLVFT-s8Rijrdi02Xhxgvwvk62zxQgtew6rIiBb7R11l7M_vlGDb7_X6st_Cshg
+
+
+
+	curl --header 'Authorization: GoogleLogin auth=DQAAAMEAAAAcZArTYpaDS14tBrSxrzga3oH2BTkrVz4o7SlX_m_6YBY5kXjSPH6s8ZKmRfqHbPPQYkULM_FC4p80uQQ6WWqdJFiPNWMsmEvnrQUI3L8jKS3p3I6nNL2vsOgGkT5xFdXVJhNIpR08enEqOD5w--hGeCdXrzcOiOzyPfvGo6d0K2kmT84ZmyXqBxEHcr41-7vhJZnYrXOWTIjgo20yytFOvu2Lo386Gb-m9S99Q5U_lmSrnaSMtwAFyxVFGtIMl7MwXy6ijyJR-wY4_dq3nw6s' 'https://android.apis.google.com/c2dm/send' -d registration_id=APA91bFJwCGGcgG9eKvJLCzI7c_5L0ITxThuzG5G2SqFjX82uDqyR_h8ZhKFnCTP_Dw2Pr22qNW6hcNIQ3xilmKw4_37b7bqvEKYLVFT-s8Rijrdi02Xhxgvwvk62zxQgtew6rIiBb7R11l7M_vlGDb7_X6st_Cshg -d 'data.payload=This data will be send to your application as payload' -d collapse_key=0	
+*/

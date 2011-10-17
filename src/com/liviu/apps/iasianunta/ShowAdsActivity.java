@@ -58,6 +58,7 @@ public class ShowAdsActivity extends Activity implements IAdsNotifier,
 	private AdsAdapter		adsAdapter;
 	private int				currentPage 	= 0;	
 	private int				adsPerPage  	= 10;
+	private int				currentCategoryId = 1;
 	private boolean 		canLoadMoreAds 	= true;
 	private ShowAdImagesAdapter galleryAdapter;
 	
@@ -72,6 +73,7 @@ public class ShowAdsActivity extends Activity implements IAdsNotifier,
 	private Button			butGalBack;
 	private RelativeLayout	overlay;
 	private RelativeLayout	layoutTop;
+	private LTextView		txtNoAds;
 		
 	
 	// Services
@@ -108,12 +110,41 @@ public class ShowAdsActivity extends Activity implements IAdsNotifier,
         butGalBack				= (Button)findViewById(R.id.gallery_but_back);
         galleryAdapter			= new ShowAdImagesAdapter(this);
         layoutTop				= (RelativeLayout)findViewById(R.id.layout_top);
+        txtNoAds				= (LTextView)findViewById(R.id.txt_no_ads);
         
         galImages.setAdapter(galleryAdapter);
+        categoryView.setOnClickListener(new OnClickListener() {			
+			@Override
+			public void onClick(View v) {				
+				// get position
+				Integer position = (Integer)v.getTag();
+				if(null != position){
+					position = position.intValue();
+				}else{
+					Console.debug(TAG, "cat position is null");
+					return;
+				}			
+				
+				Category selectedCategory = categoryView.getItem(position);
+				currentPage 			  = 0;
+				adsAdapter.clear();
+				adsAdapter.notifyDataSetChanged();
+				
+				pBarLoading.setVisibility(View.VISIBLE);
+				txtLoading.setVisibility(View.VISIBLE);
+				loadMoreAdsLayout.setVisibility(View.GONE);
+				txtNoAds.setVisibility(View.GONE);
+				adsAdapter.notifyDataSetChanged();
+				canLoadMoreAds = false;
+				currentCategoryId = selectedCategory.getId();
+				adsMan.getAds(currentCategoryId, currentPage, adsPerPage);				
+			}
+		});
+        
         // load categories
         // get them from cache is possible
         if(null != LocalCache.categories){
-        	int color = Color.parseColor("#00aeff");
+        	int color = Color.parseColor("#ff2400");
 			for(int i = 0; i < LocalCache.categories.size(); i++){
 				categoryView.addCategory(LocalCache.categories.get(i), 100, color);
 			}
@@ -128,7 +159,7 @@ public class ShowAdsActivity extends Activity implements IAdsNotifier,
 				@Override
 				public void onCategoriesLoaded(boolean isSuccess, ArrayList<Category> pCategories) {
 					Console.debug(TAG, "onCategoriesLoaded: " + isSuccess + " " + pCategories);
-					int color = Color.parseColor("#00aeff");
+					int color = Color.parseColor("#ff2400");
 					if(isSuccess){
 						for(int i = 0; i < pCategories.size(); i++){
 							categoryView.addCategory(pCategories.get(i), 100, color);
@@ -140,12 +171,12 @@ public class ShowAdsActivity extends Activity implements IAdsNotifier,
 			}); 
         }
         adsMan.setAdsNotifier(this);
-        adsMan.getAds(1, currentPage, adsPerPage);
+        adsMan.getAds(currentCategoryId, currentPage, adsPerPage);
         lstAds.setAdapter(adsAdapter);
         lstAds.setOnScrollListener(this);
         adsAdapter.setOnClickListener(this);
         butGalBack.setOnClickListener(this);
-        layoutTop.setOnClickListener(this);
+        layoutTop.setOnClickListener(this);        
 	}
 
 	@Override
@@ -164,13 +195,16 @@ public class ShowAdsActivity extends Activity implements IAdsNotifier,
 				adsAdapter.addItem(pLoadedAds.get(i));				
 			}
 			adsMan.loadThImages(pLoadedAds);
-			pBarLoading.setVisibility(View.GONE);
-			txtLoading.setVisibility(View.GONE);
-			loadMoreAdsLayout.setVisibility(View.GONE);
 			adsAdapter.notifyDataSetChanged();
 			canLoadMoreAds = true;			
 			vbb.vibrate(CreateNewAddActivity.VIB_LENGTH);
+		}else{
+			  txtNoAds.setVisibility(View.VISIBLE);
 		}
+		
+		pBarLoading.setVisibility(View.GONE);
+		txtLoading.setVisibility(View.GONE);
+		loadMoreAdsLayout.setVisibility(View.GONE);		
 	}
 
 	@Override
@@ -178,7 +212,7 @@ public class ShowAdsActivity extends Activity implements IAdsNotifier,
 		if((firstVisibleItem + 1 + visibleItemCount) > totalItemCount && totalItemCount != 0){						
 			if(canLoadMoreAds){				
 				currentPage++;				
-				adsMan.getAds(1,currentPage, adsPerPage);		
+				adsMan.getAds(currentCategoryId,currentPage, adsPerPage);		
 				loadMoreAdsLayout.setVisibility(View.VISIBLE);				
 			}
 			canLoadMoreAds = false;
@@ -272,6 +306,7 @@ public class ShowAdsActivity extends Activity implements IAdsNotifier,
 				if(null != jsonAd){
 					Console.debug(TAG, "json ad: " + jsonAd);				
 					toCommentsActivity.putExtra(Utils.TRANSPORT_KEY, jsonAd.toString());
+					toCommentsActivity.putExtra("ad_index", position + 1);
 					startActivityForResult(toCommentsActivity, CommentsActivity.ACTIVITY_ID);				
 				} else{
 					Toast.makeText(ShowAdsActivity.this, "Internal problem.", Toast.LENGTH_SHORT).show();
@@ -281,4 +316,27 @@ public class ShowAdsActivity extends Activity implements IAdsNotifier,
 				break;
 		}
 	}			
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		Console.debug(TAG, "onActivityResult: requestCode: " + requestCode + " resultCode: " + resultCode + " data: " + data);
+		
+		if(requestCode == CommentsActivity.ACTIVITY_ID){
+			if(resultCode == Utils.RESULT_CODE_COMMENTS_COUNT_CHANGED){
+				if(null != data){
+					int newCommentsCount = data.getIntExtra("new_comments_count", -1);
+					int ad_id 			 = data.getIntExtra("ad_id", -1);
+					
+					for(int i = 0; i < adsAdapter.getCount(); i++){
+						if(adsAdapter.getItem(i).getAd().getId() == ad_id){
+							adsAdapter.getItem(i).getAd().setTotalComments(newCommentsCount);
+							adsAdapter.notifyDataSetChanged();
+							break;
+						}
+					}
+				}
+			}
+		}
+		super.onActivityResult(requestCode, resultCode, data);
+	}
 }

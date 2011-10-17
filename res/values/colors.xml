@@ -3,4 +3,5 @@
 	<color name="double_line_color">#bababa</color>
 	<color name="text_color">#777777</color>
 	<color name="blue">#0000ff</color>
+	<color name="white">#ffffff</color>
 </resources>

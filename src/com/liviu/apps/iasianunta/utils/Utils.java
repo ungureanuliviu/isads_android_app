@@ -13,6 +13,7 @@ import android.net.ConnectivityManager;
 	public 	static final String PAYPAL_DONATE_LINK = "https://www.paypal.com/ro/cgi-bin/webscr?cmd=_flow&SESSION=xAB09h6sQxdJQYokCoNq2hjC6vnFek2AP0HEs0NSJnxBSCXx1-L8fMzIbSG&dispatch=5885d80a13c0db1f8e263663d3faee8d1e83f46a36995b3856cef1e18897ad75";
 	public 	static final String GA_ID = "UA-16744167-7";
 	public  static final String TRANSPORT_KEY = "transport_key";
+	public 	static final int RESULT_CODE_COMMENTS_COUNT_CHANGED = 1;
 	public 	static String roundTwoDecimals(double d) {
     	DecimalFormat twoDForm = new DecimalFormat("0.00");
 	

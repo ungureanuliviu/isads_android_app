@@ -557,7 +557,7 @@ public class API {
 							  .setUserId(jAd.isNull("user_id") 		== true ? -1 : jAd.getInt("user_id"))
 							  .setViewsCount(jAd.isNull("views") 	== true ? 0 : jAd.getInt("views"))
 							  .setAuthor(jAd.isNull("user_name") 	== true ? null : jAd.getString("user_name"))
-							  .setFormattedDate(jAd.isNull("date")  == true ? "" : Utils.formatDate(jAd.getLong("date") * 1000, "d MMM yyyy HH:mm:ss"))
+							  .setFormattedDate(jAd.isNull("date")  == true ? "" : Utils.formatDate(jAd.getLong("date") * 1000, "d MMM yyyy"))
 							  .setCategoryName(jAd.isNull("cat_name") == true ? null : jAd.getString("cat_name"))
 							  .adComment(new Comment().setTitle("testing1"))
 							  .adComment(new Comment().setTitle("testing2"))
@@ -654,5 +654,27 @@ public class API {
 			e.printStackTrace();
 			return null;
 		}		
+	}
+
+	public Comment addComment(Comment pComment, String pUserAuth, String pUserPassword) {		
+		try {
+			JSONObject params = new JSONObject();
+			params.put("ad_id", pComment.getAdId());
+			params.put("title", pComment.getTitle());
+			params.put("content", pComment.getContent());
+			params.put("owner_user_id", pComment.getAuthorId());
+			JSONResponse jsonResponse = doRequest(API_URL + "/comments/add/", params, pUserAuth, pUserPassword);
+			if(jsonResponse != null && jsonResponse.isSuccess()){
+				int newAdId = jsonResponse.getJSONObject("comment").getInt("id");
+				pComment.setId(newAdId);
+				return pComment;
+			} else{
+				return null;
+			}
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}		
+		return null;
 	}	
 }

@@ -22,13 +22,14 @@ import com.liviu.apps.iasianunta.utils.Console;
 import com.liviu.apps.iasianunta.utils.Utils;
 
 public class AdsManager {
-			
+				
 	// Constants
 	private final String 	TAG 					= "AdsManager";
 	private final int	 	MSG_AD_SAVED 			= 1;
 	private final int 		MSG_CATEGORIES_LOADED 	= 2;
 	private final int 		MSG_TH_IMAGE_LOADED 	= 3;
 	private final int 		MSG_COMMENTS_LOADED		= 4;
+	private final int       MSG_COMMENT_ADDED		= 5;
 
 	// Data
 	private API 		mApi;
@@ -85,6 +86,15 @@ public class AdsManager {
 							mCommentsNotifer.onCommentLoaded(true, msg.arg1, (ArrayList<Comment>)msg.obj);
 						}else{
 							mCommentsNotifer.onCommentLoaded(true, -1, null);
+						}
+					}
+					break;
+				case MSG_COMMENT_ADDED:
+					if(null != mCommentsNotifer){
+						if(null != msg.obj){
+							mCommentsNotifer.onCommentAdded(true, (Comment)msg.obj);
+						} else{
+							mCommentsNotifer.onCommentAdded(false, null);
 						}
 					}
 					break;
@@ -288,6 +298,34 @@ public class AdsManager {
 			tLoadComments.start();
 		}
 		
+		return this;
+	}
+
+	public AdsManager addComment(Comment pComment, String pUserAuth, String pUserPassword) {
+		
+		if(null == pComment){
+			mHandler.sendEmptyMessage(MSG_COMMENT_ADDED);
+			return this;
+		}
+		final Comment cComment 	= pComment;
+		final String  cUserAuth = pUserAuth;
+		final String  cUserPass = pUserPassword;
+		
+		Thread tAddComment = new Thread(new Runnable() {			
+			@Override
+			public void run() {
+				Comment addedComment = mApi.addComment(cComment, cUserAuth, cUserPass);
+				Message msg = new Message();
+				msg.what 	= MSG_COMMENT_ADDED;
+				
+				if(null != addedComment){
+					msg.obj = addedComment;					
+				}
+				
+				mHandler.sendMessage(msg);
+			}
+		});
+		tAddComment.start();
 		return this;
 	}	
 }

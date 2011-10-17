@@ -45,16 +45,16 @@ public class LoginActivity extends Activity implements ILoginNotifier,
         setContentView(R.layout.login);
          
         // Initialize
-        api = new API();
-        user = User.getInstance();
-        butLater = (Button)findViewById(R.id.login_but_later);
-        butLogin = (Button)findViewById(R.id.login_but_login);
+        api 			 = new API();
+        user 		 	 = User.getInstance();
+        butLater 		 = (Button)findViewById(R.id.login_but_later);
+        butLogin 		 = (Button)findViewById(R.id.login_but_login);
         edtxUserAuthName = (LEditText)findViewById(R.id.edtx_username);
         edtxUserPassword = (LEditText)findViewById(R.id.edtx_user_password);                  
         
         // Set listeners
         butLater.setOnClickListener(this);
-        butLogin.setOnClickListener(this);
+        butLogin.setOnClickListener(this);  
         
         if(user.isLoggedIn()){
 			Intent toMainActivity = new Intent(LoginActivity.this, MainActivity.class);

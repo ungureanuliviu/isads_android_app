@@ -155,6 +155,10 @@ public class AdsAdapter extends BaseAdapter{
 		mOnClickListener = pListener;
 		return this;
 	}
+
+	public void clear() {
+		mItems.clear();		
+	}
 	
 	
 }

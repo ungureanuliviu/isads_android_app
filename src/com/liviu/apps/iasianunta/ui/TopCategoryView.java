@@ -104,15 +104,31 @@ public class TopCategoryView extends HorizontalScrollView implements OnClickList
 	public void onClick(View view) {
 		int position = ((Integer)view.getTag()).intValue();
 		CategoryView catView = mItems.get(position);
-		if(catView.isSelected()){
-			view.setBackgroundColor(catView.getDefaultColor());
-		} else{			
-			view.setBackgroundColor(catView.getSelectedColor());
+		for(int i = 0; i < mLayout.getChildCount(); i++){
+			Integer catId = (Integer)mLayout.getChildAt(i).getTag();
+			if(null != catId){
+				try{  
+					if(mItems.get(catId).isSelected()){
+						mLayout.getChildAt(i).setBackgroundColor(mItems.get(catId).getDefaultColor());
+						mItems.get(catId).setSelected(false);
+					}
+				}catch (IndexOutOfBoundsException e) {   
+					e.printStackTrace();
+				}catch (NullPointerException e) {
+					e.printStackTrace();
+				} 
+			}			
 		}
-		mItems.get(position).setSelected(!catView.isSelected());
+
+		view.setBackgroundColor(catView.getSelectedColor());		
+		mItems.get(position).setSelected(true);
 		
 		// trigger listener
 		if(null != mOnClickListener)
 			mOnClickListener.onClick(view);
 	}	
+	
+	public Category getItem(int pPosition){
+		return mItems.get(pPosition).getCategory();
+	}
 }

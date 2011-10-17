@@ -7,7 +7,7 @@
 		android:id = "@+id/layout_top"
 		android:layout_width="fill_parent"
 		android:layout_height="38dp"
-		android:background="@drawable/bg_top_green">
+		android:background="@drawable/top_new_background">
 		<ImageView 
 			android:id = "@+id/ic_home"
 			android:layout_width="26dp"
@@ -43,7 +43,7 @@
 			android:layout_marginRight="4dp"
 			android:layout_alignParentRight="true"
 			android:drawableRight="@drawable/ic_edtx_x"
-			android:background="@drawable/edtx_background"/>				
+			android:background="@drawable/edtx_background_green"/>				
 	</RelativeLayout>
 	<RelativeLayout 
 		android:id = "@+id/layout_top_bar"
@@ -51,19 +51,11 @@
 		android:layout_height="30dp"
 		android:background="@drawable/bg_bar_gray"
 		android:layout_below="@id/layout_top">	
-		<ImageView 
-			android:id = "@+id/user_image"
-			android:layout_width="22dp"
-			android:layout_height="22dp"
-			android:layout_marginLeft="6dp"
-			android:layout_alignParentLeft="true"
-			android:layout_centerVertical="true"
-			android:src="@drawable/ic_no_user_image"/>	
 		<com.liviu.apps.iasianunta.ui.LTextView
 			android:id = "@+id/user_name"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_toRightOf="@id/user_image"
+			android:layout_alignParentLeft="true"
 			android:layout_marginTop="9dp"
 			android:textColor = "#777777"
 			android:textSize="10sp"  
@@ -81,7 +73,7 @@
 			android:paddingLeft="10dp"
 			android:paddingRight="10dp"
 			android:textSize="10dp"
-			android:background="@drawable/button_background"/>  			  				
+			android:background="@drawable/new_button_background"/>  			  				
 	</RelativeLayout>
 	<RelativeLayout 
 		android:id = "@+id/layout_content"
@@ -259,6 +251,7 @@
 			android:clickable="true"
 			android:layout_marginLeft="10dp"
 			android:paddingLeft="10dp"
+			android:visibility="gone"
 			android:paddingRight="10dp"
 			android:paddingTop="5dp"
 			android:paddingBottom="5dp"
@@ -284,6 +277,7 @@
 			android:clickable="true"
 			android:layout_marginRight="15dp"
 			android:paddingLeft="10dp"
+			android:visibility="gone"
 			android:paddingRight="10dp"
 			android:paddingTop="5dp"
 			android:paddingBottom="5dp"
@@ -318,6 +312,6 @@
 			android:layout_centerInParent="true"
 			android:paddingLeft="10dp"
 			android:paddingRight="10dp"
-			android:background="@drawable/button_background"/>  		  
+			android:background="@drawable/new_button_background"/>  		  
 	</RelativeLayout>					
 </RelativeLayout>

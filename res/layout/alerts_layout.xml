@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"    
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#fefefe">
+	<RelativeLayout 
+		android:id = "@+id/layout_top"
+		android:layout_width="fill_parent"
+		android:layout_height="38dp"
+		android:background="@drawable/top_new_background">
+		<ImageView 
+			android:id = "@+id/ic_home"
+			android:layout_width="26dp"
+			android:layout_height="20dp"
+			android:layout_marginLeft="6dp"
+			android:layout_alignParentLeft="true"
+			android:layout_centerVertical="true"
+			android:src="@drawable/ic_home"/>	
+		<com.liviu.apps.iasianunta.ui.LTextView
+			android:id = "@+id/title"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_toRightOf="@id/ic_home"			
+			android:textColor = "#ffffff"
+			android:textSize="18sp"
+			android:text = "Alerte"
+			android:textStyle="bold"
+			android:layout_marginLeft="5dp"			
+			android:layout_centerVertical="true"
+			android:layout_marginTop="2dp"/>		
+		<com.liviu.apps.iasianunta.ui.LEditText 
+			android:id = "@+id/edtx_what"
+			android:layout_width="150dp"
+			android:layout_height="27dp"
+			android:textColor="#575757"
+			android:hint="Cauta anunturi"			
+			android:text = ""
+			android:imeOptions="actionSearch"
+			android:textSize="12dp"
+			android:layout_centerVertical="true"				
+			android:paddingLeft="5dp"			
+			android:singleLine="true"
+			android:layout_marginRight="4dp"
+			android:layout_alignParentRight="true"
+			android:drawableRight="@drawable/ic_edtx_x"
+			android:background="@drawable/edtx_background"/>				
+	</RelativeLayout>
+	<RelativeLayout 
+		android:id = "@+id/layout_top_bar"
+		android:layout_width="fill_parent"
+		android:layout_height="30dp"
+		android:background="@drawable/bg_bar_gray"
+		android:layout_below="@id/layout_top">	
+		<com.liviu.apps.iasianunta.ui.LTextView
+			android:id = "@+id/user_name"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentLeft="true"
+			android:layout_marginTop="9dp"
+			android:textColor = "#777777"
+			android:textSize="10sp"  
+			android:text = "Holla amigos"
+			android:layout_marginLeft="5dp"/>		
+		<Button 
+			android:id = "@+id/main_but_login"
+			android:layout_width="wrap_content"
+			android:layout_height="25dp"
+			android:textColor="#575757"
+			android:text="Logout"					
+			android:layout_alignParentRight="true"
+			android:layout_marginRight="1dp"
+			android:layout_centerVertical="true"
+			android:paddingLeft="10dp"
+			android:paddingRight="10dp"
+			android:textSize="10dp"
+			android:background="@drawable/new_button_background"/>  			  				
+	</RelativeLayout>
+	<RelativeLayout 
+		android:id = "@+id/layout_content"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"		
+		android:layout_below="@id/layout_top_bar"
+		android:layout_above="@+id/layout_bottom">		
+		<ProgressBar android:id="@+id/alerts_progress"
+	       style="?android:attr/progressBarStyleSmall"
+	       android:indeterminateOnly = "true"
+	       android:layout_width="15dp"
+	       android:layout_height="15dp"   
+	       android:visibility="visible"          		        
+		   android:layout_marginTop="5dp"
+		   android:layout_centerInParent="true"	   
+		   android:indeterminateDrawable = "@drawable/progress_small"/>  	  
+		<com.liviu.apps.iasianunta.ui.LTextView
+			android:id = "@+id/txt_alerts_progress"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_centerHorizontal="true"						   	   					
+			android:textColor = "#888888"
+			android:textSize="12sp"
+			android:visibility="visible"
+			android:text = "Preiau alertele dvs...."							
+			android:layout_marginTop="5dp"					
+			android:drawableLeft="@drawable/ic_loading"
+			android:drawablePadding="5dp"		
+			android:gravity="left|center_vertical"
+			android:layout_below="@id/alerts_progress"/>	
+		<ListView 
+			android:id = "@+id/lst_alerts"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:cacheColorHint="#00000000"
+			android:divider="#00000000"
+			android:dividerHeight="0dp"
+			android:listSelector="#00000000"
+			android:clickable="true" 
+			android:visibility="gone"			
+			android:layout_marginLeft="5dp"
+			android:layout_marginRight="5dp"/>	
+		<com.liviu.apps.iasianunta.ui.LTextView
+			android:id = "@+id/txt_no_alerts"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_centerInParent="true"						   	   					
+			android:textColor = "#888888"
+			android:textSize="12sp"
+			android:visibility="gone"
+			android:text = "Nu exista alerte."							
+			android:layout_marginTop="5dp"					
+			android:drawableLeft="@drawable/ic_but_note"
+			android:drawablePadding="5dp"		
+			android:gravity="left|center_vertical"/>																				
+	</RelativeLayout>
+	<RelativeLayout 
+		android:id = "@id/layout_bottom"
+		android:layout_width="fill_parent"
+		android:layout_height="50dp"
+		android:background="@drawable/bg_bottom_gray8"
+		android:layout_alignParentBottom="true">					
+		<Button 
+			android:id = "@+id/but_add_alert"
+			android:layout_width="135dp"
+			android:layout_height="35dp"
+			android:textColor="#666666"
+			android:text="Adauga alerta"					
+			android:layout_centerInParent="true"
+			android:paddingLeft="9dp"			
+			android:paddingRight="5dp"
+			android:textSize="13sp"
+			android:gravity="left|center_vertical"			
+			android:drawablePadding="5dp"			
+			android:drawableLeft="@drawable/ic_plus"	
+			android:background="@drawable/new_button_background"/>    
+	</RelativeLayout>					
+</RelativeLayout>

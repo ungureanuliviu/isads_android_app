@@ -40,7 +40,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
-import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
@@ -48,6 +47,7 @@ import android.provider.MediaStore;
 
 import com.liviu.apps.iasianunta.data.Ad;
 import com.liviu.apps.iasianunta.data.AdImage;
+import com.liviu.apps.iasianunta.data.Alert;
 import com.liviu.apps.iasianunta.data.Category;
 import com.liviu.apps.iasianunta.data.Comment;
 import com.liviu.apps.iasianunta.data.JSONResponse;
@@ -676,5 +676,41 @@ public class API {
 			e.printStackTrace();
 		}		
 		return null;
+	}
+
+	public synchronized ArrayList<Alert> getAllAlerts(int pUserId, String pUserAuth, String pUserPassword) {
+		try{
+			JSONObject 			paramas = new JSONObject();
+			ArrayList<Alert> 	alerts 	= new ArrayList<Alert>(); 
+			
+			paramas.put("user_id", pUserId);
+			
+			JSONResponse jsonResponse = doRequest(API_URL + "/alerts/get_all/",paramas, pUserAuth, pUserPassword);			
+			if(null != jsonResponse){
+				JSONArray jAlertsArray = jsonResponse.getJSONArray("alerts");
+				for(int i = 0; i < jAlertsArray.length(); i++){
+					JSONObject jAlert = jAlertsArray.getJSONObject(i);
+					Alert newAlert	  = new Alert();
+					
+					newAlert.setId(jAlert.getInt("id"))
+							.setTitle(jAlert.getString("title"))
+							.setUserId(jAlert.getInt("user_id"))
+							.setAddedDate(jAlert.getLong("added_date") * 1000)
+							.setLastCheckedDate(jAlert.getLong("last_checked_date") * 1000)
+							.setCategoryId(jAlert.getInt("cat_id"));
+					JSONArray jFilters = jAlert.getJSONArray("filters");
+					for(int j = 0; j < jFilters.length(); j++)
+						newAlert.addFilter(jFilters.getString(j));
+					
+					alerts.add(newAlert);
+				}				
+				return alerts;
+			} else{
+				return null;
+			}			
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}	
 }

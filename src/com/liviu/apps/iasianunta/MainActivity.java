@@ -38,10 +38,11 @@ public class MainActivity extends Activity implements OnClickListener,
 	private SyncManager syncMan;
 
 	// UI
-	private LTextView txtUserName;
-	private Button butLogin;
-	private RelativeLayout butAddNewAdd;
-	private RelativeLayout butShowAds;
+	private LTextView 		txtUserName;
+	private Button 			butLogin;
+	private RelativeLayout 	butAddNewAdd;
+	private RelativeLayout 	butShowAds;
+	private RelativeLayout 	butAlerts;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,7 @@ public class MainActivity extends Activity implements OnClickListener,
         butLogin 		= (Button)findViewById(R.id.main_but_login);
         butAddNewAdd 	= (RelativeLayout)findViewById(R.id.but_add_ad);
         butShowAds   	= (RelativeLayout)findViewById(R.id.but_recent_ads);
+        butAlerts		= (RelativeLayout)findViewById(R.id.but_alerts);
         syncMan			= new SyncManager(this);
         
         
@@ -75,6 +77,7 @@ public class MainActivity extends Activity implements OnClickListener,
         butLogin.setOnClickListener(this);
         butAddNewAdd.setOnClickListener(this);   
         butShowAds.setOnClickListener(this);
+        butAlerts.setOnClickListener(this);
         if(syncMan.shouldSyncCategories()){
         	syncMan.setOnCategoriesSyncedNotifier(this);
 	        syncMan.syncCategories();	        
@@ -92,6 +95,10 @@ public class MainActivity extends Activity implements OnClickListener,
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {		
+		case R.id.but_alerts:
+			Intent toAlertsActivity = new Intent(MainActivity.this, AlertsActivity.class);
+			startActivity(toAlertsActivity);
+			break;
 		case R.id.but_recent_ads:
 			// show the ads activity
 			Intent toShowAdsActivity = new Intent(MainActivity.this, ShowAdsActivity.class);

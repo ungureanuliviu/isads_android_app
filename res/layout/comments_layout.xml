@@ -7,7 +7,7 @@
 		android:id = "@+id/layout_top"
 		android:layout_width="fill_parent"
 		android:layout_height="38dp"
-		android:background="@drawable/bg_top_green">
+		android:background="@drawable/top_new_background">
 		<ImageView 
 			android:id = "@+id/ic_home"
 			android:layout_width="26dp"
@@ -51,23 +51,15 @@
 		android:layout_height="30dp"
 		android:background="@drawable/bg_bar_gray"
 		android:layout_below="@id/layout_top">	
-		<ImageView 
-			android:id = "@+id/user_image"
-			android:layout_width="22dp"
-			android:layout_height="22dp"
-			android:layout_marginLeft="6dp"
-			android:layout_alignParentLeft="true"
-			android:layout_centerVertical="true"
-			android:src="@drawable/ic_no_user_image"/>	
 		<com.liviu.apps.iasianunta.ui.LTextView
 			android:id = "@+id/user_name"
 			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_toRightOf="@id/user_image"
+			android:layout_height="wrap_content"							
 			android:layout_marginTop="9dp"
 			android:textColor = "#777777"
 			android:textSize="10sp"  
 			android:text = "Holla amigos"
+			android:layout_alignParentLeft = "true"
 			android:layout_marginLeft="5dp"/>		
 		<Button 
 			android:id = "@+id/main_but_login"
@@ -81,7 +73,7 @@
 			android:paddingLeft="10dp"
 			android:paddingRight="10dp"
 			android:textSize="10dp"
-			android:background="@drawable/button_background"/>  			  				
+			android:background="@drawable/new_button_background"/>  			  				
 	</RelativeLayout>
 	<RelativeLayout 
 		android:id = "@+id/layout_content"
@@ -123,7 +115,7 @@
 				  	android:layout_alignParentTop="true"
 				  	android:layout_marginTop="5dp"
 				  	android:gravity="center"
-				  	android:background = "@drawable/bg_blue"
+				  	android:background = "@drawable/bg_blue2"
 					android:shadowColor="#777777"
 					android:shadowDx="0.6"
 					android:shadowDy="0.7"
@@ -214,7 +206,7 @@
 				  	android:layout_width="wrap_content"
 				  	android:layout_height="30dp"
 				  	android:layout_marginLeft="2dp"
-				  	android:background="@drawable/default_button_background"
+				  	android:background="@drawable/new_button_background"
 				  	android:layout_below="@id/ad_line1"
 				  	android:layout_alignParentRight="true"
 				  	android:textSize="13sp"
@@ -359,14 +351,14 @@
 		  	android:id = "@id/comments_but_add"
 		  	android:layout_width="wrap_content"
 		  	android:layout_height="40dp"
-		  	android:background="@drawable/default_button_background"		  	
+		  	android:background="@drawable/new_button_background"		  	
 		  	android:layout_alignParentRight="true"
 		  	android:layout_centerVertical="true"
 		  	android:textSize="13sp"
 		  	android:text = "Adauga"  	
 		  	android:visibility="visible"		
 		  	android:textColor="#777777"
-		  	android:drawableLeft="@drawable/ic_plus"
+		  	android:drawableLeft="@drawable/ic_but_add_red"
 		  	android:paddingLeft="7dp"
 		  	android:paddingRight="7dp"
 		  	android:drawablePadding="5dp"

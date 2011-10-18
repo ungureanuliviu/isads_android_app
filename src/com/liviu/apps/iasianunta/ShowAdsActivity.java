@@ -144,7 +144,7 @@ public class ShowAdsActivity extends Activity implements IAdsNotifier,
         // load categories
         // get them from cache is possible
         if(null != LocalCache.categories){
-        	int color = Color.parseColor("#ff2400");
+        	int color = Color.parseColor("#24c1d8");
 			for(int i = 0; i < LocalCache.categories.size(); i++){
 				categoryView.addCategory(LocalCache.categories.get(i), 100, color);
 			}
@@ -159,7 +159,7 @@ public class ShowAdsActivity extends Activity implements IAdsNotifier,
 				@Override
 				public void onCategoriesLoaded(boolean isSuccess, ArrayList<Category> pCategories) {
 					Console.debug(TAG, "onCategoriesLoaded: " + isSuccess + " " + pCategories);
-					int color = Color.parseColor("#ff2400");
+					int color = Color.parseColor("#24c1d8");
 					if(isSuccess){
 						for(int i = 0; i < pCategories.size(); i++){
 							categoryView.addCategory(pCategories.get(i), 100, color);

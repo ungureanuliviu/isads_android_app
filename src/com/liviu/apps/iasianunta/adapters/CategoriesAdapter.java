@@ -40,7 +40,11 @@ public class CategoriesAdapter extends BaseAdapter{
 
 	@Override
 	public Category getItem(int position) {
-		return mItems.get(position);
+		try{
+			return mItems.get(position);
+		} catch (IndexOutOfBoundsException e) {
+			return new Category(1, "Toate");
+		}
 	}
 
 	@Override

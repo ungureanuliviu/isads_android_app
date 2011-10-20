@@ -14,6 +14,7 @@ public class Alert {
 	private int mId;
 	private int mUserId;
 	private int mCatId;
+	private int mTotalAdsSinceLastCheck;
 	private long mAddedDate;
 	private long mLastCheckedDate;
 	private ArrayList<String> mFilters;
@@ -31,6 +32,7 @@ public class Alert {
 		mFilters			= new ArrayList<String>();
 		mAddedDateFormatted			= "";
 		mLastChekedDateFormatted 	= "";
+		mTotalAdsSinceLastCheck		= 0;
 	}
 	
 	public Alert setId(int pId){
@@ -109,5 +111,14 @@ public class Alert {
 	
 	public int getCategoryId(){
 		return mCatId;
+	}
+
+	public Alert setTotalAdsSinceLastCheck(int pTotal) {
+		mTotalAdsSinceLastCheck = pTotal;
+		return this;
+	}
+	
+	public int  getTotalAdsSinceLastCheck() {
+		return mTotalAdsSinceLastCheck;
 	}
 }

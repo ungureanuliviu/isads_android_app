@@ -49,28 +49,32 @@
   	android:layout_marginTop="2dp"/>   	 
   <com.liviu.apps.iasianunta.ui.LTextView
   	android:id = "@id/lst_alert_ads_count"
-  	android:layout_width="wrap_content" 
+  	android:layout_width="28dp" 
   	android:layout_height="wrap_content"
-  	android:text="32"
+  	android:text="0"
   	android:textColor="#ffffff"
   	android:textSize="16sp"
   	android:textStyle="bold"
   	android:layout_alignParentRight="true"
   	android:layout_alignParentTop="true"
   	android:layout_marginTop="13dp"
-  	android:layout_marginRight="15dp"
-  	android:padding="3dp"
+  	android:layout_marginRight="11dp"
+  	android:paddingBottom="3dp"
+  	android:paddingTop="3dp"
+  	android:paddingLeft="4dp"
+  	android:paddingRight="4dp"
+  	android:gravity="center"
   	android:background="@drawable/bg_orange"/>  
   <com.liviu.apps.iasianunta.ui.LTextView
   	android:id = "@+id/lst_alert_txt_ads"
   	android:layout_width="wrap_content" 
   	android:layout_height="wrap_content"
-  	android:text="anunturi"
+  	android:text="anunt  "
   	android:textColor="#575757"
   	android:textSize="10sp"
   	android:layout_alignParentRight="true"
   	android:layout_below="@id/lst_alert_ads_count"  	
-  	android:layout_marginRight="8dp"
+  	android:layout_marginRight="7dp"
   	android:layout_marginTop="2dp"/>    	
   <View
   	android:id = "@+id/line"

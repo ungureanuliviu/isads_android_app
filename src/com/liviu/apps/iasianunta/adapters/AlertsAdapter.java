@@ -101,6 +101,12 @@ public class AlertsAdapter extends BaseAdapter{
 			vh.buttonsLayout.setVisibility(View.GONE);
 			convertView.setBackgroundColor(Color.TRANSPARENT);
 		}
+		vh.txtTotalAds.setText(Integer.toString(mItems.get(position).getAlert().getTotalAdsSinceLastCheck()));
+		if(mItems.get(position).getAlert().getTotalAdsSinceLastCheck() == 1){
+			vh.txtAdsText.setText("anunt  ");
+		} else{
+			vh.txtAdsText.setText("anunturi");
+		}
 		
 		return convertView;
 	}

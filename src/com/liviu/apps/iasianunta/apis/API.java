@@ -697,6 +697,7 @@ public class API {
 							.setUserId(jAlert.getInt("user_id"))
 							.setAddedDate(jAlert.getLong("added_date") * 1000)
 							.setLastCheckedDate(jAlert.getLong("last_checked_date") * 1000)
+							.setTotalAdsSinceLastCheck(jAlert.getInt("total_ads_since_last_check"))
 							.setCategoryId(jAlert.getInt("cat_id"));
 					JSONArray jFilters = jAlert.getJSONArray("filters");
 					for(int j = 0; j < jFilters.length(); j++)

@@ -2,4 +2,9 @@
 <resources>
     <string name="hello">Hello World, MainActivity!</string>
     <string name="app_name">Iasianunta</string>
+    <string-array name="currency">
+        <item>LEI</item>
+        <item>€</item>
+        <item>$</item>
+    </string-array>
 </resources>

@@ -13,16 +13,17 @@ import android.os.Message;
 import com.liviu.apps.iasianunta.apis.API;
 import com.liviu.apps.iasianunta.data.Ad;
 import com.liviu.apps.iasianunta.data.Category;
+import com.liviu.apps.iasianunta.data.City;
 import com.liviu.apps.iasianunta.data.Comment;
-import com.liviu.apps.iasianunta.data.JSONResponse;
-import com.liviu.apps.iasianunta.interfaces.ICommentsNotifier;
+import com.liviu.apps.iasianunta.data.LocalCache;
 import com.liviu.apps.iasianunta.interfaces.IAdsNotifier;
-import com.liviu.apps.iasianunta.interfaces.ICategoryNotifier;
+import com.liviu.apps.iasianunta.interfaces.ICommentsNotifier;
+import com.liviu.apps.iasianunta.interfaces.ISyncNotifier;
 import com.liviu.apps.iasianunta.utils.Console;
 import com.liviu.apps.iasianunta.utils.Utils;
 
 public class AdsManager {
-				
+					
 	// Constants
 	private final String 	TAG 					= "AdsManager";
 	private final int	 	MSG_AD_SAVED 			= 1;
@@ -30,6 +31,7 @@ public class AdsManager {
 	private final int 		MSG_TH_IMAGE_LOADED 	= 3;
 	private final int 		MSG_COMMENTS_LOADED		= 4;
 	private final int       MSG_COMMENT_ADDED		= 5;
+	private final int 		MSG_CITIES_LOADED 		= 6;
 
 	// Data
 	private API 		mApi;
@@ -39,7 +41,7 @@ public class AdsManager {
 	
 	// Notifiers
 	private IAdsNotifier			mIAdsNotifier;	
-	private ICategoryNotifier 		mICategoryNotifier;
+	private ISyncNotifier 		mIDBSyncNotifier;
 	private ICommentsNotifier		mCommentsNotifer;
 	
 	
@@ -60,14 +62,25 @@ public class AdsManager {
 					}
 					break;
 				case MSG_CATEGORIES_LOADED:
-					if(null != mICategoryNotifier){
+					if(null != mIDBSyncNotifier){
 						if(null != msg.obj){
-							mICategoryNotifier.onCategoriesLoaded(true, (ArrayList<Category>)msg.obj);
+							mIDBSyncNotifier.onCategoriesLoaded(true, (ArrayList<Category>)msg.obj);
+							LocalCache.categories = (ArrayList<Category>)msg.obj;							
 						} else{
-							mICategoryNotifier.onCategoriesLoaded(false, null);
+							mIDBSyncNotifier.onCategoriesLoaded(false, null);							
 						}
 					}
 					break;
+				case MSG_CITIES_LOADED:
+					if(null != mIDBSyncNotifier){
+						if(null != msg.obj){
+							mIDBSyncNotifier.onCitiesLoaded(true, (ArrayList<City>)msg.obj);
+							LocalCache.cities = (ArrayList<City>)msg.obj;
+						} else{
+							mIDBSyncNotifier.onCitiesLoaded(false, null);
+						}
+					}
+					break;					
 				case MSG_TH_IMAGE_LOADED:
 					if(null != mIAdsNotifier){
 						if(null != msg.obj){
@@ -171,9 +184,8 @@ public class AdsManager {
 		return this;
 	}
 
-	public AdsManager getCategories(ICategoryNotifier pICategoryNotifier) {
-		if(null != pICategoryNotifier){
-			mICategoryNotifier = pICategoryNotifier;
+	public AdsManager getCategories() {		
+		if(null == LocalCache.categories){
 			Thread tLoadCategories = new Thread(new Runnable() {				
 				@Override
 				public void run() {
@@ -186,14 +198,39 @@ public class AdsManager {
 				}
 			});
 			tLoadCategories.start();
-		} else{
-			Console.debug(TAG, "no notifier specified for categories load");
-		}		
+		}else{
+			Message msg = new Message();
+			msg.what = MSG_CATEGORIES_LOADED;
+			msg.obj = LocalCache.categories;
+			mHandler.sendMessage(msg);
+		}
 		return this;
 	}
+	
+	public AdsManager getCities() {
+		if(null == LocalCache.cities){
+			Thread tLoadCities = new Thread(new Runnable() {				
+				@Override
+				public void run() {
+					ArrayList<City> loadedCities= mDbManager.getAllCities();
+					Message msg = new Message();
+					msg.what 	= MSG_CITIES_LOADED;
+					msg.obj  	= loadedCities;
+					mHandler.sendMessage(msg);
+				}
+			});
+			tLoadCities.start();	
+		}else{
+			Message msg = new Message();
+			msg.what = MSG_CITIES_LOADED;
+			msg.obj = LocalCache.cities;
+			mHandler.sendMessage(msg);
+		}
+		return this;		
+	}	
 
-	public void getAds(int pCategoryId, int pCurrentPage, int pAdsPerPage) {
-		mApi.getAds(pCategoryId, pCurrentPage, pAdsPerPage);
+	public void getAds(int pCategoryId, int pCurrentPage, int pAdsPerPage, int pCityId) {
+		mApi.getAds(pCategoryId, pCurrentPage, pAdsPerPage, pCityId);
 	}
 
 	public AdsManager loadThImages(ArrayList<Ad> pLoadedAds) {
@@ -328,4 +365,10 @@ public class AdsManager {
 		tAddComment.start();
 		return this;
 	}	
+	
+	public AdsManager setDBSyncNotifier(ISyncNotifier pNotifier){
+		mIDBSyncNotifier = pNotifier;
+		return this;
+	}
+
 }

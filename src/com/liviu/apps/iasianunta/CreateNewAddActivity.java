@@ -32,14 +32,17 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.liviu.apps.iasianunta.adapters.CategoriesAdapter;
+import com.liviu.apps.iasianunta.adapters.CitiesAdapter;
+import com.liviu.apps.iasianunta.adapters.CurrencyAdapter;
 import com.liviu.apps.iasianunta.adapters.NewAdImagesAdapter;
 import com.liviu.apps.iasianunta.apis.API;
 import com.liviu.apps.iasianunta.data.Ad;
 import com.liviu.apps.iasianunta.data.AdImage;
 import com.liviu.apps.iasianunta.data.Category;
+import com.liviu.apps.iasianunta.data.City;
 import com.liviu.apps.iasianunta.data.User;
 import com.liviu.apps.iasianunta.interfaces.IAdsNotifier;
-import com.liviu.apps.iasianunta.interfaces.ICategoryNotifier;
+import com.liviu.apps.iasianunta.interfaces.ISyncNotifier;
 import com.liviu.apps.iasianunta.interfaces.ILoginNotifier;
 import com.liviu.apps.iasianunta.interfaces.IUploadNotifier;
 import com.liviu.apps.iasianunta.managers.ActivityIdProvider;
@@ -52,7 +55,8 @@ import com.liviu.apps.iasianunta.utils.Utils;
 public class CreateNewAddActivity extends Activity implements OnClickListener,
 															  IUploadNotifier,
 															  OnItemClickListener,
-															  IAdsNotifier{
+															  IAdsNotifier,
+															  ISyncNotifier{
 	
 	// Constants
 	private final 		 	String 	TAG 						= "CreateNewAddActivity";
@@ -68,6 +72,8 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
 	private AdsManager 		adMan;
 	private User 			user;
 	private CategoriesAdapter adapterCategories;
+	private CurrencyAdapter	adapterCurrency;
+	private CitiesAdapter	adapterCities;
 	
 	// UI
 	private Button 			butAddImage;
@@ -87,6 +93,10 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
 	private LTextView		txtPostingProgress;
 	private ProgressBar		barPosting;
 	private Spinner			spinCategories;
+	private Spinner			spinCurrency;
+	private LEditText		edtxPrice;
+	private Spinner			spinCities;
+	private Button			butBack;
 	
 	
 	// Services
@@ -142,8 +152,22 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
         layoutContent  		= (RelativeLayout)findViewById(R.id.layout_content);   
         spinCategories		= (Spinner) findViewById(R.id.ad_categories);        
         adapterCategories	= new CategoriesAdapter(this);
+        adapterCurrency		= new CurrencyAdapter(this);
+        spinCurrency		= (Spinner)findViewById(R.id.ad_currency);
+        edtxPrice			= (LEditText)findViewById(R.id.edtx_ad_price);
+        spinCities			= (Spinner)findViewById(R.id.ad_cities);
+        adapterCities		= new CitiesAdapter(this);
+        butBack				= (Button)findViewById(R.id.but_back);
         
-        txtUserName.setText(user.getName());
+        // check if the use is logged in
+        if(user.isLoggedIn()){
+        	txtUserName.setText("Salut " + user.getName());
+        	butLogin.setText("Logout");
+        } else{
+        	// the user is not logged in.
+        	// we have to update the UI to reflect this state
+        	butLogin.setText("Login");
+        }     
         
         butAddImage.setOnClickListener(this);
         butAdd.setOnClickListener(this);
@@ -153,26 +177,19 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
         galImages.setOnItemClickListener(this);
         adMan.setAdsNotifier(this);        
         butLogin.setOnClickListener(this);       
+        butBack.setOnClickListener(this);
         
         butAdd.setTypeface(typeface);
         butSave.setTypeface(typeface);
-        adMan.getCategories(new ICategoryNotifier() {			
-			@Override
-			public void onCategoriesSyncronized(boolean isSuccess,
-					ArrayList<Category> pCategories) {
-			}			
-			@Override
-			public void onCategoriesLoaded(boolean isSuccess, ArrayList<Category> pCategories) {
-				if(isSuccess){
-					for(int i = 0; i < pCategories.size(); i++){
-						adapterCategories.add(pCategories.get(i));
-					}										
-				}else{
-					adapterCategories.add(new Category(1, "Toate"));
-				}
-				spinCategories.setAdapter(adapterCategories);
-			}
-		});
+        String[] currency = getResources().getStringArray(R.array.currency);
+        for (String  cItem : currency) {
+			adapterCurrency.add(cItem);
+		}        
+        spinCurrency.setAdapter(adapterCurrency);        
+        spinCities.setAdapter(adapterCities);
+        adMan.setDBSyncNotifier(this);
+        adMan.getCategories();
+        adMan.getCities();
 	}
 	
 	@Override
@@ -214,7 +231,10 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
 	@Override
 	public void onClick(View v) {
 		Console.debug(TAG, "onclick on " + v);		
-		switch (v.getId()) {  
+		switch (v.getId()) {
+		case R.id.but_back:
+			finish();
+			break;
 		case R.id.but_add_image:
 				if(newAd.getImages().size() >= MAX_UPLOADED_IMAGES){
 					Toast.makeText(CreateNewAddActivity.this, "Ati atins numarul maxim de imagini ce pot fi atasate unui anunt.", Toast.LENGTH_LONG).show();
@@ -358,6 +378,19 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
 			return false;
 		}
 		
+		if(edtxPrice.getText().length() == 0){
+			Toast.makeText(CreateNewAddActivity.this, "Campul 'Pret' nu poate fi gol.", Toast.LENGTH_SHORT).show();
+			return false;
+		} else{
+			try{
+				newAd.setPrice(Double.parseDouble(edtxPrice.getText().toString()));
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+				Toast.makeText(CreateNewAddActivity.this, "Campul 'Pret' nu este invalid.", Toast.LENGTH_SHORT).show();
+				return false;
+			}
+		}				
+		
 		if(edtxPhone.getText().toString().length() > 0)
 			newAd.setPhone(edtxPhone.getText().toString());
 		else{
@@ -382,10 +415,22 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
 		
 		if(edtxAddress.getText().toString().length() > 0)
 			newAd.setAddress(edtxAddress.getText().toString());
+
+		int selectedCityItemPosition = spinCities.getSelectedItemPosition();
+		if(Spinner.INVALID_POSITION == selectedCityItemPosition){
+			selectedCityItemPosition = 0;
+		}
+		newAd.setCityId(adapterCities.getItem(selectedCityItemPosition).getId());
+		
 		int selectedItemPosition = spinCategories.getSelectedItemPosition();
 		if(Spinner.INVALID_POSITION == selectedItemPosition){
 			selectedItemPosition = 0;
 		}
+		
+		int currenyItemPosition = spinCurrency.getSelectedItemPosition();
+		if(Spinner.INVALID_POSITION == currenyItemPosition)
+			currenyItemPosition = 0;
+		newAd.setCurrency(adapterCurrency.getItem(currenyItemPosition));
 		Category newAdCat = adapterCategories.getItem(selectedItemPosition);
 		newAd.setCategoryId(newAdCat.getId());
 		newAd.setCategoryName(newAdCat.getName());		
@@ -439,5 +484,42 @@ public class CreateNewAddActivity extends Activity implements OnClickListener,
 
 	@Override
 	public void onImageDownloaded(boolean isSuccess, int pAdId, Bitmap pImg, boolean isFullImage) {
+	}
+
+	@Override
+	public void onCategoriesSyncronized(boolean isSuccess,
+			ArrayList<Category> pCategories) {
+	}
+
+	@Override
+	public void onCategoriesLoaded(boolean isSuccess, ArrayList<Category> pCategories) {
+		if(isSuccess){
+			for(int i = 0; i < pCategories.size(); i++){
+				if(!pCategories.get(i).getName().equals("Toate"))
+					adapterCategories.add(pCategories.get(i));
+			}										
+		}else{
+			adapterCategories.add(new Category(1, "Toate"));
+		}
+		spinCategories.setAdapter(adapterCategories);		
+	}
+
+	@Override
+	public void onCitiesSyncronized(boolean isSuccess, ArrayList<City> pCities) {
+	}
+
+	@Override
+	public void onCitiesLoaded(boolean isSuccess, ArrayList<City> pCities) {
+		if(isSuccess){
+			int selectedPosition = 0;
+			for(int i = 0; i< pCities.size(); i++){
+				if(pCities.get(i).getId() == user.getId()){
+					selectedPosition = i;
+				}				
+				adapterCities.add(pCities.get(i));
+			}			
+			adapterCities.notifyDataSetChanged();
+			spinCities.setSelection(selectedPosition);
+		}
 	}
 }

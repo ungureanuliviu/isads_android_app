@@ -10,14 +10,19 @@ import android.os.Message;
 import com.liviu.apps.iasianunta.MainActivity;
 import com.liviu.apps.iasianunta.apis.API;
 import com.liviu.apps.iasianunta.data.Category;
-import com.liviu.apps.iasianunta.interfaces.ICategoryNotifier;
+import com.liviu.apps.iasianunta.data.City;
+import com.liviu.apps.iasianunta.interfaces.ISyncNotifier;
+import com.liviu.apps.iasianunta.utils.Console;
 
 public class SyncManager{
 	
+	
 	// Constants
 	private final String TAG 							= "SyncManager";
-	private final String SHOULD_SYNC_KEY 				= "should_sync";
+	private final String SHOULD_SYNC_CATEGORIES_KEY 	= "should_sync";
+	private final String SHOULD_SYNC_CITIES_KEY 		= "should_sync_cities";
 	private final int	 MSG_CATEGORIES_ADDED_IN_DB 	= 1;
+	private final int 	 MSG_CITIES_ADDED_IN_DB 		= 2;
 	
 	// Data
 	private Context 			mContext;
@@ -27,7 +32,7 @@ public class SyncManager{
 	private Handler				mHandler;
 	
 	// Notifiers
-	private ICategoryNotifier   mICategoryNotifier;
+	private ISyncNotifier   mISyncNotifier;
 	
 	public SyncManager(Context pContext) {
 		mContext = pContext;
@@ -38,18 +43,29 @@ public class SyncManager{
 			public void handleMessage(android.os.Message msg) {
 				switch (msg.what) {
 				case MSG_CATEGORIES_ADDED_IN_DB:
-					if(null != mICategoryNotifier){
+					if(null != mISyncNotifier){
 						if(null != msg.obj){
-							mICategoryNotifier.onCategoriesSyncronized(true, (ArrayList<Category>)msg.obj);
+							mISyncNotifier.onCategoriesSyncronized(true, (ArrayList<Category>)msg.obj);
 							SharedPreferences.Editor ed = mPrefs.edit();
-							ed.putBoolean(SHOULD_SYNC_KEY, false);
+							ed.putBoolean(SHOULD_SYNC_CATEGORIES_KEY, false);
 							ed.commit();
 						} else{
-							mICategoryNotifier.onCategoriesSyncronized(false, null);
+							mISyncNotifier.onCategoriesSyncronized(false, null);
 						}												
 					}
 					break;
-
+				case MSG_CITIES_ADDED_IN_DB:
+					if(null != mISyncNotifier){
+						if(null != msg.obj){
+							mISyncNotifier.onCitiesSyncronized(true, (ArrayList<City>)msg.obj);
+							SharedPreferences.Editor ed = mPrefs.edit();
+							ed.putBoolean(SHOULD_SYNC_CITIES_KEY, false);
+							ed.commit();
+						} else{
+							mISyncNotifier.onCitiesSyncronized(false, null);
+						}												
+					}					
+					break;
 				default:
 					break;
 				}
@@ -58,45 +74,66 @@ public class SyncManager{
 	}
 	
 	public boolean shouldSyncCategories(){
-		return mPrefs.getBoolean(SHOULD_SYNC_KEY, true);
+		Console.debug(TAG, "should sync categories: " + mPrefs.getBoolean(SHOULD_SYNC_CATEGORIES_KEY, true));
+		return mPrefs.getBoolean(SHOULD_SYNC_CATEGORIES_KEY, true);
 	}
 	
 	public SyncManager syncCategories(){		
-		mApi.getAllCategories();
+		Thread tGetCategories = new Thread(new Runnable(){
+			@Override
+			public void run() {
+				Message msg = new Message();
+				msg.what = MSG_CATEGORIES_ADDED_IN_DB;
+				ArrayList<Category> loadedCategories = mApi.getAllCategories();				
+				if(null != loadedCategories){
+					for(int i = 0; i < loadedCategories.size(); i++){
+						Category addedCategory = mDbMan.addCategory(loadedCategories.get(i));
+						if(null != addedCategory){
+							loadedCategories.get(i).setId(addedCategory.getId());
+						}
+					}											
+					msg.obj  = loadedCategories;					
+					mHandler.sendMessage(msg);
+				} else{				
+					mHandler.sendEmptyMessage(MSG_CATEGORIES_ADDED_IN_DB);
+				}
+			}			
+		});
+		tGetCategories.start();
 		return this;							
 	}
 
-	public void setOnCategoriesSyncedNotifier(final ICategoryNotifier pCategoryNotifier) {
-		mApi.setCategoryNotifier(new ICategoryNotifier() {			
+	public void setOnSyncedNotifier(final ISyncNotifier pSyncNotifier) {
+		mISyncNotifier = pSyncNotifier;
+	}
+	
+	public boolean shouldSyncCities(){
+		Console.debug(TAG, "should sync cities: " + mPrefs.getBoolean(SHOULD_SYNC_CITIES_KEY, true));
+		return mPrefs.getBoolean(SHOULD_SYNC_CITIES_KEY, true);
+	}
+	
+	public SyncManager syncCities(){
+		Thread tSyncCities = new Thread(new Runnable() {			
 			@Override
-			public void onCategoriesSyncronized(boolean isSuccess, ArrayList<Category> pCategories) {
-				if(isSuccess == true && null != pCategories){
-					mICategoryNotifier = pCategoryNotifier;
-					final ArrayList<Category> cCategories = pCategories;
-					Thread tAddCategories = new Thread(new Runnable() {					
-						@Override
-						public void run() {						
-							for(int i = 0; i < cCategories.size(); i++){
-								mDbMan.addCategory(cCategories.get(i));
-							}							
-							Message msg = new Message();
-							msg.what = MSG_CATEGORIES_ADDED_IN_DB;
-							msg.obj  = cCategories;
-							
-							mHandler.sendMessage(msg);							
+			public void run() {
+				Message msg = new Message();
+				msg.what = MSG_CITIES_ADDED_IN_DB;
+				ArrayList<City> loadedCities= mApi.getAllCities();
+				if(null != loadedCities){
+					for(int i = 0; i < loadedCities.size(); i++){
+						City addedCity = mDbMan.addCity(loadedCities.get(i));
+						if(null != addedCity){
+							loadedCities.get(i).setId(addedCity.getId());
 						}
-					});	
-					tAddCategories.start();
-				} else{ 
-					pCategoryNotifier.onCategoriesSyncronized(isSuccess, pCategories);
-				}
-			}
-
-			@Override
-			public void onCategoriesLoaded(boolean isSuccess,
-					ArrayList<Category> pcaArrayList) {
-				// nothing here
+					}											
+					msg.obj  = loadedCities;					
+					mHandler.sendMessage(msg);
+				} else{				
+					mHandler.sendEmptyMessage(MSG_CITIES_ADDED_IN_DB);
+				}				
 			}
 		});
-	}
+		tSyncCities.start();		
+		return this;							
+	}	
 }

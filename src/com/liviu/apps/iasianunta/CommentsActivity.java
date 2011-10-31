@@ -239,28 +239,27 @@ public class CommentsActivity extends Activity implements ICommentsNotifier,
 								if(isSuccess){
 									// logout done
 									mUser.logout();
-									Toast.makeText(CommentsActivity.this, "Logout success.", Toast.LENGTH_SHORT).show();
+									Toast.makeText(CommentsActivity.this, "Logout succes.", Toast.LENGTH_SHORT).show();
 									butLogin.setText("Login"); // update the main button
-									txtUserName.setText("Holla amigos");
+									txtUserName.setText("Salut");
 								} else{
 									// hmmm.. something went wrong...
 									Toast.makeText(CommentsActivity.this, "Logout error.", Toast.LENGTH_SHORT).show(); 
 								}
 							}					
-							@Override
+							@Override 
 							public void onLogin(boolean isSuccess, User pUser) {
 								// nothing here
-							}
+							}   
 						});
 				}
 				break;				
-
 		default:
 			break;
 		}
 	}
 
-	@Override
+	@Override 
 	public void onCommentAdded(boolean isSuccess, Comment pAddedComment) {
 		Console.debug(TAG, "OnCommentAdded: " + isSuccess + " " + pAddedComment);						
 		if(isSuccess){

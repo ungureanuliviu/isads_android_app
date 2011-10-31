@@ -71,23 +71,20 @@ public class AlertsAdapter extends BaseAdapter{
 			vh.txtTotalAds	= (LTextView)convertView.findViewById(R.id.lst_alert_ads_count);
 			vh.txtLastCheckedDate = (LTextView)convertView.findViewById(R.id.lst_alert_last_checked_date);						
 			vh.buttonsLayout= (RelativeLayout)convertView.findViewById(R.id.lst_alert_actions_holder);
-			vh.butCheck		= (Button)convertView.findViewById(R.id.lst_alert_remove);
-			vh.butEdit		= (Button)convertView.findViewById(R.id.lst_alert_edit);
+			vh.butRemove	= (Button)convertView.findViewById(R.id.lst_alert_remove);
 			vh.butOpen		= (Button)convertView.findViewById(R.id.lst_alert_open);
 			
 			if(null != mOnClickListener){
-				vh.butCheck.setTag(position);
-				vh.butEdit.setTag(position);
-				vh.butCheck.setOnClickListener(mOnClickListener);
-				vh.butEdit.setOnClickListener(mOnClickListener);	
-				vh.butOpen.setOnClickListener(mOnClickListener);
+				vh.butRemove.setTag(position);
+				vh.butOpen.setTag(position);
+				vh.butRemove.setOnClickListener(mOnClickListener);	
+				vh.butOpen.setOnClickListener(mOnClickListener);				
 			}
 			convertView.setTag(vh);
 		} else
 			vh = (ViewHolder)convertView.getTag();				
 			
-		vh.butCheck.setTag(position);
-		vh.butEdit.setTag(position);
+		vh.butRemove.setTag(position);
 		vh.butOpen.setTag(position);
 		
 		vh.txtTitle.setText(mItems.get(position).getAlert().getTitle());
@@ -118,8 +115,7 @@ public class AlertsAdapter extends BaseAdapter{
 		public LTextView	txtTotalAds;
 		public LTextView	txtAdsText;
 		public RelativeLayout buttonsLayout;
-		public Button		  butEdit;
-		public Button		  butCheck;
+		public Button		  butRemove;
 		public Button		  butOpen;
 		
 	}
@@ -147,5 +143,16 @@ public class AlertsAdapter extends BaseAdapter{
 		} catch (IndexOutOfBoundsException e) {
 			e.printStackTrace();
 		}
+	}  
+
+	public boolean removeItemByAlertId(int pAlertId) {
+		for(int i = 0; i < mItems.size(); i++){
+			if(mItems.get(i).getAlert().getId() == pAlertId){
+				mItems.remove(i);
+				mLastSelectedPosition = 0;
+				return true;
+			}
+		}		
+		return false;
 	}	
 }

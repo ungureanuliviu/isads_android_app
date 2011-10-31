@@ -16,8 +16,9 @@ import android.widget.Toast;
 
 import com.liviu.apps.iasianunta.apis.API;
 import com.liviu.apps.iasianunta.data.Category;
+import com.liviu.apps.iasianunta.data.City;
 import com.liviu.apps.iasianunta.data.User;
-import com.liviu.apps.iasianunta.interfaces.ICategoryNotifier;
+import com.liviu.apps.iasianunta.interfaces.ISyncNotifier;
 import com.liviu.apps.iasianunta.interfaces.ILoginNotifier;
 import com.liviu.apps.iasianunta.managers.ActivityIdProvider;
 import com.liviu.apps.iasianunta.managers.SyncManager;
@@ -25,7 +26,7 @@ import com.liviu.apps.iasianunta.ui.LTextView;
 import com.liviu.apps.iasianunta.utils.Console;
 
 public class MainActivity extends Activity implements OnClickListener,
-													  ICategoryNotifier{
+													  ISyncNotifier{
 	
 	// Constants
 	private final String TAG = "LoginActivity";
@@ -78,23 +79,21 @@ public class MainActivity extends Activity implements OnClickListener,
         butAddNewAdd.setOnClickListener(this);   
         butShowAds.setOnClickListener(this);
         butAlerts.setOnClickListener(this);
-        if(syncMan.shouldSyncCategories()){
-        	syncMan.setOnCategoriesSyncedNotifier(this);
+        syncMan.setOnSyncedNotifier(this);
+        if(syncMan.shouldSyncCategories()){        	
 	        syncMan.syncCategories();	        
+        }               
+        if(syncMan.shouldSyncCities()){
+        	syncMan.syncCities();
         }
         
-        Intent registrationIntent = new Intent("com.google.android.c2dm.intent.REGISTER");
-
-        registrationIntent.putExtra("app", PendingIntent.getBroadcast(this, 0, new Intent(), 0));
-
-        registrationIntent.putExtra("sender", "smartliviu@gmail.com");
-
-        startService(registrationIntent);        
+        
     }
 // ========================== Interfaces ========================
 	@Override
 	public void onClick(View v) {
-		switch (v.getId()) {		
+		switch (v.getId()) {		    
+		
 		case R.id.but_alerts:
 			Intent toAlertsActivity = new Intent(MainActivity.this, AlertsActivity.class);
 			startActivity(toAlertsActivity);
@@ -124,11 +123,12 @@ public class MainActivity extends Activity implements OnClickListener,
 						@Override
 						public void onLogout(boolean isSuccess, int pUserId) {
 							if(isSuccess){
+								api.updateDeviceId(user.getId(), "NULL");
 								// logout done
 								user.logout();
-								Toast.makeText(MainActivity.this, "Logout success.", Toast.LENGTH_SHORT).show();
+								Toast.makeText(MainActivity.this, "Logout succes.", Toast.LENGTH_SHORT).show();
 								butLogin.setText("Login"); // update the main button
-								txtUserName.setText("Holla amigos");
+								txtUserName.setText("Salut");
 							} else{
 								// hmmm.. something went wrong...
 								Toast.makeText(MainActivity.this, "Logout error.", Toast.LENGTH_SHORT).show(); 
@@ -154,6 +154,13 @@ public class MainActivity extends Activity implements OnClickListener,
 	public void onCategoriesLoaded(boolean isSuccess,
 			ArrayList<Category> pcaArrayList) {
 		// nothing here
+	}
+	@Override
+	public void onCitiesSyncronized(boolean isSuccess, ArrayList<City> pCities) {
+		Console.debug(TAG, "onCitiesSyncronized: " + isSuccess + " " + pCities);
+	}
+	@Override
+	public void onCitiesLoaded(boolean isSuccess, ArrayList<City> pCities) {
 	}
 }
 /*

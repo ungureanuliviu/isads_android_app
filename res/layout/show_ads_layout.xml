@@ -13,11 +13,10 @@
 			android:id = "@+id/ic_home"
 			android:layout_width="26dp"
 			android:layout_height="20dp"
-			android:layout_marginLeft="6dp"
 			android:layout_alignParentLeft="true"
 			android:layout_centerVertical="true"
 			android:src="@drawable/ic_home"/>	
-		<com.liviu.apps.iasianunta.ui.LTextView
+		<com.liviu.apps.iasianunta.ui.LTextView  
 			android:id = "@+id/title"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
@@ -25,10 +24,40 @@
 			android:textColor = "#ffffff"
 			android:textSize="18sp"
 			android:text = "Anunturi recente"
-			android:textStyle="bold"
-			android:layout_marginLeft="5dp"			
+			android:shadowColor="#555555"
+			android:shadowDx="0.5"
+			android:shadowDy="0.5"
+			android:shadowRadius="0.3"			
+			android:textStyle="bold"	
 			android:layout_centerVertical="true"
-			android:layout_marginTop="2dp"/>							
+			android:layout_marginTop="2dp"/>
+		<com.liviu.apps.iasianunta.ui.LTextView
+			android:id = "@+id/city"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentRight="true"		
+			android:textColor = "#ffffff"
+			android:textSize="13sp"
+			android:text = "iasi"
+			android:textStyle="bold"
+			android:clickable="true"
+			android:shadowColor="#555555"
+			android:shadowDx="0.5"
+			android:shadowDy="0.5"
+			android:shadowRadius="0.3"
+			android:layout_marginRight="5dp"			
+			android:layout_centerVertical="true"
+			android:drawableLeft="@drawable/ic_pin_small"
+			android:drawablePadding="3dp"			
+			android:layout_marginTop="2dp"/>
+		<Spinner 
+		    android:id = "@+id/spin_cities"
+		    android:layout_width="100dp"
+		    android:layout_height="fill_parent"
+		    android:layout_alignParentRight="true"
+		    android:background="#00000000"
+		    android:visibility="invisible"	    
+		    android:textColor = "#00000000"/>									
 	</RelativeLayout>
 	<RelativeLayout 
 		android:id = "@+id/layout_top_bar"
@@ -44,7 +73,7 @@
 			android:layout_marginTop="9dp"
 			android:textColor = "#777777"
 			android:textSize="10sp"  
-			android:text = "Holla amigos"
+			android:text = "Salut"
 			android:layout_marginLeft="5dp"/>		
 		<Button 
 			android:id = "@+id/main_but_login"
@@ -161,32 +190,32 @@
 			android:layout_width="135dp"
 			android:layout_height="35dp"
 			android:textColor="#666666"
-			android:text="Publica"					
+			android:text="Adauga anunt"					
 			android:layout_alignParentRight="true"
 			android:paddingLeft="9dp"
 			android:paddingRight="5dp"
 			android:layout_marginRight="9dp"
-			android:layout_marginTop="6dp"
+			android:layout_centerVertical="true"
 			android:textSize="13sp"
 			android:gravity="left|center_vertical"			
-			android:drawablePadding="5dp"
-			android:drawableLeft="@drawable/ic_but_upload"
+			android:drawablePadding="5dp" 
+			android:drawableLeft="@drawable/ic_but_add"
 			android:background="@drawable/new_button_background"/>  
 		<Button 
-			android:id = "@+id/but_save"
+			android:id = "@+id/but_back"
 			android:layout_width="135dp"
 			android:layout_height="35dp"
 			android:textColor="#666666"
-			android:text="Salveaza"					
+			android:text="Inapoi"					
 			android:layout_alignParentLeft="true"
 			android:paddingLeft="9dp"			
 			android:paddingRight="5dp"
 			android:textSize="13sp"
 			android:layout_marginLeft="9dp"			
-			android:layout_marginTop="6dp"		
+			android:layout_centerVertical="true"
 			android:gravity="left|center_vertical"			
 			android:drawablePadding="5dp"			
-			android:drawableLeft="@drawable/ic_but_save"	
+			android:drawableLeft="@drawable/ic_back"	
 			android:background="@drawable/new_button_background"/>  		  
 	</RelativeLayout>	
 	<RelativeLayout 

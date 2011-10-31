@@ -18,22 +18,27 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.Gallery;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.liviu.apps.iasianunta.adapters.AdsAdapter;
+import com.liviu.apps.iasianunta.adapters.CitiesAdapter;
 import com.liviu.apps.iasianunta.adapters.ShowAdImagesAdapter;
+import com.liviu.apps.iasianunta.apis.API;
 import com.liviu.apps.iasianunta.data.Ad;
-import com.liviu.apps.iasianunta.data.AdImage;
 import com.liviu.apps.iasianunta.data.Category;
-import com.liviu.apps.iasianunta.data.LocalCache;
+import com.liviu.apps.iasianunta.data.City;
 import com.liviu.apps.iasianunta.data.User;
 import com.liviu.apps.iasianunta.interfaces.IAdsNotifier;
-import com.liviu.apps.iasianunta.interfaces.ICategoryNotifier;
+import com.liviu.apps.iasianunta.interfaces.ILoginNotifier;
+import com.liviu.apps.iasianunta.interfaces.ISyncNotifier;
 import com.liviu.apps.iasianunta.managers.ActivityIdProvider;
 import com.liviu.apps.iasianunta.managers.AdsManager;
 import com.liviu.apps.iasianunta.ui.LTextView;
@@ -43,7 +48,9 @@ import com.liviu.apps.iasianunta.utils.Utils;
 
 public class ShowAdsActivity extends Activity implements IAdsNotifier, 
 														 OnScrollListener,
-														 OnClickListener{
+														 OnClickListener, 
+														 ISyncNotifier,
+														 OnItemSelectedListener{
 	// Constants
 	private final String	TAG 		= "ShowAdsActivity";
 	private final int    	ACTIVITY_ID = ActivityIdProvider.getInstance().getNewId(ShowAdsActivity.class);
@@ -61,6 +68,9 @@ public class ShowAdsActivity extends Activity implements IAdsNotifier,
 	private int				currentCategoryId = 1;
 	private boolean 		canLoadMoreAds 	= true;
 	private ShowAdImagesAdapter galleryAdapter;
+	private CitiesAdapter	adapterCities;
+	private City 			selectedCity;
+	private API				api;
 	
 	// UI
 	private TopCategoryView categoryView;
@@ -74,6 +84,12 @@ public class ShowAdsActivity extends Activity implements IAdsNotifier,
 	private RelativeLayout	overlay;
 	private RelativeLayout	layoutTop;
 	private LTextView		txtNoAds;
+	private Spinner			spinCities;
+	private LTextView		txtCity;
+	private Button			butAddAd;
+	private Button			butBack;
+	private Button			butLogin;
+	private LTextView 		txtUserName;	
 		
 	
 	// Services
@@ -96,7 +112,8 @@ public class ShowAdsActivity extends Activity implements IAdsNotifier,
         user = User.getInstance();        
                 
         // Initialize objects		
-        adsMan 					= new AdsManager(this);        
+        adsMan 					= new AdsManager(this);   
+        api						= new API();
         categoryView			= (TopCategoryView)findViewById(R.id.top_categories);        
         layoutContent			= (RelativeLayout)findViewById(R.id.layout_content); 
         lstAds					= (ListView)findViewById(R.id.ads_list);
@@ -111,6 +128,25 @@ public class ShowAdsActivity extends Activity implements IAdsNotifier,
         galleryAdapter			= new ShowAdImagesAdapter(this);
         layoutTop				= (RelativeLayout)findViewById(R.id.layout_top);
         txtNoAds				= (LTextView)findViewById(R.id.txt_no_ads);
+        spinCities				= (Spinner)findViewById(R.id.spin_cities);
+        txtCity					= (LTextView)findViewById(R.id.city);
+        adapterCities			= new CitiesAdapter(this);
+        selectedCity 			= user.getCity();
+        butAddAd				= (Button)findViewById(R.id.but_add_ad);
+        butBack					= (Button)findViewById(R.id.but_back);
+        butLogin 				= (Button)findViewById(R.id.main_but_login);
+        txtUserName 			= (LTextView)findViewById(R.id.user_name);
+        
+        // check if the use is logged in
+        if(user.isLoggedIn()){
+        	txtUserName.setText("Salut " + user.getName());
+        	butLogin.setText("Logout");
+        } else{
+        	// the user is not logged in.
+        	// we have to update the UI to reflect this state
+        	butLogin.setText("Login");
+        }                        
+        txtCity.setText(selectedCity.getName());
         
         galImages.setAdapter(galleryAdapter);
         categoryView.setOnClickListener(new OnClickListener() {			
@@ -137,46 +173,33 @@ public class ShowAdsActivity extends Activity implements IAdsNotifier,
 				adsAdapter.notifyDataSetChanged();
 				canLoadMoreAds = false;
 				currentCategoryId = selectedCategory.getId();
-				adsMan.getAds(currentCategoryId, currentPage, adsPerPage);				
+				adsMan.getAds(currentCategoryId, currentPage, adsPerPage, selectedCity.getId());				
 			}
 		});
         
-        // load categories
-        // get them from cache is possible
-        if(null != LocalCache.categories){
-        	int color = Color.parseColor("#24c1d8");
-			for(int i = 0; i < LocalCache.categories.size(); i++){
-				categoryView.addCategory(LocalCache.categories.get(i), 100, color);
-			}
-        } else{
-        	// the cache is empty: get them from db        	
-	        adsMan.getCategories(new ICategoryNotifier() {			
-				@Override
-				public void onCategoriesSyncronized(boolean isSuccess,
-						ArrayList<Category> pCategories) {
-				}
-				
-				@Override
-				public void onCategoriesLoaded(boolean isSuccess, ArrayList<Category> pCategories) {
-					Console.debug(TAG, "onCategoriesLoaded: " + isSuccess + " " + pCategories);
-					int color = Color.parseColor("#24c1d8");
-					if(isSuccess){
-						for(int i = 0; i < pCategories.size(); i++){
-							categoryView.addCategory(pCategories.get(i), 100, color);
-						}
-						// feed the cache
-						LocalCache.categories = pCategories;
-					}
-				}
-			}); 
-        }
+        
+        butLogin.setOnClickListener(this);
         adsMan.setAdsNotifier(this);
-        adsMan.getAds(currentCategoryId, currentPage, adsPerPage);
+        adsMan.setDBSyncNotifier(this);                               
         lstAds.setAdapter(adsAdapter);
         lstAds.setOnScrollListener(this);
         adsAdapter.setOnClickListener(this);
         butGalBack.setOnClickListener(this);
-        layoutTop.setOnClickListener(this);        
+        layoutTop.setOnClickListener(this);          
+        spinCities.setOnItemSelectedListener(this);
+        txtCity.setOnClickListener(this);
+        butBack.setOnClickListener(this);
+        butAddAd.setOnClickListener(this);
+        
+        // load categories and cities
+        adsMan.getCategories();
+        adsMan.getCities();
+        
+        spinCities.setAdapter(adapterCities);            
+        
+        // get ads
+        adsMan.getAds(currentCategoryId, currentPage, adsPerPage, selectedCity.getId());
+        txtNoAds.setVisibility(View.GONE);
 	}
 
 	@Override
@@ -197,9 +220,19 @@ public class ShowAdsActivity extends Activity implements IAdsNotifier,
 			adsMan.loadThImages(pLoadedAds);
 			adsAdapter.notifyDataSetChanged();
 			canLoadMoreAds = true;			
-			vbb.vibrate(CreateNewAddActivity.VIB_LENGTH);
+			vbb.vibrate(CreateNewAddActivity.VIB_LENGTH);			
+			if(adsAdapter.getCount() == 0){
+				Console.debug(TAG, "visible");
+				txtNoAds.setVisibility(View.VISIBLE);
+			}
+			else{
+				Console.debug(TAG, "gone");
+				txtNoAds.setVisibility(View.GONE);
+			}
 		}else{
-			  txtNoAds.setVisibility(View.VISIBLE);
+			Console.debug(TAG, "visible2");
+			  if(adsAdapter.getCount() == 0)
+				  txtNoAds.setVisibility(View.VISIBLE);
 		}
 		
 		pBarLoading.setVisibility(View.GONE);
@@ -212,7 +245,7 @@ public class ShowAdsActivity extends Activity implements IAdsNotifier,
 		if((firstVisibleItem + 1 + visibleItemCount) > totalItemCount && totalItemCount != 0){						
 			if(canLoadMoreAds){				
 				currentPage++;				
-				adsMan.getAds(currentCategoryId,currentPage, adsPerPage);		
+				adsMan.getAds(currentCategoryId,currentPage, adsPerPage, selectedCity.getId());		
 				loadMoreAdsLayout.setVisibility(View.VISIBLE);				
 			}
 			canLoadMoreAds = false;
@@ -226,7 +259,7 @@ public class ShowAdsActivity extends Activity implements IAdsNotifier,
 
 	@Override
 	public void onImageDownloaded(boolean isSuccess, int pAdId, Bitmap pImg, boolean isFullImage) {
-		Console.debug(TAG, "onImageDownloaded: " + isSuccess + " adId: " + pAdId + " bitmap" + pImg + " isFullImage: " + isFullImage);
+		//Console.debug(TAG, "onImageDownloaded: " + isSuccess + " adId: " + pAdId + " bitmap" + pImg + " isFullImage: " + isFullImage);
 		if(isSuccess){
 			Console.debug(TAG, "width: " + pImg.getWidth() + " height: " + pImg.getHeight());
 			if(isFullImage){
@@ -256,6 +289,50 @@ public class ShowAdsActivity extends Activity implements IAdsNotifier,
 		int position = positionObj.intValue();
 		Console.debug(TAG, "clicked position: " + position);
 		switch (v.getId()) {
+		case R.id.main_but_login:
+			if(!user.isLoggedIn()){
+				// we have to log in the user so 
+				// let's start login activity
+				Intent toLoginIntent = new Intent(ShowAdsActivity.this, LoginActivity.class);
+				toLoginIntent.putExtra(LoginActivity.PARENT_ACTIVITY_ID, ACTIVITY_ID);
+				startActivity(toLoginIntent);
+				finish();
+			} else{
+				// the user is logged in. 
+				// Now, we will log him out.
+				api.logoutUser(user, new ILoginNotifier() {					
+						@Override
+						public void onLogout(boolean isSuccess, int pUserId) {
+							if(isSuccess){
+								api.updateDeviceId(user.getId(), "NULL");
+								// logout done
+								user.logout();
+								Toast.makeText(ShowAdsActivity.this, "Logout success.", Toast.LENGTH_SHORT).show();
+								butLogin.setText("Login"); // update the main button
+								txtUserName.setText("Salut");
+							} else{
+								// hmmm.. something went wrong...
+								Toast.makeText(ShowAdsActivity.this, "Logout error.", Toast.LENGTH_SHORT).show(); 
+							}
+						}					
+						@Override
+						public void onLogin(boolean isSuccess, User pUser) {
+							// nothing here
+						}
+					});
+			}
+			break;				
+			case R.id.but_back:
+				finish();
+				break;
+			case R.id.but_add_ad:
+				Intent toCreateAd = new Intent(ShowAdsActivity.this, CreateNewAddActivity.class);
+				startActivity(toCreateAd);
+				break;
+			case R.id.city:
+				Console.debug(TAG, "on city txt clicked");
+				spinCities.performClick();				
+				break;  
 			case R.id.ad_but_call:
 				if(position == -1)
 					return;
@@ -271,7 +348,7 @@ public class ShowAdsActivity extends Activity implements IAdsNotifier,
 			case R.id.ad_view_images:
 				Console.debug(TAG, "hereee");
 				if(position == -1)
-					return;
+					return; 
 				
 				overlay.setVisibility(View.VISIBLE);			
 				if(galleryAdapter.getCount() > 0 && galleryAdapter.getAdId() == adsAdapter.getItem(position).getAd().getId()){
@@ -338,5 +415,64 @@ public class ShowAdsActivity extends Activity implements IAdsNotifier,
 			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	@Override
+	public void onCategoriesSyncronized(boolean isSuccess,
+			ArrayList<Category> pCategories) {
+	}
+
+	@Override
+	public void onCategoriesLoaded(boolean isSuccess,ArrayList<Category> pCategories) {		
+		Console.debug(TAG, "onCategoriesLoaded: " + isSuccess + " " + pCategories);
+		int color = Color.parseColor("#24c1d8");
+		if(isSuccess){
+			for(int i = 0; i < pCategories.size(); i++){
+				categoryView.addCategory(pCategories.get(i), 100, color);
+			}			
+		}
+	}
+
+	@Override
+	public void onCitiesSyncronized(boolean isSuccess, ArrayList<City> pCities) {
+	}
+
+	@Override
+	public void onCitiesLoaded(boolean isSuccess, ArrayList<City> pCities) {
+		Console.debug(TAG, "onCititesLoaded: " + isSuccess + " pCitites: " + pCities);
+		int selectedPosition = 0;
+		if(isSuccess){
+			for(int i = 0; i < pCities.size(); i++){				
+				adapterCities.add(pCities.get(i));
+				if(pCities.get(i).getId() == user.getCity().getId()){
+					selectedPosition = i;
+				}				
+			}			
+			adapterCities.notifyDataSetChanged();
+			spinCities.setSelection(selectedPosition);
+		}
+	}
+
+	@Override
+	public void onItemSelected(AdapterView<?> arg0, View view, int position, long arg3) {
+		Console.debug(TAG, "onitemselected: " + selectedCity.getName().toLowerCase() + "        " + txtCity.getText().toString().toLowerCase() + " val: " + selectedCity.getName().toLowerCase().equals(txtCity.getText().toString().toLowerCase()));
+		if(Spinner.INVALID_POSITION != position){
+			selectedCity = adapterCities.getItem(position);
+			if(!selectedCity.getName().toLowerCase().equals(txtCity.getText().toString().toLowerCase())){
+				txtCity.setText(selectedCity.getName());			
+				currentPage = 0;
+				adsMan.getAds(currentCategoryId,currentPage, adsPerPage, selectedCity.getId());		
+				pBarLoading.setVisibility(View.VISIBLE);
+				txtLoading.setVisibility(View.VISIBLE);			
+				loadMoreAdsLayout.setVisibility(View.GONE);
+				txtNoAds.setVisibility(View.GONE);
+				adsAdapter.clear();
+				adsAdapter.notifyDataSetChanged();
+			}
+		}
+	}
+
+	@Override
+	public void onNothingSelected(AdapterView<?> arg0) {
 	}
 }

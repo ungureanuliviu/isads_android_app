@@ -88,12 +88,12 @@
 	android:layout_width="fill_parent" 
 	android:layout_height="45dp"
 	android:layout_below="@id/line"
-	android:visibility="gone"
+	android:visibility="visible"
 	android:background="@drawable/bg_bar_gray">
 	<Button 
 	  	android:id = "@+id/lst_alert_open"
-	  	android:layout_width="95dp"
-	  	android:layout_height="30dp"
+	  	android:layout_width="120dp"
+	  	android:layout_height="32dp"
 	  	android:background="@drawable/new_button_background"		  	
 	  	android:layout_alignParentLeft="true"
 	  	android:layout_centerVertical="true"
@@ -107,27 +107,11 @@
 	  	android:layout_marginLeft="5dp"
 		android:focusable="false"
 		android:focusableInTouchMode="false"	  			
-	  	android:gravity="left|center_vertical"/>
-	<Button 
-	  	android:id = "@+id/lst_alert_edit"
-	  	android:layout_width="95dp"
-	  	android:layout_height="30dp"
-	  	android:background="@drawable/new_button_background"		  	
-	  	android:layout_centerInParent="true"
-	  	android:textSize="13sp"
-	  	android:text = "Editeaza"  			
-	  	android:textColor="#575757"
-	  	android:drawableLeft="@drawable/ic_but_edit"
-	  	android:paddingLeft="7dp"
-	  	android:paddingRight="7dp"
-	  	android:drawablePadding="5dp"
-		android:focusable="false"
-		android:focusableInTouchMode="false"	  			
-	  	android:gravity="left|center_vertical"/>	  	
+	  	android:gravity="left|center_vertical"/>  	
 	<Button 
 	  	android:id = "@+id/lst_alert_remove"
-	  	android:layout_width="95dp"
-	  	android:layout_height="30dp"
+	  	android:layout_width="120dp"
+	  	android:layout_height="32dp"
 	  	android:background="@drawable/new_button_background"		  	
 	  	android:layout_alignParentRight="true"
 	  	android:layout_centerVertical="true"

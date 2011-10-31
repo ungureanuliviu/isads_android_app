@@ -24,8 +24,11 @@
 			android:textColor = "#ffffff"
 			android:textSize="18sp"
 			android:text = "Iasianunta"
-			android:textStyle="bold"
-			android:layout_marginLeft="5dp"			
+			android:shadowColor="#555555"
+			android:shadowDx="0.5"
+			android:shadowDy="0.5"
+			android:shadowRadius="0.3"					
+			android:textStyle="bold"					
 			android:layout_centerVertical="true"
 			android:layout_marginTop="2dp"/>		
 		<com.liviu.apps.iasianunta.ui.LEditText 
@@ -59,7 +62,7 @@
 			android:layout_marginTop="9dp"
 			android:textColor = "#777777"
 			android:textSize="10sp"  
-			android:text = "Holla amigos"
+			android:text = "Salut"
 			android:layout_marginLeft="5dp"/>		
 		<Button 
 			android:id = "@+id/main_but_login"

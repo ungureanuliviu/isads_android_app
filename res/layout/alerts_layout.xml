@@ -25,25 +25,12 @@
 			android:textSize="18sp"
 			android:text = "Alerte"
 			android:textStyle="bold"
-			android:layout_marginLeft="5dp"			
+			android:shadowColor="#555555"
+			android:shadowDx="0.5"
+			android:shadowDy="0.5"
+			android:shadowRadius="0.3"	
 			android:layout_centerVertical="true"
-			android:layout_marginTop="2dp"/>		
-		<com.liviu.apps.iasianunta.ui.LEditText 
-			android:id = "@+id/edtx_what"
-			android:layout_width="150dp"
-			android:layout_height="27dp"
-			android:textColor="#575757"
-			android:hint="Cauta anunturi"			
-			android:text = ""
-			android:imeOptions="actionSearch"
-			android:textSize="12dp"
-			android:layout_centerVertical="true"				
-			android:paddingLeft="5dp"			
-			android:singleLine="true"
-			android:layout_marginRight="4dp"
-			android:layout_alignParentRight="true"
-			android:drawableRight="@drawable/ic_edtx_x"
-			android:background="@drawable/edtx_background"/>				
+			android:layout_marginTop="2dp"/>						
 	</RelativeLayout>
 	<RelativeLayout 
 		android:id = "@+id/layout_top_bar"
@@ -135,20 +122,38 @@
 		android:layout_width="fill_parent"
 		android:layout_height="50dp"
 		android:background="@drawable/bg_bottom_gray8"
-		android:layout_alignParentBottom="true">					
+		android:layout_alignParentBottom="true">		
+		<Button 
+			android:id = "@+id/but_back"
+			android:layout_width="135dp"
+			android:layout_height="35dp"
+			android:textColor="#666666"
+			android:text="Inapoi"					
+			android:layout_alignParentLeft="true"
+			android:paddingLeft="9dp"
+			android:paddingRight="5dp"
+			android:layout_marginLeft="9dp"
+			android:layout_centerVertical="true"
+			android:textSize="13sp"
+			android:gravity="left|center_vertical"			
+			android:drawablePadding="5dp"
+			android:drawableLeft="@drawable/ic_back"
+			android:background="@drawable/new_button_background"/> 					
 		<Button 
 			android:id = "@+id/but_add_alert"
 			android:layout_width="135dp"
 			android:layout_height="35dp"
 			android:textColor="#666666"
-			android:text="Adauga alerta"					
-			android:layout_centerInParent="true"
+			android:text="Creaza alerta"					
+			android:layout_alignParentRight="true"
+			android:layout_marginRight="9dp"
 			android:paddingLeft="9dp"			
 			android:paddingRight="5dp"
 			android:textSize="13sp"
+			android:layout_centerVertical="true"
 			android:gravity="left|center_vertical"			
 			android:drawablePadding="5dp"			
-			android:drawableLeft="@drawable/ic_plus"	
+			android:drawableLeft="@drawable/ic_but_add"	
 			android:background="@drawable/new_button_background"/>    
 	</RelativeLayout>					
 </RelativeLayout>

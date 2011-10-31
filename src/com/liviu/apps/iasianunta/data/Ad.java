@@ -34,9 +34,11 @@ public class Ad {
 	private String mAddress;
 	private String mSource;	
 	private String mFormattedDate;
+	private String mCurrency;
 	private long   mDate;		
 	private ArrayList<Comment> mComments;
 	private ArrayList<AdImage> mImages;
+	private int mCityId;
 	
 	public Ad() {
 		mId 			= -1;
@@ -57,6 +59,8 @@ public class Ad {
 		mAuthor 		= "";
 		mCategoryId 	= -1;
 		mFormattedDate 	= "";
+		mCurrency		= "LEI";
+		mCityId			= 1;
 	}
 	
 	public Ad(JSONObject json) throws JSONException {
@@ -77,15 +81,27 @@ public class Ad {
 			mContent 		= (json.isNull("mContent") 			== false ? json.getString("mContent") : "");
 			mUserId 		= (json.isNull("mUserId") 			== false ? json.getInt("mUserId") : -1);
 			mEmail 			= (json.isNull("mEmail") 			== false ? json.getString("mEmail") : "");
+			mCurrency		= (json.isNull("mCurrency") 		== false ? json.getString("mCurrency") : "LEI");
+			mCityId			= (json.isNull("mCityId") 			== false ? json.getInt("mCityId") : 1);
 			mImages 		= new ArrayList<AdImage>();
 			mComments 		= new ArrayList<Comment>();
 		}
 	}
 
+	public Ad setCurrency(String pCurrency){
+		mCurrency = pCurrency;
+		return this;
+	}
+	
+	public String getCurrency(){
+		return mCurrency;
+	}
+	
 	public Ad setFormattedDate(String pFormattedDate){
 		mFormattedDate = pFormattedDate;
 		return this;
 	}
+		
 	
 	public String getFormattedDate(){
 		return mFormattedDate;
@@ -265,5 +281,14 @@ public class Ad {
 
 	public JSONObject toJson() {
 		return Convertor.toJson(this, false);
+	}
+
+	public Ad setCityId(int pCityId) {
+		mCityId = pCityId;
+		return this;
+	}
+	
+	public int getCityId(){
+		return mCityId;
 	}
 }

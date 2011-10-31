@@ -8,7 +8,10 @@ import com.liviu.apps.iasianunta.ui.LEditText;
 import com.liviu.apps.iasianunta.utils.Console;
 
 import android.app.Activity;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.view.View;
@@ -57,6 +60,11 @@ public class LoginActivity extends Activity implements ILoginNotifier,
         butLogin.setOnClickListener(this);  
         
         if(user.isLoggedIn()){
+            Intent registrationIntent = new Intent("com.google.android.c2dm.intent.REGISTER");
+            registrationIntent.putExtra("app", PendingIntent.getBroadcast(this, 0, new Intent(), 0));
+            registrationIntent.putExtra("sender", "smartliviu@gmail.com");
+            startService(registrationIntent);
+            
 			Intent toMainActivity = new Intent(LoginActivity.this, MainActivity.class);
 			startActivity(toMainActivity);
 			finish();
@@ -69,6 +77,17 @@ public class LoginActivity extends Activity implements ILoginNotifier,
 	public void onLogin(boolean isSuccess, User pUser) {
 		Console.debug(TAG, "onLogin: " + isSuccess + " " + pUser);
 		if(isSuccess){
+            SharedPreferences prefs = getSharedPreferences(MyC2dmReceiver.PREFS_NAME, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putInt(MyC2dmReceiver.KEY_USER_ID, user.getId());
+            editor.commit();
+            // do not forget to reset this field when user will log out.
+            
+			Intent registrationIntent = new Intent("com.google.android.c2dm.intent.REGISTER");
+            registrationIntent.putExtra("app", PendingIntent.getBroadcast(this, 0, new Intent(), 0));
+            registrationIntent.putExtra("sender", "smartliviu@gmail.com");
+            startService(registrationIntent);
+            
 			user = pUser;
 			Toast.makeText(LoginActivity.this, "Autentificare reusita.", Toast.LENGTH_SHORT).show();
 			
@@ -97,7 +116,6 @@ public class LoginActivity extends Activity implements ILoginNotifier,
 		Console.debug(TAG, "onLogout: " + isSuccess + " " + pUserId);
 	}
 
-
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -112,7 +130,7 @@ public class LoginActivity extends Activity implements ILoginNotifier,
 		case R.id.login_but_later:
 			Intent toMainActivity = new Intent(LoginActivity.this, MainActivity.class);
 			startActivity(toMainActivity);
-			finish();			
+			finish();	 		
 			break;
 		default:
 			break;

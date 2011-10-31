@@ -49,12 +49,15 @@ import com.liviu.apps.iasianunta.data.Ad;
 import com.liviu.apps.iasianunta.data.AdImage;
 import com.liviu.apps.iasianunta.data.Alert;
 import com.liviu.apps.iasianunta.data.Category;
+import com.liviu.apps.iasianunta.data.City;
 import com.liviu.apps.iasianunta.data.Comment;
+import com.liviu.apps.iasianunta.data.ContentFilter;
 import com.liviu.apps.iasianunta.data.JSONResponse;
+import com.liviu.apps.iasianunta.data.PriceFilter;
 import com.liviu.apps.iasianunta.data.User;
 import com.liviu.apps.iasianunta.interfaces.IAdsNotifier;
-import com.liviu.apps.iasianunta.interfaces.ICategoryNotifier;
 import com.liviu.apps.iasianunta.interfaces.ILoginNotifier;
+import com.liviu.apps.iasianunta.interfaces.ISyncNotifier;
 import com.liviu.apps.iasianunta.interfaces.IUploadNotifier;
 import com.liviu.apps.iasianunta.utils.Base64;
 import com.liviu.apps.iasianunta.utils.Console;
@@ -85,7 +88,7 @@ public class API {
 	private ILoginNotifier 		mILoginNotifier;
 	private IUploadNotifier 	mIUploadNotifier;
 	private IAdsNotifier		mIAdsNotifier;
-	private ICategoryNotifier	mICategoryNotifier;
+	private ISyncNotifier	mICategoryNotifier;
 	
 	// private constructor
 	public API(){		
@@ -257,6 +260,7 @@ public class API {
 								loggedUser.setActiveStatus(userJson.getInt("is_active") == 1 ? true : false);
 								loggedUser.setEmail(userJson.getString("email"));		
 								loggedUser.setId(userJson.getInt("id"));
+								loggedUser.setCity(new City(userJson.getInt("city_id"), userJson.getString("city_name")));								
 								msg.obj = loggedUser;
 								handler.sendMessage(msg);
 							}else{
@@ -388,8 +392,8 @@ public class API {
 		return this;
 	}
 	
-	public API setCategoryNotifier(ICategoryNotifier pICategoryNotifier){
-		mICategoryNotifier = pICategoryNotifier;
+	public API setSyncNotifier(ISyncNotifier pISyncNotifier){
+		mICategoryNotifier = pISyncNotifier;
 		return this;
 	}
 	
@@ -440,8 +444,7 @@ public class API {
 					Message msg		 	= new Message();
 					msg.what			= MSG_AD_ADDED;
 					
-					params.put("title", cNewAd.getTitle());
-					
+					params.put("title", cNewAd.getTitle());					
 					params.put("content", cNewAd.getContent());
 					params.put("price", cNewAd.getPrice());
 					params.put("address", cNewAd.getAddress());
@@ -449,7 +452,9 @@ public class API {
 					params.put("email", cNewAd.getEmail());
 					params.put("user_id", cUserId);
 					params.put("source", cNewAd.getSource());
-					params.put("category_id", cNewAd.getCategoryId());					
+					params.put("category_id", cNewAd.getCategoryId());		
+					params.put("currency", cNewAd.getCurrency());
+					params.put("city_id", cNewAd.getCityId());
 					JSONArray images = new JSONArray();
 					for(int i = 0; i < cNewAd.getImages().size(); i++){
 						images.put(cNewAd.getImages().get(i).getServerFileInfo());						
@@ -479,48 +484,39 @@ public class API {
 		return this;
 	}
 
-	public API getAllCategories() {
-		Thread tGetAllCategories = new Thread(new Runnable() {			
-			@Override
-			public void run() {				
-				JSONResponse jsonResponse = doRequest(API_URL + "/categories/get_all/", null, null, null);
-				Message msg 		= new Message();
-				msg.what = MSG_GET_CATEGORIES_DONE;
+	public synchronized ArrayList<Category> getAllCategories() {			
+		JSONResponse jsonResponse = doRequest(API_URL + "/categories/get_all/", null, null, null);
+		Message msg 		= new Message();
+		msg.what = MSG_GET_CATEGORIES_DONE;
+		
+		try {					 
+			if(null != jsonResponse && jsonResponse.isSuccess()){						
+				ArrayList<Category> categories = new ArrayList<Category>();
+				JSONArray catArray = jsonResponse.getJSONArray("categories");
 				
-				try {					 
-					if(null != jsonResponse && jsonResponse.isSuccess()){						
-						ArrayList<Category> categories = new ArrayList<Category>();
-						JSONArray catArray = jsonResponse.getJSONArray("categories");
-						
-						for(int i = 0; i < catArray.length(); i++){
-							try{
-								categories.add(new Category(catArray.getJSONObject(i).getInt("id"),
-															catArray.getJSONObject(i).getString("name")));
-							}catch (JSONException e) {
-								e.printStackTrace();
-							}
-						}					
-						
-						msg.obj = categories;
-						handler.sendMessage(msg);
-						
-					}else{
-						handler.sendMessage(msg);
+				for(int i = 0; i < catArray.length(); i++){
+					try{
+						categories.add(new Category(catArray.getJSONObject(i).getInt("id"),
+													catArray.getJSONObject(i).getString("name")));
+					}catch (JSONException e) {
+						e.printStackTrace();						
 					}
-				} catch (JSONException e) {
-					e.printStackTrace();
-					handler.sendMessage(msg);
-				}
+				}									
+				return categories;								
+			}else{
+				return null;
 			}
-		});
-		tGetAllCategories.start();
-		return this;
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
-	public API getAds(int pCategoryId, int pPage, int pAdsPerPage) {
+	public synchronized API getAds(int pCategoryId, int pPage, int pAdsPerPage, int pCityId) {
 		final int cCategoryId  	= pCategoryId;
 		final int cPage 		= pPage;
 		final int cAdsPerPage 	= pAdsPerPage;
+		final int cCityId		= pCityId;
 		
 		Thread tGetAds = new Thread(new Runnable() {			
 			@Override
@@ -533,6 +529,7 @@ public class API {
 					params.put("page", cPage);
 					params.put("category_id", cCategoryId);
 					params.put("ads_per_page", cAdsPerPage);
+					params.put("city_id", cCityId);
 					JSONResponse jsonResponse = doRequest(API_URL + "/ads/get_all/", params, null, null);										
 					if(jsonResponse.isSuccess()){						
 						JSONObject data = new JSONObject();
@@ -559,13 +556,7 @@ public class API {
 							  .setAuthor(jAd.isNull("user_name") 	== true ? null : jAd.getString("user_name"))
 							  .setFormattedDate(jAd.isNull("date")  == true ? "" : Utils.formatDate(jAd.getLong("date") * 1000, "d MMM yyyy"))
 							  .setCategoryName(jAd.isNull("cat_name") == true ? null : jAd.getString("cat_name"))
-							  .adComment(new Comment().setTitle("testing1"))
-							  .adComment(new Comment().setTitle("testing2"))
-							  .adComment(new Comment().setTitle("testing3"))
-							  .adComment(new Comment().setTitle("testing4"))
-							  .adComment(new Comment().setTitle("testing5"))
-							  .adComment(new Comment().setTitle("testing6"))
-							  .adComment(new Comment().setTitle("testing7"))
+							  .setCurrency(jAd.isNull("currency") 	 == true ? null : jAd.getString("currency"))
 							  .setTotalComments(jAd.isNull("total_comments") == true ? 0 : jAd.getInt("total_comments"));
 								
 							JSONArray jAdImages = jAd.getJSONArray("images");
@@ -699,10 +690,13 @@ public class API {
 							.setLastCheckedDate(jAlert.getLong("last_checked_date") * 1000)
 							.setTotalAdsSinceLastCheck(jAlert.getInt("total_ads_since_last_check"))
 							.setCategoryId(jAlert.getInt("cat_id"));
-					JSONArray jFilters = jAlert.getJSONArray("filters");
-					for(int j = 0; j < jFilters.length(); j++)
-						newAlert.addFilter(jFilters.getString(j));
-					
+							/*
+							 if(!jAlert.isNull("filters")){
+								JSONArray jFilters = jAlert.getJSONArray("filters");
+								for(int j = 0; j < jFilters.length(); j++)
+									newAlert.addFilter(jFilters.getString(j));
+							}					
+							*/
 					alerts.add(newAlert);
 				}				
 				return alerts;
@@ -713,5 +707,240 @@ public class API {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public Alert addAlert(Alert pAlert, String pUserAuth, String pUserPassword) {
+		if(null == pAlert)
+			return null;
+		try{
+			JSONObject params = new JSONObject();
+			params.put("title", pAlert.getTitle());
+			params.put("user_id", pAlert.getUserId());
+			params.put("cat_id", pAlert.getCategoryId());
+			params.put("city_id", pAlert.getCityId());
+			JSONArray jFilters = new JSONArray();
+			
+			// add content filters
+			JSONArray jConstranints 	= new JSONArray();
+			JSONObject jContentFilter 	= new JSONObject();
+			JSONObject jPriceFilter   	= new JSONObject();
+			for(int i = 0; i < pAlert.getFilters().size(); i++){
+				if(pAlert.getFilters().get(i) instanceof ContentFilter){					
+					jContentFilter.put("type", pAlert.getFilters().get(i).getType());									
+					jConstranints.put(jConstranints.length(), ((ContentFilter)pAlert.getFilters().get(i)).getContent());
+				} else if(pAlert.getFilters().get(i) instanceof PriceFilter){
+					jPriceFilter.put("type", "price");
+					jPriceFilter.put("max", ((PriceFilter)pAlert.getFilters().get(i)).getMaxPrice());
+					jPriceFilter.put("min", ((PriceFilter)pAlert.getFilters().get(i)).getMinPrice());
+					jFilters.put(jFilters.length(), jPriceFilter);
+				}
+			}
+			if(jConstranints.length() > 0){
+				jContentFilter.put("constraints", jConstranints);
+				jFilters.put(jFilters.length(), jContentFilter);
+			}
+			
+			params.put("filters", jFilters);
+			JSONResponse jsonResponse = doRequest(API_URL + "/alerts/add/", params, pUserAuth, pUserPassword);
+			if(jsonResponse.isSuccess()){
+				pAlert.setId(jsonResponse.getJSONObject("alert").getInt("id"));
+				pAlert.setAddedDate(jsonResponse.getJSONObject("alert").getLong("added_date") * 1000);
+				pAlert.setLastCheckedDate(jsonResponse.getJSONObject("alert").getLong("last_checked_date") * 1000);
+				return pAlert;
+			} else{
+				return null;
+			}
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public Alert getAlertWithAds(int pAlertId, int pUserId, String pUserAuth, String pUserPassword) {
+				
+		try {
+			JSONObject params = new JSONObject();
+			params.put("user_id", pUserId);
+			params.put("alert_id", pAlertId);
+			JSONResponse jsonResponse = doRequest(API_URL + "/alerts/get_alert_with_ads/", params, pUserAuth, pUserPassword);
+			if(jsonResponse.isSuccess()){
+				JSONObject jAlert = jsonResponse.getJSONObject("alert");
+				Alert newAlert	  = new Alert();
+				
+				newAlert.setId(jAlert.getInt("id"))
+						.setTitle(jAlert.getString("title"))
+						.setUserId(jAlert.getInt("user_id"))
+						.setAddedDate(jAlert.getLong("added_date") * 1000)
+						.setLastCheckedDate(jAlert.getLong("last_checked_date") * 1000)
+						.setTotalAdsSinceLastCheck(jAlert.getInt("total_ads_since_last_check"))
+						.setCategoryId(jAlert.getInt("cat_id"))
+						.setCategoryName(jAlert.getString("cat_name"));
+						
+				 if(!jAlert.isNull("filters")){
+					JSONArray jFilters = jAlert.getJSONArray("filters");
+					for(int j = 0; j < jFilters.length(); j++){
+						JSONObject jFilter = jFilters.getJSONObject(j);
+						if(jFilter.getString("type").equals(ContentFilter.TYPE)){
+							for(int k = 0; k < jFilter.getJSONArray("constraints").length(); k++){
+								ContentFilter contentFilter = new ContentFilter(jFilter.getJSONArray("constraints").getString(k));
+								newAlert.addFilter(contentFilter);
+							}
+						} else if(jFilter.getString("type").equals(PriceFilter.TYPE)){
+							newAlert.addFilter(new PriceFilter(jFilter.getDouble("min_price"), jFilter.getDouble("man_price"), jFilter.getString("currency")));
+						}
+					}								
+				}
+				 
+				// get all ads						 
+				JSONArray adsJSonArray 	= jAlert.getJSONArray("ads");
+				for(int i = 0; i < adsJSonArray.length(); i++){
+					JSONObject jAd = adsJSonArray.getJSONObject(i);
+					Ad ad = new Ad();
+					ad.setId(jAd.getInt("id"))
+					  .setAddress(jAd.isNull("address") 	== true ? null : jAd.getString("address"))
+					  .setCategoryId(jAd.isNull("cat_id") 	== true ? null : jAd.getInt("cat_id"))
+					  .setContent(jAd.isNull("content") 	== true ? null : jAd.getString("content"))
+					  .setDate(jAd.isNull("date") 			== true ? -1 : jAd.getLong("date")* 1000)
+					  .setEmail(jAd.isNull("email")	 		== true ? null : jAd.getString("email"))
+					  .setPhone(jAd.isNull("phone") 		== true ? null : jAd.getString("phone"))
+					  .setSource(jAd.isNull("source") 		== true ? null : jAd.getString("source"))
+					  .setTitle(jAd.isNull("title") 		== true ? null : jAd.getString("title"))							  
+					  .setUserId(jAd.isNull("user_id") 		== true ? -1 : jAd.getInt("user_id"))
+					  .setViewsCount(jAd.isNull("views") 	== true ? 0 : jAd.getInt("views"))
+					  .setAuthor(jAd.isNull("user_name") 	== true ? null : jAd.getString("user_name"))
+					  .setFormattedDate(jAd.isNull("date")  == true ? "" : Utils.formatDate(jAd.getLong("date") * 1000, "d MMM yyyy"))
+					  .setCategoryName(jAd.isNull("cat_name") == true ? null : jAd.getString("cat_name"))
+					  .setCurrency(jAd.isNull("currency") 	 == true ? null : jAd.getString("currency"))
+					  .setTotalComments(jAd.isNull("total_comments") == true ? 0 : jAd.getInt("total_comments"));															
+					
+					newAlert.addAd(ad);							
+				}
+				return newAlert;
+			}
+		} catch (JSONException e) {		
+			e.printStackTrace();
+			return null;
+		}		
+		return null;
+	}
+
+	public void updateDeviceId(int pUserId, String pDeviceId) {
+		final int cUserId = pUserId;
+		final String cDeviceId = pDeviceId;
+		
+		Thread tUpdate = new Thread(new Runnable() {			
+			@Override
+			public void run() {				
+				try {
+					JSONObject params = new JSONObject();
+					params.put("user_id", cUserId);
+					params.put("device_id",  cDeviceId);
+					doRequest(API_URL + "/user/update_device_id/", params, null, null);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}				
+				
+			}
+		});
+		tUpdate.start();
+	}	
+	
+	public Alert getAlertAdsCountWithFirstAd(int pAlertId) {
+		
+		try {
+			JSONObject params = new JSONObject();
+			params.put("alert_id", pAlertId);
+			JSONResponse jsonResponse = doRequest(API_URL + "/alerts/get_alert_ads_count_with_first_ad/", params, null, null);
+			if(jsonResponse.isSuccess()){
+				JSONObject jAlert = jsonResponse.getJSONObject("alert");
+				Alert newAlert	  = new Alert();
+				
+				newAlert.setId(jAlert.getInt("id"))
+						.setTitle(jAlert.getString("title"))
+						.setUserId(jAlert.getInt("user_id"))
+						.setAddedDate(jAlert.getLong("added_date") * 1000)
+						.setLastCheckedDate(jAlert.getLong("last_checked_date") * 1000)
+						.setTotalAdsSinceLastCheck(jAlert.getInt("total_ads_since_last_check"))
+						.setCategoryId(jAlert.getInt("cat_id"))
+						.setCategoryName(jAlert.getString("cat_name"));
+						
+				 if(!jAlert.isNull("filters")){
+					JSONArray jFilters = jAlert.getJSONArray("filters");
+					for(int j = 0; j < jFilters.length(); j++){
+						JSONObject jFilter = jFilters.getJSONObject(j);
+						if(jFilter.getString("type").equals(ContentFilter.TYPE)){
+							for(int k = 0; k < jFilter.getJSONArray("constraints").length(); k++){
+								ContentFilter contentFilter = new ContentFilter(jFilter.getJSONArray("constraints").getString(k));
+								newAlert.addFilter(contentFilter);
+							}
+						} else if(jFilter.getString("type").equals(PriceFilter.TYPE)){
+							newAlert.addFilter(new PriceFilter(jFilter.getDouble("min_price"), jFilter.getDouble("man_price"), jFilter.getString("currency")));
+						}
+					}								
+				}
+				 
+				// get all ads						 
+				JSONArray adsJSonArray 	= jAlert.getJSONArray("ads");
+				for(int i = 0; i < adsJSonArray.length(); i++){
+					JSONObject jAd = adsJSonArray.getJSONObject(i);
+					Ad ad = new Ad();
+					ad.setId(jAd.getInt("id"))
+					  .setAddress(jAd.isNull("address") 	== true ? null : jAd.getString("address"))
+					  .setCategoryId(jAd.isNull("cat_id") 	== true ? null : jAd.getInt("cat_id"))
+					  .setContent(jAd.isNull("content") 	== true ? null : jAd.getString("content"))
+					  .setDate(jAd.isNull("date") 			== true ? -1 : jAd.getLong("date")* 1000)
+					  .setEmail(jAd.isNull("email")	 		== true ? null : jAd.getString("email"))
+					  .setPhone(jAd.isNull("phone") 		== true ? null : jAd.getString("phone"))
+					  .setSource(jAd.isNull("source") 		== true ? null : jAd.getString("source"))
+					  .setTitle(jAd.isNull("title") 		== true ? null : jAd.getString("title"))							  
+					  .setUserId(jAd.isNull("user_id") 		== true ? -1 : jAd.getInt("user_id"))
+					  .setViewsCount(jAd.isNull("views") 	== true ? 0 : jAd.getInt("views"))
+					  .setAuthor(jAd.isNull("user_name") 	== true ? null : jAd.getString("user_name"))
+					  .setFormattedDate(jAd.isNull("date")  == true ? "" : Utils.formatDate(jAd.getLong("date") * 1000, "d MMM yyyy"))
+					  .setCategoryName(jAd.isNull("cat_name") == true ? null : jAd.getString("cat_name"))
+					  .setCurrency(jAd.isNull("currency") 	 == true ? null : jAd.getString("currency"))
+					  .setTotalComments(jAd.isNull("total_comments") == true ? 0 : jAd.getInt("total_comments"));																				
+					newAlert.addAd(ad);							
+				}
+				return newAlert;
+			}
+		} catch (JSONException e) {		
+			e.printStackTrace();
+			return null;
+		}		
+		return null;
+	}
+
+	public synchronized ArrayList<City> getAllCities() {
+		ArrayList<City> cities = new ArrayList<City>();
+		try {
+			JSONResponse jsonResponse = doRequest(API_URL + "/cities/get_all/", null, null, null);
+			if(jsonResponse.isSuccess()){			
+				JSONArray jsonCities = jsonResponse.getJSONArray("cities");
+				for(int i = 0; i < jsonCities.length(); i++){
+					cities.add(new City(jsonCities.getJSONObject(i).getInt("id"), jsonCities.getJSONObject(i).getString("name")));
+				}
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return cities;
+	}
+
+	public boolean removeAlert(int pAlertId, int pUserId, String pUserAuthName, String pUserPassword) {
+		try {
+			JSONObject params = new JSONObject();
+			params.put("alert_id", pAlertId);
+			params.put("user_id", pUserId);
+			JSONResponse jsonResponse = doRequest(API_URL + "/alerts/remove/", params, pUserAuthName, pUserPassword);
+			if(null != jsonResponse){
+				return jsonResponse.isSuccess();
+			}else
+				return false;
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}	
 }

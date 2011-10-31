@@ -16,17 +16,19 @@ public class User {
 	private boolean mIsActive;
 	private boolean mIsLoggedIn;	
 	private static User mInstance;
+	private City mCity;
 	
 	
 	private User() {
-		mId = -1;
-		mName = "unknown";
-		mPassword = "";
-		mEmail = "";
-		mAuthName = "unknown";
+		mId 			= -1;
+		mName 			= "unknown";
+		mPassword 		= "";
+		mEmail 			= "";
+		mAuthName 		= "unknown";
 		mActivationCode = "";
-		mIsActive = false;
-		mIsLoggedIn = false;		
+		mIsActive 		= false;
+		mIsLoggedIn 	= false;		
+		mCity			= new City();
 	}
 	
 	public static User getInstance(){
@@ -34,6 +36,15 @@ public class User {
 			return mInstance;
 		else
 			return (mInstance = new User());
+	}
+	
+	public City getCity(){
+		return mCity;
+	}
+	
+	public User setCity(City pCity){
+		mCity = pCity;
+		return this;
 	}
 	
 	public String getName(){
@@ -120,6 +131,6 @@ public class User {
 		mAuthName = "unknown";
 		mActivationCode = "";
 		mIsActive = false;
-		mIsLoggedIn = false;
+		mIsLoggedIn = false;		
 	}	
 }

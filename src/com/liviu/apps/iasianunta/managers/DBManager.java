@@ -1,6 +1,5 @@
 package com.liviu.apps.iasianunta.managers;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import org.json.JSONException;
@@ -10,11 +9,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.location.Address;
 
 import com.liviu.apps.iasianunta.data.Ad;
 import com.liviu.apps.iasianunta.data.AdImage;
 import com.liviu.apps.iasianunta.data.Category;
+import com.liviu.apps.iasianunta.data.City;
 import com.liviu.apps.iasianunta.interfaces.IDbAdNotifier;
 import com.liviu.apps.iasianunta.utils.Console;
 
@@ -33,6 +32,13 @@ public class DBManager {
 	private final String TABLE_SAVED_ADS 	= "table_saved_ads";
 	private final String TABLE_IMAGES	 	= "table_ad_images";
 	private final String TABLE_CATEGORIES 	= "table_categories";
+	private final String TABLE_CITIES		= "table_cities";
+
+	private final String CREATE_TABLE_CITIES = "create table if not exists table_cities (" +
+											   "id integer not null," +
+											   "name text not null)";
+	private final String CITY_ID = "id";
+	private final String CITY_NAME = "name";
 	
 	private final String CREATE_TABLE_CATEGORIES = "create table if not exists table_categories (" +
 												   "cat_id integer not null," +
@@ -100,6 +106,7 @@ public class DBManager {
 			mDb.execSQL(CREATE_SAVED_ADS_TABLE);
 			mDb.execSQL(CREATE_IMAGES_TABLE);
 			mDb.execSQL(CREATE_TABLE_CATEGORIES);
+			mDb.execSQL(CREATE_TABLE_CITIES);
 			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -244,6 +251,64 @@ public class DBManager {
 			c.close();
 			closeDatabase();
 			return categories;				
+		}						
+	}
+
+	public synchronized City addCity(City pCity) {
+		if(null == pCity)
+			return null;
+		
+		ContentValues  values = new ContentValues();
+		values.put(CITY_ID, pCity.getId());
+		values.put(CITY_NAME, pCity.getName());
+		
+		try{
+			openOrCreateDatabase();
+			int newId = (int)mDb.insert(TABLE_CITIES, null, values);
+			if(newId > -1){
+				// insert success
+				pCity.setId(newId);
+				closeDatabase();
+				return pCity;
+			} else{
+				// insert error
+				closeDatabase();
+				closeDatabase();
+				return null;
+			}			
+		}catch (SQLException e) {
+			e.printStackTrace();
+			closeDatabase();
+			return null;
+		}
+	}
+
+	public synchronized ArrayList<City> getAllCities() {
+		ArrayList<City> cities = new ArrayList<City>();
+		String[] projection	   = new String[]{CITY_ID, CITY_NAME};
+		Cursor c 			   = null;
+		
+		openOrCreateDatabase();
+		c = mDb.query(TABLE_CITIES, projection, null, null, null, null, CITY_ID + " ASC");
+		if(c == null){
+			closeDatabase();
+			return cities;
+		} else if(c.getCount() == 0){
+			c.close();
+			closeDatabase();
+			return cities;
+		} else {
+			int numRows = c.getCount();
+			c.moveToFirst();
+			
+			for(int i = 0; i < numRows; i++){
+				cities.add(new City(c.getInt(0), c.getString(1)));
+				c.moveToNext();
+			}
+			
+			c.close();
+			closeDatabase();
+			return cities;				
 		}						
 	}
 }

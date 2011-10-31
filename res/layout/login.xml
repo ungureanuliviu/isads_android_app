@@ -39,15 +39,15 @@
 				android:layout_marginRight="5dp"				
 				android:gravity="left|center_vertical"			
 				android:drawablePadding="5dp"			
-				android:drawableLeft="@drawable/ic_back"
+				android:drawableLeft="@drawable/ic_next"
 				android:paddingLeft="9dp"
 				android:textSize="13sp"							
 				android:background="@drawable/new_button_background" />							
 	</RelativeLayout>	
 	<RelativeLayout 
-		android:id = "@+id/layout_content"
+		android:id = "@+id/layout_content"  
 		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"				
+		android:layout_height="fill_parent"				    
 		android:layout_below="@id/layout_top">									
 		<RelativeLayout 
 			android:id = "@+id/login_form_bg_holder"
@@ -175,7 +175,7 @@
 								android:layout_marginRight="5dp"		
 								android:gravity="left|center_vertical"			
 								android:drawablePadding="5dp"			
-								android:drawableLeft="@drawable/ic_back"
+								android:drawableLeft="@drawable/ic_next"
 								android:paddingLeft="9dp"
 								android:textSize="13sp"			
 								android:layout_below="@id/edtx_user_password"

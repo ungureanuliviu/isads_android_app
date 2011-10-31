@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:background="#eeeeee">
+  <ImageView
+  	android:id = "@+id/filter_image"
+  	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:layout_alignParentLeft="true"
+	android:layout_marginTop="10dp"
+	android:layout_marginLeft="5dp"  	
+	android:src="@drawable/ic_filter_blue"
+	android:scaleType="fitCenter" />
+  <com.liviu.apps.iasianunta.ui.LTextView 
+  	android:id = "@+id/filter_content"
+  	android:layout_width="wrap_content"
+  	android:layout_height="35dp"
+  	android:textSize="14sp"
+  	android:text = "Filter content"
+  	android:gravity="left|center_vertical"
+  	android:layout_marginLeft="5dp"  	
+  	android:layout_toRightOf = "@id/filter_image"
+  	android:textColor="#575757"/>
+  <View 
+  	android:layout_width="fill_parent"
+  	android:layout_height="1dp"
+  	android:background="#dadada"
+  	android:layout_below="@id/filter_content"/>  	  	    
+</RelativeLayout>

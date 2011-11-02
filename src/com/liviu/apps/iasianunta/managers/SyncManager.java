@@ -43,24 +43,24 @@ public class SyncManager{
 			public void handleMessage(android.os.Message msg) {
 				switch (msg.what) {
 				case MSG_CATEGORIES_ADDED_IN_DB:
+					SharedPreferences.Editor ed = mPrefs.edit();
+					ed.putBoolean(SHOULD_SYNC_CATEGORIES_KEY, false);
+					ed.commit();
 					if(null != mISyncNotifier){
 						if(null != msg.obj){
-							mISyncNotifier.onCategoriesSyncronized(true, (ArrayList<Category>)msg.obj);
-							SharedPreferences.Editor ed = mPrefs.edit();
-							ed.putBoolean(SHOULD_SYNC_CATEGORIES_KEY, false);
-							ed.commit();
+							mISyncNotifier.onCategoriesSyncronized(true, (ArrayList<Category>)msg.obj);							
 						} else{
 							mISyncNotifier.onCategoriesSyncronized(false, null);
 						}												
 					}
 					break;
 				case MSG_CITIES_ADDED_IN_DB:
+					SharedPreferences.Editor ed2 = mPrefs.edit();
+					ed2.putBoolean(SHOULD_SYNC_CITIES_KEY, false);
+					ed2.commit();
 					if(null != mISyncNotifier){
 						if(null != msg.obj){
 							mISyncNotifier.onCitiesSyncronized(true, (ArrayList<City>)msg.obj);
-							SharedPreferences.Editor ed = mPrefs.edit();
-							ed.putBoolean(SHOULD_SYNC_CITIES_KEY, false);
-							ed.commit();
 						} else{
 							mISyncNotifier.onCitiesSyncronized(false, null);
 						}												

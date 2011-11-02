@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"    
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#eaeaea">
+	<RelativeLayout 
+		android:id = "@+id/layout_top"
+		android:layout_width="fill_parent"
+		android:layout_height="38dp"
+		android:background="@drawable/top_new_background">
+		<ImageView 
+			android:id = "@+id/ic_home"
+			android:layout_width="26dp"
+			android:layout_height="20dp"
+			android:layout_marginLeft="6dp"
+			android:layout_alignParentLeft="true"
+			android:layout_centerVertical="true"
+			android:src="@drawable/ic_home"/>	
+		<com.liviu.apps.iasianunta.ui.LTextView
+			android:id = "@+id/title"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_toRightOf="@id/ic_home"			
+			android:textColor = "#ffffff"
+			android:textSize="18sp"
+			android:text = "Cont nou"
+			android:shadowColor="#000000"
+			android:shadowDx="0.5"
+			android:shadowDy="0.5"
+			android:shadowRadius="0.4"				
+			android:textStyle="bold"			
+			android:layout_centerVertical="true"
+			android:layout_marginTop="2dp"/>							
+	</RelativeLayout>
+	<RelativeLayout 
+		android:id = "@+id/layout_top_bar"
+		android:layout_width="fill_parent"
+		android:layout_height="30dp"
+		android:background="@drawable/bg_bar_gray"
+		android:layout_below="@id/layout_top">	
+		<com.liviu.apps.iasianunta.ui.LTextView
+			android:id = "@+id/user_name"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentLeft="true"
+			android:layout_marginTop="9dp"
+			android:textColor = "#777777"  
+			android:textSize="10sp"  
+			android:text = "Salut"
+			android:layout_marginLeft="5dp"/>					  				
+	</RelativeLayout>
+	<ProgressBar android:id="@+id/create_progress"
+       style="?android:attr/progressBarStyleSmall"
+       android:indeterminateOnly = "true"
+       android:layout_width="15dp"
+       android:layout_height="15dp"   
+       android:visibility="gone"          		        
+	   android:layout_centerInParent="true"	   
+	   android:indeterminateDrawable = "@drawable/progress_small"/>  	
+	<com.liviu.apps.iasianunta.ui.LTextView
+		android:id = "@+id/txt_create_progress"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_centerHorizontal="true"						   	   					
+		android:textColor = "#888888"
+		android:textSize="12sp"
+		android:visibility="gone"
+		android:text = "Va rugam asteptati...."							
+		android:layout_marginTop="5dp"					
+		android:drawableLeft="@drawable/ic_but_upload"
+		android:drawablePadding="5dp"		
+		android:gravity="left|center_vertical"
+		android:layout_below="@id/create_progress"/>		   
+	<RelativeLayout 
+		android:id = "@+id/layout_content"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"		
+		android:layout_below="@id/layout_top_bar"		
+		android:layout_above="@+id/layout_bottom">								
+			<ScrollView 
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent"
+				android:fillViewport="true">		
+				<RelativeLayout 
+					android:id = "@+id/ad_inputs_holder"
+					android:layout_width="fill_parent"					
+					android:layout_height="wrap_content">	
+						<com.liviu.apps.iasianunta.ui.LTextView
+							android:id = "@+id/txt_required_content"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:layout_alignParentLeft = "true"			
+							android:textColor = "@color/text_color"
+							android:textSize="13sp"
+							android:text = "Informatii*"			
+							android:layout_marginLeft="5dp"
+							android:layout_marginTop="10dp"/>			
+						<View
+							android:id = "@+id/line11"
+							android:layout_width="fill_parent"	
+							android:layout_height="1dp"
+							android:background="@color/double_line_color"  
+							android:layout_toRightOf="@id/txt_required_content"
+							android:layout_marginTop="17dp"
+							android:layout_marginLeft="3dp"
+							android:layout_marginRight="5dp"/>
+						<View
+							android:id = "@+id/line12"
+							android:layout_width="fill_parent"	
+							android:layout_height="1dp"
+							android:background="@color/double_line_color" 
+							android:layout_below="@id/line11"
+							android:layout_toRightOf="@id/txt_required_content"
+							android:layout_marginTop="1dp"
+							android:layout_marginLeft="3dp"
+							android:layout_marginRight="5dp"
+							android:layout_marginBottom="10dp"/>				
+						<com.liviu.apps.iasianunta.ui.LTextView 
+							android:id = "@+id/txt_realname" 
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"														
+							android:textSize="12sp"						   
+							android:text = "Nume,prenume*"			
+							android:textColor="#676767"
+							android:layout_below = "@id/line12"					
+							android:layout_marginLeft="10dp"
+							android:layout_marginTop="5dp"/>						
+						<com.liviu.apps.iasianunta.ui.LEditText 
+							android:id = "@+id/edtx_realname"
+							android:layout_width="fill_parent"
+							android:layout_height="35dp"
+							android:textColor="#575757"
+							android:hint="nume,prenume"															
+							android:textSize="12dp"
+							android:layout_below="@id/txt_realname"			
+							android:paddingLeft="5dp"			
+							android:singleLine="true"
+							android:layout_marginRight="10dp"		
+							android:layout_marginLeft="10dp"	
+							android:layout_marginTop="5dp"			
+							android:drawableRight="@drawable/ic_edtx_x"
+							android:background="@drawable/edtx_background_green"/>																						
+						<com.liviu.apps.iasianunta.ui.LTextView 
+							android:id = "@+id/txt_username" 
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"														
+							android:textSize="12sp"						   
+							android:text = "User*"			
+							android:textColor="#676767"
+							android:layout_below = "@id/edtx_realname"					
+							android:layout_marginLeft="10dp"
+							android:layout_marginTop="5dp"/>						
+						<com.liviu.apps.iasianunta.ui.LEditText 
+							android:id = "@+id/edtx_username"
+							android:layout_width="fill_parent"
+							android:layout_height="35dp"
+							android:textColor="#575757"
+							android:hint="utilizator"															
+							android:textSize="12dp"
+							android:layout_below="@id/txt_username"			
+							android:paddingLeft="5dp"			
+							android:singleLine="true"
+							android:layout_marginRight="10dp"		
+							android:layout_marginLeft="10dp"	
+							android:layout_marginTop="5dp"			
+							android:drawableRight="@drawable/ic_edtx_x"
+							android:background="@drawable/edtx_background_green"/>			
+						<com.liviu.apps.iasianunta.ui.LTextView
+							android:id = "@+id/txt_password"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"														
+							android:textSize="12sp"						
+							android:text = "Parola*"										
+							android:textColor="#676767"
+							android:layout_below = "@id/edtx_username"
+							android:layout_marginTop="10dp"
+							android:layout_marginLeft="10dp"/>						
+						<com.liviu.apps.iasianunta.ui.LEditText 
+							android:id = "@+id/edtx_password"
+							android:layout_width="fill_parent"
+							android:layout_height="35dp"
+							android:textColor="#575757"
+							android:hint="parola"			
+							android:text = "1234567"			
+							android:inputType="textPassword"								
+							android:textSize="12dp"
+							android:layout_below="@id/txt_password"
+							android:paddingLeft="5dp"										
+							android:layout_marginRight="10dp"		
+							android:layout_marginLeft="10dp"	
+							android:layout_marginTop="5dp"	
+							android:drawableRight="@drawable/ic_edtx_x"
+							android:background="@drawable/edtx_background_green"/>
+						<com.liviu.apps.iasianunta.ui.LTextView
+							android:id = "@+id/txt_repeat_password"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"														
+							android:textSize="12sp"						
+							android:text = "Repeta parola*"										
+							android:textColor="#676767"
+							android:layout_below = "@id/edtx_password"
+							android:layout_marginTop="10dp"
+							android:layout_marginLeft="10dp"/>						
+						<com.liviu.apps.iasianunta.ui.LEditText 
+							android:id = "@+id/edtx_repeat_password"
+							android:layout_width="fill_parent"
+							android:layout_height="35dp"
+							android:textColor="#575757"
+							android:hint="repeat password"
+							android:inputType="textPassword"																				
+							android:textSize="12dp"
+							android:layout_below="@id/txt_repeat_password"
+							android:paddingLeft="5dp"										
+							android:layout_marginRight="10dp"		
+							android:layout_marginLeft="10dp"	
+							android:layout_marginTop="5dp"	
+							android:drawableRight="@drawable/ic_edtx_x"
+							android:background="@drawable/edtx_background_green"/>
+						<com.liviu.apps.iasianunta.ui.LTextView
+							android:id = "@+id/txt_email"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"														
+							android:textSize="12sp"						
+							android:text = "Email*"										
+							android:textColor="#676767"
+							android:layout_below = "@id/edtx_repeat_password"
+							android:layout_marginTop="10dp"
+							android:layout_marginLeft="10dp"
+							android:layout_alignParentLeft="true"/>						
+						<com.liviu.apps.iasianunta.ui.LEditText 
+							android:id = "@+id/edtx_email"
+							android:layout_width="fill_parent"
+							android:layout_height="35dp"
+							android:textColor="#575757"
+							android:hint="username@domain.com"		
+							android:inputType="textEmailAddress"													
+							android:textSize="12dp"
+							android:layout_below="@id/txt_email"
+							android:paddingLeft="5dp"										
+							android:layout_marginRight="10dp"		
+							android:layout_marginLeft="10dp"	
+							android:layout_marginTop="5dp"								
+							android:drawableRight="@drawable/ic_edtx_x"
+							android:background="@drawable/edtx_background_green"/>								
+						<com.liviu.apps.iasianunta.ui.LTextView
+							android:id = "@+id/txt_city"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"														
+							android:textSize="12sp"						
+							android:text = "Oras*"										
+							android:textColor="#676767"
+							android:layout_below = "@id/edtx_email"
+							android:layout_marginTop="10dp"
+							android:layout_alignParentLeft = "true"
+							android:layout_marginRight="10dp"		
+							android:layout_marginLeft="10dp"	/>						
+						<Spinner 
+							android:id = "@+id/cities"
+							android:layout_width="fill_parent"
+							android:layout_height="35dp"
+							android:textColor="#575757"											
+							android:layout_below="@id/txt_city"
+							android:paddingLeft="5dp"									
+							android:layout_alignParentLeft = "true"
+							android:layout_marginRight="10dp"		
+							android:layout_marginLeft="10dp"								
+							android:layout_marginTop="5dp"	
+							android:background="@drawable/edtx_background_green"/>																																									
+					</RelativeLayout>
+				</ScrollView>		
+		<!-- second row -->											
+	</RelativeLayout>
+	<RelativeLayout 
+		android:id = "@id/layout_bottom"
+		android:layout_width="fill_parent"
+		android:layout_height="50dp"
+		android:background="@drawable/bg_bottom_gray8"
+		android:layout_marginTop="10dp"
+		android:layout_alignParentBottom="true">		
+		<Button 
+			android:id = "@+id/but_back"
+			android:layout_width="135dp"
+			android:layout_height="35dp"
+			android:textColor="#666666"
+			android:text="Inapoi"					
+			android:layout_centerVertical="true"
+			android:layout_alignParentLeft="true"
+			android:layout_marginLeft="9dp"
+			android:paddingLeft="9dp"			
+			android:paddingRight="5dp"
+			android:textSize="11sp"
+			android:gravity="left|center_vertical"			
+			android:drawablePadding="5dp"			
+			android:drawableLeft="@drawable/ic_back"	
+			android:background="@drawable/new_button_background"/> 			
+		<Button 
+			android:id = "@+id/but_create"
+			android:layout_width="135dp"
+			android:layout_height="35dp"
+			android:textColor="#666666"
+			android:text="Creaza"					
+			android:layout_alignParentRight="true"
+			android:layout_marginRight="9dp"
+			android:paddingLeft="9dp"			
+			android:paddingRight="5dp"
+			android:textSize="13sp" 			
+			android:layout_centerVertical="true"
+			android:gravity="left|center_vertical"			
+			android:drawablePadding="5dp"			
+			android:drawableLeft="@drawable/ic_but_save"	
+			android:background="@drawable/new_button_background"/>  		  
+	</RelativeLayout>					
+</RelativeLayout>

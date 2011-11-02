@@ -29,7 +29,7 @@
 			android:layout_centerVertical="true"
 			android:layout_marginTop="2dp"/>	
 			<Button
-				android:id = "@+id/login_but_new_user"
+				android:id = "@+id/login_but_new_account"
 				android:layout_width="110dp"
 				android:layout_height="30dp"
 				android:textColor="#575757"

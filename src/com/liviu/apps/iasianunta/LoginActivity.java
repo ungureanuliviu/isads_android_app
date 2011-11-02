@@ -4,6 +4,8 @@ import com.liviu.apps.iasianunta.apis.API;
 import com.liviu.apps.iasianunta.data.User;
 import com.liviu.apps.iasianunta.interfaces.ILoginNotifier;
 import com.liviu.apps.iasianunta.managers.ActivityIdProvider;
+import com.liviu.apps.iasianunta.managers.AdsManager;
+import com.liviu.apps.iasianunta.managers.SyncManager;
 import com.liviu.apps.iasianunta.ui.LEditText;
 import com.liviu.apps.iasianunta.utils.Console;
 
@@ -12,6 +14,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.view.View;
@@ -31,12 +34,14 @@ public class LoginActivity extends Activity implements ILoginNotifier,
 	// data
 	private API	api;
 	private User user;  
+	private SyncManager	syncMan;	
 	
 	// UI
 	private Button butLogin;
 	private Button butLater;
 	private LEditText edtxUserAuthName;
 	private LEditText edtxUserPassword;
+	private Button	butNewAccount;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,11 +58,21 @@ public class LoginActivity extends Activity implements ILoginNotifier,
         butLater 		 = (Button)findViewById(R.id.login_but_later);
         butLogin 		 = (Button)findViewById(R.id.login_but_login);
         edtxUserAuthName = (LEditText)findViewById(R.id.edtx_username);
-        edtxUserPassword = (LEditText)findViewById(R.id.edtx_user_password);                  
+        edtxUserPassword = (LEditText)findViewById(R.id.edtx_user_password);         
+        butNewAccount	 = (Button)findViewById(R.id.login_but_new_account);
+        syncMan			 = new SyncManager(this);
+        
+        if(syncMan.shouldSyncCategories()){        	
+	        syncMan.syncCategories();	        
+        }               
+        if(syncMan.shouldSyncCities()){
+        	syncMan.syncCities();
+        }
         
         // Set listeners
         butLater.setOnClickListener(this);
         butLogin.setOnClickListener(this);  
+        butNewAccount.setOnClickListener(this);
         
         if(user.isLoggedIn()){
             Intent registrationIntent = new Intent("com.google.android.c2dm.intent.REGISTER");
@@ -77,18 +92,21 @@ public class LoginActivity extends Activity implements ILoginNotifier,
 	public void onLogin(boolean isSuccess, User pUser) {
 		Console.debug(TAG, "onLogin: " + isSuccess + " " + pUser);
 		if(isSuccess){
+			user = pUser;
             SharedPreferences prefs = getSharedPreferences(MyC2dmReceiver.PREFS_NAME, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = prefs.edit();
             editor.putInt(MyC2dmReceiver.KEY_USER_ID, user.getId());
             editor.commit();
-            // do not forget to reset this field when user will log out.
+            	    		    	
+            if(prefs.getString(MyC2dmReceiver.REGISTRATION_KEY, null) != null){
+            	api.updateDeviceId(user.getId(), prefs.getString(MyC2dmReceiver.REGISTRATION_KEY, null));
+            }
             
 			Intent registrationIntent = new Intent("com.google.android.c2dm.intent.REGISTER");
             registrationIntent.putExtra("app", PendingIntent.getBroadcast(this, 0, new Intent(), 0));
             registrationIntent.putExtra("sender", "smartliviu@gmail.com");
             startService(registrationIntent);
-            
-			user = pUser;
+            			
 			Toast.makeText(LoginActivity.this, "Autentificare reusita.", Toast.LENGTH_SHORT).show();
 			
 			Class<?> clasz = MainActivity.class;
@@ -119,6 +137,10 @@ public class LoginActivity extends Activity implements ILoginNotifier,
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
+		case R.id.login_but_new_account:
+			Intent toNewAccountActivity = new Intent(LoginActivity.this, CreateAccountActivity.class);
+			startActivity(toNewAccountActivity);
+			break;
 		case R.id.login_but_login:
 			if(edtxUserAuthName.getText().length() == 0 || edtxUserPassword.getText().length() == 0){
 				Toast.makeText(LoginActivity.this, "Va rugam completati toate campurile.", Toast.LENGTH_SHORT).show();				

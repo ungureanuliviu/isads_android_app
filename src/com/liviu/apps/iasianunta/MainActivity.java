@@ -80,12 +80,7 @@ public class MainActivity extends Activity implements OnClickListener,
         butShowAds.setOnClickListener(this);
         butAlerts.setOnClickListener(this);
         syncMan.setOnSyncedNotifier(this);
-        if(syncMan.shouldSyncCategories()){        	
-	        syncMan.syncCategories();	        
-        }               
-        if(syncMan.shouldSyncCities()){
-        	syncMan.syncCities();
-        }
+
         
         
     }

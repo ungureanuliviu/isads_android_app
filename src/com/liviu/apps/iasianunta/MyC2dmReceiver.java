@@ -25,8 +25,8 @@ public class MyC2dmReceiver extends BroadcastReceiver {
 	public static final String KEY_USER_ID = "user_id";
 	private final int MSG_NEW_ALERT_LOADED = 1;
 	
-	private static String REGISTRATION_KEY = "registrationKey";
-	private final String TAG = "MyC2dmReceiver";
+	public static final String REGISTRATION_KEY = "registrationKey";
+	public static final String TAG = "MyC2dmReceiver";
 
 	// Data
 	private API		mApi;

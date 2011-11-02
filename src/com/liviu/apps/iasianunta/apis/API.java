@@ -942,5 +942,27 @@ public class API {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	public boolean createUser(String pUserRealName, String pUserName, String pUserPassword, String pEmail, int pCityId) {
+		try{
+			JSONObject params = new JSONObject();
+			params.put("name", pUserRealName);
+			params.put("auth_name", pUserName);
+			params.put("password", pUserPassword);
+			params.put("email", pEmail);
+			params.put("city_id", pCityId);
+			JSONResponse jsonResponse = doRequest(API_URL + "/user/create/", params, null, null);
+			if(jsonResponse.isSuccess()){
+				return true;
+			}else{
+				return false;
+			}
+		}catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+		
 	}	
 }
